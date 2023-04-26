@@ -1,0 +1,76 @@
+---
+title: "Variational Autoencoders"
+author: Rohan Gala
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: pygments
+bibliography: vae.bib
+
+format:
+  html:
+    theme: journal
+    code-fold: true
+    html-math-method: katex
+
+editor:
+    render-on-save: true
+---
+
+These notes provide an explanation for variational autoencoders
+
+There is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 1) deterministic approximations, which include maximum likelihood and variational methods and 2) Monte Carlo methods.
+
+
+I liked [Matthew Bernstein's](https://mbernste.github.io/posts/elbo/) explanation, and here is my version based on it.
+
+Notation:
+
+Latent variable models:
+
+We view individual data points as particular values $x$ of random variable $X$ drawn from it's distribution $p_X$.
+
+_Evidence_ refers to probability of the data under the model, $p_X(x)$. Using the low of total probability:
+
+$$p_X(x) = \int p_{X,Z}(x, z) dz = \int p_{X|Z}(x|z) p_Z(z) dz$${#eq-total-prob}
+
+We do not know $p(z)$ or $p(x|z)$. Integrating over $z$ is intractable for many problems. 
+
+We introduce a known distribution $q(z)$, which is supposed to be our best guess of the true distribution $p(z)$. 
+
+Then we introduce parameters $\theta$ to specify the dependence of $X$ on $Z$ $p(x|z)$ in a flexible manner $p(x|z;\theta)$ (equivalently written as $p_{\theta}(x|z)$). 
+
+Then:
+
+$$
+\begin{aligned}
+p(x) &= \int p_{\theta}(x|z) p(z) \frac{q(z)}{q(z)} dz \\
+\log p(x) &= \log \int p_{\theta}(x|z) p(z) \frac{q(z)}{q(z)} dz \\
+&=  \log \mathbf{E}_{z \sim q} \bigg[ \frac{p_{\theta}(x|z) p(z)}{q(z)} \bigg] \\
+&\geq \mathbf{E}_{z \sim q} \log  \bigg[ \frac{p_{\theta}(x|z) p(z)}{q(z)} \bigg] \\
+&\geq \mathbf{E}_{z \sim q} [ \log  p_{\theta}(x|z)] - D_{KL}(q(z)\|p(z)) 
+\end{aligned}
+$$
+
+
+
+
+
+
+
+
+
+
+
+::: {.column-margin}
+Notes appear in the margin
+:::
+
+# Named section {#sec-named_sec}
+
+
+
+### References
+
+::: {#refs}
+:::

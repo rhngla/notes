@@ -1,0 +1,111 @@
+---
+title: "Normalizing flows:"
+author: "Rohan Gala"
+date: "2023-04-08"
+categories: [math]
+image: "image.jpg"
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: pygments
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+---
+
+
+## Change of variables theorem {#sec-change-of-variables}
+
+Consider differentiable functions $f$ and $g$, where $g$ is assumed to be one-to-one (injective) on the interval $[a,b]$. If we consider the change of variable $x~\rightarrow~g(x)$, the following relationship holds:
+$$
+\int_{g(a)}^{g(b)}{f(x)dx} = \int_a^b{f(g(x))\frac{dg(x)}{dx}dx}
+$${#eq-change-of-one-var}
+
+The generalization of this relationship for the multi-variable case considers the integral over a region $\mathbf{x}~\in~X~\subseteq~\mathbb{R}^n$. This requires 
+
+1. $g:\mathbb{R}^n \rightarrow \mathbb{R}^n$ to be injective over $X$, and
+2. the Jacobian $J_g$ to be non-singular everywhere. 
+
+The change of variables $x~\rightarrow~g(\mathbf{x})$ leads to the following equality:
+
+$$
+\int_{g(X)}{f(\mathbf{x})d\mathbf{x}} = \int_{X}{f(g(\mathbf{x}))|\det(J_g(\mathbf{x}))|d\mathbf{x}}
+$${#eq-change-of-variables}
+
+::: {.column-margin}
+Consider $g(\mathbf{x}) = (g_1(\mathbf{x}), ..., g_n(\mathbf{x}))$. The Jacobian 
+matrix $J_g$ of function $g$ evaluated at $\mathbf{x}$:
+$$
+J_g = \left[\begin{array}{ccc}
+            \frac{\partial g_1(\mathbf{x})}{\partial x_1} & \cdots & \frac{\partial g_1(\mathbf{x})}{\partial x_n} \\
+            \vdots & \ddots & \vdots \\
+            \frac{\partial g_n(\mathbf{x})}{\partial x_1} & \cdots & \frac{\partial g_n(\mathbf{x})}{\partial x_n}
+            \end{array}\right]
+$$
+:::
+
+## Invertible transformations
+
+So far, we've only attempted to change our co-ordinate system in one direction, i.e. by transforming the coordinates with $g$. There are cases we may be interested in reversing the transformation. If $g$ were bijective, we'd have a well-defined $g^{-1}$ that would enable such a reverse transformation.
+
+### A side note on Jacobians
+One can think of the Jacobian $J_g$ as the operator that takes changes in the original co-oridinate system and provides the linear approximation of those changes in the new co-ordinate system.
+
+$$
+g(\mathbf{x} + \mathbf{\epsilon}) = g(\mathbf{x}) + J_g(\mathbf{x})\mathbf{\epsilon}
+$$
+
+If we were to apply the coordinate transform and reverse it using the Jacobians, we can see that:
+
+$$J^{-1}_g = J_{g^{-1}}$$
+
+::: {.proof}
+$$
+\begin{aligned}
+\mathbf{x} + \mathbf{\epsilon} &= g^{-1}(g(\mathbf{x} + \mathbf{\epsilon})) \\
+&= g^{-1}(g(\mathbf{x})) + J_{g^{-1}}J_g(\mathbf{x})\mathbf{\epsilon} \\
+&= \mathbf{x} + J_{g^{-1}}J_g(\mathbf{x})\mathbf{\epsilon} \\
+\implies J_{g^{-1}}J_g &= I\ \forall\ \mathbf{x}
+\end{aligned}
+$$
+Since the inverse is unique, we arrive at the relationship $J^{-1}_g = J_{g^{-1}}$.
+:::
+
+### Moore-Penrose pseudoinverse
+
+Let $A \in \mathbb{R}^{m \times n}$. 
+
+1. Pseudoinverse $A^{+} := (A^T A)^{-1} A^T$
+2. $A^{+} A = I$
+3. $A A^{+} = I$
+4. $(A^{+})^{+} = A$
+5. If $A$ is square, then $A^{+} = A^{-1}$
+
+The pseudoinverse exists and is unique.
+
+
+## Applications to dimensionality reduction
+
+See @petersen2008matrix for identities on determinants, traces etc. 
+
+## Applications to Normalizing flows
+
+The goal is to learn an invertible transformation to map one probability distribution to another. We would like to construct a family of transformations that are guaranteed to be invertible, yet expressive enough to permit complex mappings. Here I'll discuss a clever idea in @dinh2016density that achieves this successfully.
+
+There are two parts to their approach
+1. Specify a family of invertible transformations
+2. Ensure that determinant of the Jacobian for these transformations is computationally inexpensive to compute.
+
+Their transformation enables the inverse transformation to be analytically specified. The Jacobian of their transformation is guaranteed to be lower triangular; noting that the determinant of a lower triangular matrix is the product of diagonal entries, the determinant of the Jacobian is also computationally inexpensive to compute.
+
+The authors construct the transformation such that
+
+1. The Jacobian is lower triangular
+2. Therefore the determinant can be calculated as the product of all diagonal entries
+3. The inverse transformation can be calculated analytically
+
+
+### References
+
+::: {#refs}
+:::
