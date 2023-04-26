@@ -1,0 +1,149 @@
+[
+  {
+    "objectID": "posts/vae.html",
+    "href": "posts/vae.html",
+    "title": "Variational Autoencoders",
+    "section": "",
+    "text": "These notes provide an explanation for variational autoencoders\nThere is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 1) deterministic approximations, which include maximum likelihood and variational methods and 2) Monte Carlo methods.\nI liked Matthew Bernstein’s explanation, and here is my version based on it.\nNotation:\nLatent variable models:\nWe view individual data points as particular values x of random variable X drawn from it’s distribution p_X.\nEvidence refers to probability of the data under the model, p_X(x). Using the low of total probability:\np_X(x) = \\int p_{X,Z}(x, z) dz = \\int p_{X|Z}(x|z) p_Z(z) dz \\tag{1}\nWe do not know p(z) or p(x|z). Integrating over z is intractable for many problems.\nWe introduce a known distribution q(z), which is supposed to be our best guess of the true distribution p(z).\nThen we introduce parameters \\theta to specify the dependence of X on Z p(x|z) in a flexible manner p(x|z;\\theta) (equivalently written as p_{\\theta}(x|z)).\nThen:\n\n\\begin{aligned}\np(x) &= \\int p_{\\theta}(x|z) p(z) \\frac{q(z)}{q(z)} dz \\\\\n\\log p(x) &= \\log \\int p_{\\theta}(x|z) p(z) \\frac{q(z)}{q(z)} dz \\\\\n&=  \\log \\mathbf{E}_{z \\sim q} \\bigg[ \\frac{p_{\\theta}(x|z) p(z)}{q(z)} \\bigg] \\\\\n&\\geq \\mathbf{E}_{z \\sim q} \\log  \\bigg[ \\frac{p_{\\theta}(x|z) p(z)}{q(z)} \\bigg] \\\\\n&\\geq \\mathbf{E}_{z \\sim q} [ \\log  p_{\\theta}(x|z)] - D_{KL}(q(z)\\|p(z))\n\\end{aligned}\n\n\n\nNotes appear in the margin\n\n1 Named section\n\nReferences"
+  },
+  {
+    "objectID": "posts/normalizing-flows.html",
+    "href": "posts/normalizing-flows.html",
+    "title": "Normalizing flows:",
+    "section": "",
+    "text": "Consider differentiable functions f and g, where g is assumed to be one-to-one (injective) on the interval [a,b]. If we consider the change of variable x~\\rightarrow~g(x), the following relationship holds: \n\\int_{g(a)}^{g(b)}{f(x)dx} = \\int_a^b{f(g(x))\\frac{dg(x)}{dx}dx}\n\\tag{1}\nThe generalization of this relationship for the multi-variable case considers the integral over a region \\mathbf{x}~\\in~X~\\subseteq~\\mathbb{R}^n. This requires\n\ng:\\mathbb{R}^n \\rightarrow \\mathbb{R}^n to be injective over X, and\nthe Jacobian J_g to be non-singular everywhere.\n\nThe change of variables x~\\rightarrow~g(\\mathbf{x}) leads to the following equality:\n\n\\int_{g(X)}{f(\\mathbf{x})d\\mathbf{x}} = \\int_{X}{f(g(\\mathbf{x}))|\\det(J_g(\\mathbf{x}))|d\\mathbf{x}}\n\\tag{2}\n\n\nConsider g(\\mathbf{x}) = (g_1(\\mathbf{x}), ..., g_n(\\mathbf{x})). The Jacobian matrix J_g of function g evaluated at \\mathbf{x}: \nJ_g = \\left[\\begin{array}{ccc}\n            \\frac{\\partial g_1(\\mathbf{x})}{\\partial x_1} & \\cdots & \\frac{\\partial g_1(\\mathbf{x})}{\\partial x_n} \\\\\n            \\vdots & \\ddots & \\vdots \\\\\n            \\frac{\\partial g_n(\\mathbf{x})}{\\partial x_1} & \\cdots & \\frac{\\partial g_n(\\mathbf{x})}{\\partial x_n}\n            \\end{array}\\right]"
+  },
+  {
+    "objectID": "posts/normalizing-flows.html#sec-change-of-variables",
+    "href": "posts/normalizing-flows.html#sec-change-of-variables",
+    "title": "Normalizing flows:",
+    "section": "",
+    "text": "Consider differentiable functions f and g, where g is assumed to be one-to-one (injective) on the interval [a,b]. If we consider the change of variable x~\\rightarrow~g(x), the following relationship holds: \n\\int_{g(a)}^{g(b)}{f(x)dx} = \\int_a^b{f(g(x))\\frac{dg(x)}{dx}dx}\n\\tag{1}\nThe generalization of this relationship for the multi-variable case considers the integral over a region \\mathbf{x}~\\in~X~\\subseteq~\\mathbb{R}^n. This requires\n\ng:\\mathbb{R}^n \\rightarrow \\mathbb{R}^n to be injective over X, and\nthe Jacobian J_g to be non-singular everywhere.\n\nThe change of variables x~\\rightarrow~g(\\mathbf{x}) leads to the following equality:\n\n\\int_{g(X)}{f(\\mathbf{x})d\\mathbf{x}} = \\int_{X}{f(g(\\mathbf{x}))|\\det(J_g(\\mathbf{x}))|d\\mathbf{x}}\n\\tag{2}\n\n\nConsider g(\\mathbf{x}) = (g_1(\\mathbf{x}), ..., g_n(\\mathbf{x})). The Jacobian matrix J_g of function g evaluated at \\mathbf{x}: \nJ_g = \\left[\\begin{array}{ccc}\n            \\frac{\\partial g_1(\\mathbf{x})}{\\partial x_1} & \\cdots & \\frac{\\partial g_1(\\mathbf{x})}{\\partial x_n} \\\\\n            \\vdots & \\ddots & \\vdots \\\\\n            \\frac{\\partial g_n(\\mathbf{x})}{\\partial x_1} & \\cdots & \\frac{\\partial g_n(\\mathbf{x})}{\\partial x_n}\n            \\end{array}\\right]"
+  },
+  {
+    "objectID": "posts/normalizing-flows.html#invertible-transformations",
+    "href": "posts/normalizing-flows.html#invertible-transformations",
+    "title": "Normalizing flows:",
+    "section": "2 Invertible transformations",
+    "text": "2 Invertible transformations\nSo far, we’ve only attempted to change our co-ordinate system in one direction, i.e. by transforming the coordinates with g. There are cases we may be interested in reversing the transformation. If g were bijective, we’d have a well-defined g^{-1} that would enable such a reverse transformation.\n\nA side note on Jacobians\nOne can think of the Jacobian J_g as the operator that takes changes in the original co-oridinate system and provides the linear approximation of those changes in the new co-ordinate system.\n\ng(\\mathbf{x} + \\mathbf{\\epsilon}) = g(\\mathbf{x}) + J_g(\\mathbf{x})\\mathbf{\\epsilon}\n\nIf we were to apply the coordinate transform and reverse it using the Jacobians, we can see that:\nJ^{-1}_g = J_{g^{-1}}\n\nProof. \n\\begin{aligned}\n\\mathbf{x} + \\mathbf{\\epsilon} &= g^{-1}(g(\\mathbf{x} + \\mathbf{\\epsilon})) \\\\\n&= g^{-1}(g(\\mathbf{x})) + J_{g^{-1}}J_g(\\mathbf{x})\\mathbf{\\epsilon} \\\\\n&= \\mathbf{x} + J_{g^{-1}}J_g(\\mathbf{x})\\mathbf{\\epsilon} \\\\\n\\implies J_{g^{-1}}J_g &= I\\ \\forall\\ \\mathbf{x}\n\\end{aligned}\n Since the inverse is unique, we arrive at the relationship J^{-1}_g = J_{g^{-1}}.\n\n\n\nMoore-Penrose pseudoinverse\nLet A \\in \\mathbb{R}^{m \\times n}.\n\nPseudoinverse A^{+} := (A^T A)^{-1} A^T\nA^{+} A = I\nA A^{+} = I\n(A^{+})^{+} = A\nIf A is square, then A^{+} = A^{-1}\n\nThe pseudoinverse exists and is unique."
+  },
+  {
+    "objectID": "posts/normalizing-flows.html#applications-to-dimensionality-reduction",
+    "href": "posts/normalizing-flows.html#applications-to-dimensionality-reduction",
+    "title": "Normalizing flows:",
+    "section": "3 Applications to dimensionality reduction",
+    "text": "3 Applications to dimensionality reduction\nSee Petersen, Pedersen, et al. (2012) for identities on determinants, traces etc."
+  },
+  {
+    "objectID": "posts/normalizing-flows.html#applications-to-normalizing-flows",
+    "href": "posts/normalizing-flows.html#applications-to-normalizing-flows",
+    "title": "Normalizing flows:",
+    "section": "4 Applications to Normalizing flows",
+    "text": "4 Applications to Normalizing flows\nThe goal is to learn an invertible transformation to map one probability distribution to another. We would like to construct a family of transformations that are guaranteed to be invertible, yet expressive enough to permit complex mappings. Here I’ll discuss a clever idea in Dinh, Sohl-Dickstein, and Bengio (2016) that achieves this successfully.\nThere are two parts to their approach 1. Specify a family of invertible transformations 2. Ensure that determinant of the Jacobian for these transformations is computationally inexpensive to compute.\nTheir transformation enables the inverse transformation to be analytically specified. The Jacobian of their transformation is guaranteed to be lower triangular; noting that the determinant of a lower triangular matrix is the product of diagonal entries, the determinant of the Jacobian is also computationally inexpensive to compute.\nThe authors construct the transformation such that\n\nThe Jacobian is lower triangular\nTherefore the determinant can be calculated as the product of all diagonal entries\nThe inverse transformation can be calculated analytically\n\n\nReferences\n\n\nDinh, Laurent, Jascha Sohl-Dickstein, and Samy Bengio. 2016. “Density Estimation Using Real Nvp.” arXiv Preprint arXiv:1605.08803.\n\n\nPetersen, Kaare Brandt, Michael Syskind Pedersen, et al. 2012. “The Matrix Cookbook.”"
+  },
+  {
+    "objectID": "posts/spaces.html",
+    "href": "posts/spaces.html",
+    "title": "Concepts in dimensionality reduction",
+    "section": "",
+    "text": "We’ll start with some definitions - the goal is to situate ourselves with:\nUltimately we want to construct analysis tools i.e. operations to manipulate such objects constructed from data, and discover relationships without violating (or perhaps knowingly violating) definitions/ underlying assumptions. Further, through these definitions we will become familiar with hierarchies of such objects, spaces, and rules. Some definitions are more abstract, and some are special cases with additional rules. Being aware of where in the abstraction hierarchy we choose to operate is helpful to manage complexity."
+  },
+  {
+    "objectID": "posts/spaces.html#sec-metricspace",
+    "href": "posts/spaces.html#sec-metricspace",
+    "title": "Concepts in dimensionality reduction",
+    "section": "1.1 Metric and metric space",
+    "text": "1.1 Metric and metric space\nA distance metric d is defined on set M \nd:M \\times M \\rightarrow \\mathbb{R}\n\nA distance metric is sometimes called just “distance” or just “metric”. For all x,y,z \\in M the following relationships hold for any valid distance metric: \n\\begin{aligned}\nd(x, y) &\\geq 0 \\\\\nd(x, y) &=0 \\Longleftrightarrow x=y \\\\\nd(x, y) &=d(y, x) \\\\\nd(x, z) &\\leq d(x, y)+d(y, z)\n\\end{aligned}\n\\tag{1}\nA metric space is defined as the ordered pair (M,d), where M is a set, and d is a distance metric. Reference to the metric d is occasionally omitted understood from the context, and the metric space is denoted simply by (M).\n\n\nCosine distance, defined for vectors x and y in Euclidean space as 1-\\cos\\theta where \\theta = \\frac{x \\cdot y}{\\|x\\| \\|y\\|}, is not a distance metric in general (e.g. d(x, 2x) = 0, but x\\neq 2x). However, it becomes a valid distance metric if we restrict our set of vectors to only those that have a fixed norm (\\| x \\| = c)."
+  },
+  {
+    "objectID": "posts/spaces.html#sec-field",
+    "href": "posts/spaces.html#sec-field",
+    "title": "Concepts in dimensionality reduction",
+    "section": "1.2 Field",
+    "text": "1.2 Field\nA field is a set F which includes 0 and 1 and binary operations of addition + and multiplication \\cdot such that for all elements x,y,z \\in F the following hold:\n\n\\begin{aligned}\n0 + x &= x \\\\\nx + (-x) &= 0, \\quad -x \\in F \\\\\nx + y &= y + x \\\\\nx + (y + z) &= (x + y) + z \\\\\n1 \\cdot x &= 1 \\\\\nx^{-1} \\cdot x &= 1, \\quad \\forall x \\neq 0 \\\\\nx \\cdot y &= y \\cdot x \\\\\nx \\cdot (y \\cdot z) &= (x \\cdot y) \\cdot z \\\\\nx \\cdot (y + z) &= (x \\cdot y) + (x \\cdot z) \\\\\n\\end{aligned}\n\\tag{2}\nWe typically deal with the real field \\mathbb{R} or complex field \\mathbb{C}"
+  },
+  {
+    "objectID": "posts/spaces.html#sec-vectorspace",
+    "href": "posts/spaces.html#sec-vectorspace",
+    "title": "Concepts in dimensionality reduction",
+    "section": "1.3 Vector space",
+    "text": "1.3 Vector space\nA vector space over a field F is a set V together with operations of addition and scalar multiplication) such that for all vectors x,y,z \\in V and all scalars \\alpha, \\beta \\in \\mathbb{F} the following hold:\n\n\\begin{aligned}\nx + y &= y + x \\\\\n(x + y) + z &= x + (y + z) \\\\\nx + 0 &= x \\\\\nx + (-x) &= 0 \\\\\n\\alpha (x + y) &= \\alpha x + \\alpha y \\\\\n(\\alpha + \\beta) x &= \\alpha x + \\beta x \\\\\n\\alpha (\\beta x) &= (\\alpha \\beta) x \\\\\n1x &= x\n\\end{aligned}\n\\tag{3}"
+  },
+  {
+    "objectID": "posts/spaces.html#sec-norm",
+    "href": "posts/spaces.html#sec-norm",
+    "title": "Concepts in dimensionality reduction",
+    "section": "1.4 Norm",
+    "text": "1.4 Norm\nA norm on a vector space V is a function w:V \\rightarrow \\mathbb{R} that satisfies: \n\\begin{aligned}\nw(x) &\\geq 0 \\\\\nw(x) &= 0 \\implies x = 0 \\\\\nw(\\alpha x) &= \\lvert\\alpha\\rvert w(x) \\\\\nw(x+y) &\\leq w(x) + w(y)\n\\end{aligned}\n\\tag{4}\n\nNorms induce a distance metric on the vector space, d (x, y) = w (x − y), and such a normed vector space is therefore also a metric space.\nNot all metric spaces are normed vector spaces. That is, there exist metric spaces that are not normed vector spaces.\nA metric can define an induced norm w over a vector space (via w(x) = d(x,0)) if it satisfies the following: \n\\begin{aligned}\nd(w,v) &= d(u+w, u+v) \\\\\nd(\\alpha u,\\alpha v) &= \\lvert\\alpha\\rvert d(u,v)\n\\end{aligned}\n\\tag{5}"
+  },
+  {
+    "objectID": "posts/spaces.html#sec-innerproductspace",
+    "href": "posts/spaces.html#sec-innerproductspace",
+    "title": "Concepts in dimensionality reduction",
+    "section": "1.5 Inner product space",
+    "text": "1.5 Inner product space\nAn inner product space is a vector space V over the field F together with an inner product. An inner product is a map \\langle \\cdot ,\\cdot \\rangle :V \\times V \\to F, that satisfies the properties for all vectors x,y,z\\in V and all scalars a,b \\in F. \n\\begin{aligned}\n\\langle x,y\\rangle &={\\overline {\\langle y,x\\rangle }} \\\\\n\\langle ax+by,z\\rangle &=a \\langle x,z\\rangle +b\\langle y,z\\rangle \\\\\n\\langle x,x\\rangle &\\geq 0 \\\\\n\\langle x,x\\rangle = 0 &\\iff x = 0 \\\\\n\\end{aligned}\n\\tag{6}\n\nConjugate symmetry implies \\langle x,x\\rangle \\in \\mathbb{R}.\nIn many applications, F is \\mathbb{R}, and conjugate symmetry reduces to symmetry.\nEvery inner product space induces a norm, called its canonical norm: \\|x\\|={\\sqrt {\\langle x,x\\rangle }}\n\n\n\np-norm (or L_p-norm) is defined over a vector space as: \n\\| x \\| = \\sqrt[p]{\\sum_{i=1}^n x_i^p}\n\nThe distance induced by the p-norm is also known as the Minkowski distance of order p.\n\nEuclidean space\nAn n-dimensional Euclidean space is a particular metric space. In fact, it is a vector space equipped with an inner product. Vectors in Euclidean space are denoted as x \\in \\mathbb{R}^n.\n\nThe inner product for two vectors x and y is defined as \\langle x, y \\rangle = x \\cdot y, where x \\cdot y = \\sum_{i=1}^n x_i y_i.\nThe inner product induces a norm (also known as 2-norm, following the definition of the more general case of p-norm) \\| x \\| = \\sqrt{x \\cdot x}.\nThe norm induces a distance metric: d_{\\textrm{euclidean}}(x,y) = \\| x - y \\|_2.\n\nWe often assume we are working with a Euclidean metric space (\\mathbb{R}^n, d_{\\textrm{euclidean}}) without explicitly stating definitions. However, considering these definitions make it easier to understand the more general case of a Riemannian manifold."
+  },
+  {
+    "objectID": "posts/spaces.html#reimannian-manifold",
+    "href": "posts/spaces.html#reimannian-manifold",
+    "title": "Concepts in dimensionality reduction",
+    "section": "1.6 Reimannian Manifold",
+    "text": "1.6 Reimannian Manifold\nTextbooks on differential geometry, e.g. Andrews (2020) would provide a more formal entry point and description for Manifolds. I’d like to point out connections here to Euclidean geometry to build some intuition first. In geometry taught in school, Euclidean geometry is introduced through its axioms. In particular, relaxing the fifth postulate (which states that parallel lines do not meet) leads to ideas of spherical and hyperbolic geometry, which can also be viewed as special cases of Reimannian manifolds that have constant, global curvature.\nGeneralizing this, we can consider Riemannian manifolds that can have local curvature. This local curvature is allowed to vary smoothly from one position to the next along the manifold. The local region around each position can be treated as a Euclidean space (we’ll introduce the notion of tangent space for this). We can choose a coordinate system locally to account for the local curvature, and then use formal machinery from Euclidean spaces there.\nHowever, as we move along manifold, we’d like to modify the co-ordinate system itself to account for the local curvature. Because we are working with a smoothly varying curvature, we can do this using smooth transformations of the co-ordinate system - for which we use tools from calculus.\n\nJacobians and coordinate transformations\n\n\nNotation\nA Riemannian manifold is a tuple (M,g) where M is a set of points and g refers to inner products on vector spaces that we define at each point p \\in M. Vectors that are tangent to the point p make up the tangent space denoted by T_{p} M.\nLet point p and a local co-ordinate system denoted as (x^1,...,x^n)\nThe set where we define each object as a differential operator \\mathbf{A} = (A^1\\frac{\\partial}{\\partial x^1},...,A^n\\frac{\\partial}{\\partial x^n}), s.t. A^i \\in \\mathbb{R}. Such a set satisfies definition of a vector space. Moreover, each object is tangent to the manifold because of the partial derivatives. Thus, we now have a way to specify objects belonging to the tangent space T_{p} M.\nConsider the change of co-ordinates from (x^1,...,x^n) to (y^1,...,y^n), where y^i = f^i(x^1,...,x^n). The Jacobian matrix is defined as J_{ij} = \\frac{\\partial y^i}{\\partial x^j}.\n\n\nThe differential operators actually define a vector field; each vector field is a vector space on itself.\nWe denote the inner product at p \\in M as the map: g_{p}: T_{p} M \\times T_{p} M \\rightarrow \\mathbb{R}.\nFor two vectors \\mathbf{A} and \\mathbf{B} in T_{p} M, \\langle \\mathbf{A}, \\mathbf{B} \\rangle _{g_{p}}, the inner product\nThrough the distance metric induced by the canonical norm, it is easy to work out that Euclidean space is a special case of a Reimannian Manifold where g_{p} is an identity matrix.\n\n\nLocal\nRecall that an inner product induces a norm, and the norm induces a distance metric. Since the inner product is locally defined at each point, we can think of the distance metric as being defined at each point. Using this local notion of distance, we can calculate distances between any two points on the manifold through integration. This we have a set of points M, where we can calculate distances between any two points\nNote the similarity to definition of a metric space, Section 1.1.\nNote that the metric tensor is an inner product on the tangent space T_{p}M. Moreover, the tangent space is a vector space. Recall that any inner product induces a norm, which in turm induces a distance metric. Thus, there is notion of a distance metric for each point on the manifold (and the reason why g_p is called a metric tensor).\n\nNote: For the Euclidean manifold, the metric tensor is the identity matrix."
+  },
+  {
+    "objectID": "posts/spaces.html#heirarchy-of-geometric-transformations",
+    "href": "posts/spaces.html#heirarchy-of-geometric-transformations",
+    "title": "Concepts in dimensionality reduction",
+    "section": "1.7 Heirarchy of geometric transformations",
+    "text": "1.7 Heirarchy of geometric transformations\n\nDiffeomorphic: Preserves angles, distances, and shape\nIsometric: Preserves angles and distances\nConformal: Preserves angles"
+  },
+  {
+    "objectID": "posts/spaces.html#sec-highdim-curse",
+    "href": "posts/spaces.html#sec-highdim-curse",
+    "title": "Concepts in dimensionality reduction",
+    "section": "2.1 Curse of high dimensionality",
+    "text": "2.1 Curse of high dimensionality\nIntuition for properties of data in 2d / 3d space don’t carry over to high dimensional spaces.\n\nMost of the volume is at the surface of the hypersphere in high D\nThis is a consequence of the phenomena of “concentration of measure”\n\nFurther reading: Aggarwal, Hinneburg, and Keim (2001), Chapter 1 of Lee and Verleysen (2007)."
+  },
+  {
+    "objectID": "posts/spaces.html#manifold-assumption",
+    "href": "posts/spaces.html#manifold-assumption",
+    "title": "Concepts in dimensionality reduction",
+    "section": "2.2 Manifold assumption",
+    "text": "2.2 Manifold assumption\n\nMany methods attempt to use point samples in high dimensional space to parametrize a low dimensional manifold.\n\nParaphrasing Ganea (2019), we assume that data lies on a manifold of much smaller dimension (latent) than the ambient dimension (measured). This enables learning and generalization to unseen data points. We further assume that it is a metric space (Y, d_Y) and has a smooth differentiable structure that allows learning via optimization.\nThus we are interested in Riemannian manifolds of intrinsic dimension d \\leq n. The hope is we can achieve this by learning an a mapping function f : X \\rightarrow Y from the input high dimensional data space to the low-dimensional representation space."
+  },
+  {
+    "objectID": "posts/spaces.html#dimensionality-reduction-1",
+    "href": "posts/spaces.html#dimensionality-reduction-1",
+    "title": "Concepts in dimensionality reduction",
+    "section": "2.3 Dimensionality reduction",
+    "text": "2.3 Dimensionality reduction\nThese set of notes contain python implementation of common methods.\n\nMany methods to reduce dimensionality in a way that preserves pair-wise distances / similarities\nMDS is a linear method\nIsomap preserves geodesic distances\nDiffusion maps consider a notion of reachability of distant points by constructing a diffusion process\nLaplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods\n\nRandom projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. E.g. see Johnson-Lindenstrauss transforms referred to in this blog post demonstrating applications to transformers.\nThe proof in Dasgupta and Gupta (2003) for the Johnson Lindenstrauss lemma seems accessible.\nSome references from this twitter thread\nNearest component analysis\nhttps://ieeexplore.ieee.org/abstract/document/1661543 - Diffusion maps and compression - Diffusion maps and coarse-graining: a unified framework for dimensionality reduction, graph partitioning, and data set parameterization\nSparse random projections"
+  },
+  {
+    "objectID": "posts/spaces.html#using-jaccard-similarity",
+    "href": "posts/spaces.html#using-jaccard-similarity",
+    "title": "Concepts in dimensionality reduction",
+    "section": "3.1 Using Jaccard similarity",
+    "text": "3.1 Using Jaccard similarity\nConsider representations of point p embedded in two metric spaces $(X, d_{X}) and in (Y, d_{Y}). We denote the k-nearest neighbors of p in the two metric spaces as K_{X}(p) and K_{Y}(p). The Jaccard similarity between the neighborhood sets is defined as: \nJ_{XY}(p) = \\frac{|K_{X}(p) \\cap K_{Y}(p)|}{|K_{X}(p) \\cup K_{Y}(p)|}\n\nSuch a quantification was recently proposed in the context of scRNA-seq data by Cooley et al. (2019)."
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Notes",
+    "section": "",
+    "text": "Variational Autoencoders\n\n\n\n\n\n\n\n\n\n\n\n\nRohan Gala\n\n\n\n\n\n\n  \n\n\n\n\nNormalizing flows:\n\n\n\n\n\n\n\nmath\n\n\nml\n\n\n\n\n\n\n\n\n\n\n\nApr 8, 2023\n\n\nRohan Gala\n\n\n\n\n\n\n  \n\n\n\n\nConcepts in dimensionality reduction\n\n\n\n\n\n\n\nmath\n\n\n\n\n\n\n\n\n\n\n\nApr 7, 2023\n\n\nRohan Gala\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nApr 4, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "A collection of notes on topics in math and computation."
+  }
+]

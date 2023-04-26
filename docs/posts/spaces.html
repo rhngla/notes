@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.333">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rohan Gala">
+<meta name="dcterms.date" content="2023-04-07">
+
+<title>notes - Concepts in dimensionality reduction</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">notes</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/rhngla" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Concepts in dimensionality reduction</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">math</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Rohan Gala </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 7, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#fundamentals" id="toc-fundamentals" class="nav-link active" data-scroll-target="#fundamentals"><span class="header-section-number">1</span> Fundamentals</a>
+  <ul class="collapse">
+  <li><a href="#sec-metricspace" id="toc-sec-metricspace" class="nav-link" data-scroll-target="#sec-metricspace"><span class="header-section-number">1.1</span> Metric and metric space</a></li>
+  <li><a href="#sec-field" id="toc-sec-field" class="nav-link" data-scroll-target="#sec-field"><span class="header-section-number">1.2</span> Field</a></li>
+  <li><a href="#sec-vectorspace" id="toc-sec-vectorspace" class="nav-link" data-scroll-target="#sec-vectorspace"><span class="header-section-number">1.3</span> Vector space</a></li>
+  <li><a href="#sec-norm" id="toc-sec-norm" class="nav-link" data-scroll-target="#sec-norm"><span class="header-section-number">1.4</span> Norm</a></li>
+  <li><a href="#sec-innerproductspace" id="toc-sec-innerproductspace" class="nav-link" data-scroll-target="#sec-innerproductspace"><span class="header-section-number">1.5</span> Inner product space</a>
+  <ul class="collapse">
+  <li><a href="#sec-euc_manifold" id="toc-sec-euc_manifold" class="nav-link" data-scroll-target="#sec-euc_manifold">Euclidean space</a></li>
+  </ul></li>
+  <li><a href="#reimannian-manifold" id="toc-reimannian-manifold" class="nav-link" data-scroll-target="#reimannian-manifold"><span class="header-section-number">1.6</span> Reimannian Manifold</a>
+  <ul class="collapse">
+  <li><a href="#jacobians-and-coordinate-transformations" id="toc-jacobians-and-coordinate-transformations" class="nav-link" data-scroll-target="#jacobians-and-coordinate-transformations">Jacobians and coordinate transformations</a></li>
+  <li><a href="#notation" id="toc-notation" class="nav-link" data-scroll-target="#notation">Notation</a></li>
+  <li><a href="#local" id="toc-local" class="nav-link" data-scroll-target="#local">Local</a></li>
+  </ul></li>
+  <li><a href="#heirarchy-of-geometric-transformations" id="toc-heirarchy-of-geometric-transformations" class="nav-link" data-scroll-target="#heirarchy-of-geometric-transformations"><span class="header-section-number">1.7</span> Heirarchy of geometric transformations</a></li>
+  </ul></li>
+  <li><a href="#dimensionality-reduction" id="toc-dimensionality-reduction" class="nav-link" data-scroll-target="#dimensionality-reduction"><span class="header-section-number">2</span> Dimensionality reduction</a>
+  <ul class="collapse">
+  <li><a href="#measuring-distortion-for-scrna-seq" id="toc-measuring-distortion-for-scrna-seq" class="nav-link" data-scroll-target="#measuring-distortion-for-scrna-seq">Measuring distortion for scRNA-seq</a></li>
+  <li><a href="#sec-highdim-curse" id="toc-sec-highdim-curse" class="nav-link" data-scroll-target="#sec-highdim-curse"><span class="header-section-number">2.1</span> Curse of high dimensionality</a></li>
+  <li><a href="#manifold-assumption" id="toc-manifold-assumption" class="nav-link" data-scroll-target="#manifold-assumption"><span class="header-section-number">2.2</span> Manifold assumption</a></li>
+  <li><a href="#dimensionality-reduction-1" id="toc-dimensionality-reduction-1" class="nav-link" data-scroll-target="#dimensionality-reduction-1"><span class="header-section-number">2.3</span> Dimensionality reduction</a></li>
+  </ul></li>
+  <li><a href="#evaluating-distortion" id="toc-evaluating-distortion" class="nav-link" data-scroll-target="#evaluating-distortion"><span class="header-section-number">3</span> Evaluating distortion</a>
+  <ul class="collapse">
+  <li><a href="#using-jaccard-similarity" id="toc-using-jaccard-similarity" class="nav-link" data-scroll-target="#using-jaccard-similarity"><span class="header-section-number">3.1</span> Using Jaccard similarity</a></li>
+  </ul></li>
+  <li><a href="#isometry-in-autoencoder-representations" id="toc-isometry-in-autoencoder-representations" class="nav-link" data-scroll-target="#isometry-in-autoencoder-representations"><span class="header-section-number">4</span> Isometry in autoencoder representations</a></li>
+  <li><a href="#cell-types-and-manifolds" id="toc-cell-types-and-manifolds" class="nav-link" data-scroll-target="#cell-types-and-manifolds"><span class="header-section-number">5</span> Cell types and manifolds</a></li>
+  <li><a href="#noise-models" id="toc-noise-models" class="nav-link" data-scroll-target="#noise-models"><span class="header-section-number">6</span> Noise models</a></li>
+  <li><a href="#similarities-and-distances" id="toc-similarities-and-distances" class="nav-link" data-scroll-target="#similarities-and-distances"><span class="header-section-number">7</span> Similarities and distances</a></li>
+  <li><a href="#diffusion-maps" id="toc-diffusion-maps" class="nav-link" data-scroll-target="#diffusion-maps"><span class="header-section-number">8</span> Diffusion maps</a></li>
+  <li><a href="#unresolved-issues" id="toc-unresolved-issues" class="nav-link" data-scroll-target="#unresolved-issues"><span class="header-section-number">9</span> Unresolved issues</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading"><span class="header-section-number">10</span> Further reading</a>
+  <ul class="collapse">
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+<p>We’ll start with some definitions - the goal is to situate ourselves with:</p>
+<ul>
+<li><code>objects</code> we’ll work with,</li>
+<li><code>spaces</code> they live in</li>
+<li><code>rules</code> that govern relationships and operations between them.</li>
+</ul>
+<p>Ultimately we want to construct analysis tools i.e.&nbsp;operations to manipulate such objects constructed from data, and discover relationships without violating (or perhaps knowingly violating) definitions/ underlying assumptions. Further, through these definitions we will become familiar with hierarchies of such objects, spaces, and rules. Some definitions are more abstract, and some are special cases with additional rules. Being aware of where in the abstraction hierarchy we choose to operate is helpful to manage complexity.</p>
+<section id="fundamentals" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Fundamentals</h1>
+<section id="sec-metricspace" class="level2 page-columns page-full" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="sec-metricspace"><span class="header-section-number">1.1</span> Metric and metric space</h2>
+<p>A distance metric <span class="math inline">d</span> is defined on set <span class="math inline">M</span> <span class="math display">
+d:M \times M \rightarrow \mathbb{R}
+</span></p>
+<p>A distance metric is sometimes called just “distance” or just “metric”. For all <span class="math inline">x,y,z \in M</span> the following relationships hold for any valid distance metric: <span id="eq-metric"><span class="math display">
+\begin{aligned}
+d(x, y) &amp;\geq 0 \\
+d(x, y) &amp;=0 \Longleftrightarrow x=y \\
+d(x, y) &amp;=d(y, x) \\
+d(x, z) &amp;\leq d(x, y)+d(y, z)
+\end{aligned}
+\tag{1}</span></span></p>
+<p>A metric space is defined as the ordered pair <span class="math inline">(M,d)</span>, where <span class="math inline">M</span> is a set, and <span class="math inline">d</span> is a distance metric. Reference to the metric <span class="math inline">d</span> is occasionally omitted understood from the context, and the metric space is denoted simply by <span class="math inline">(M)</span>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Cosine distance, defined for vectors <span class="math inline">x</span> and <span class="math inline">y</span> in Euclidean space as <span class="math inline">1-\cos\theta</span> where <span class="math inline">\theta = \frac{x \cdot y}{\|x\| \|y\|}</span>, is not a distance metric in general (e.g.&nbsp;<span class="math inline">d(x, 2x) = 0</span>, but <span class="math inline">x\neq 2x</span>). However, it becomes a valid distance metric if we restrict our set of vectors to only those that have a fixed norm (<span class="math inline">\| x \| = c</span>).</p>
+</div></div></section>
+<section id="sec-field" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="sec-field"><span class="header-section-number">1.2</span> Field</h2>
+<p>A field is a set <span class="math inline">F</span> which includes <span class="math inline">0</span> and <span class="math inline">1</span> and binary operations of addition <span class="math inline">+</span> and multiplication <span class="math inline">\cdot</span> such that for all elements <span class="math inline">x,y,z \in F</span> the following hold:</p>
+<p><span id="eq-vectorspace"><span class="math display">
+\begin{aligned}
+0 + x &amp;= x \\
+x + (-x) &amp;= 0, \quad -x \in F \\
+x + y &amp;= y + x \\
+x + (y + z) &amp;= (x + y) + z \\
+1 \cdot x &amp;= 1 \\
+x^{-1} \cdot x &amp;= 1, \quad \forall x \neq 0 \\
+x \cdot y &amp;= y \cdot x \\
+x \cdot (y \cdot z) &amp;= (x \cdot y) \cdot z \\
+x \cdot (y + z) &amp;= (x \cdot y) + (x \cdot z) \\
+\end{aligned}
+\tag{2}</span></span></p>
+<p>We typically deal with the real field <span class="math inline">\mathbb{R}</span> or complex field <span class="math inline">\mathbb{C}</span></p>
+</section>
+<section id="sec-vectorspace" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="sec-vectorspace"><span class="header-section-number">1.3</span> Vector space</h2>
+<p>A vector space over a field <span class="math inline">F</span> is a set <span class="math inline">V</span> together with operations of addition and scalar multiplication) such that for all vectors <span class="math inline">x,y,z \in V</span> and all scalars <span class="math inline">\alpha, \beta \in \mathbb{F}</span> the following hold:</p>
+<p><span id="eq-vectorspace"><span class="math display">
+\begin{aligned}
+x + y &amp;= y + x \\
+(x + y) + z &amp;= x + (y + z) \\
+x + 0 &amp;= x \\
+x + (-x) &amp;= 0 \\
+\alpha (x + y) &amp;= \alpha x + \alpha y \\
+(\alpha + \beta) x &amp;= \alpha x + \beta x \\
+\alpha (\beta x) &amp;= (\alpha \beta) x \\
+1x &amp;= x
+\end{aligned}
+\tag{3}</span></span></p>
+</section>
+<section id="sec-norm" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="sec-norm"><span class="header-section-number">1.4</span> Norm</h2>
+<p>A norm on a vector space <span class="math inline">V</span> is a function <span class="math inline">w:V \rightarrow \mathbb{R}</span> that satisfies: <span id="eq-norm"><span class="math display">
+\begin{aligned}
+w(x) &amp;\geq 0 \\
+w(x) &amp;= 0 \implies x = 0 \\
+w(\alpha x) &amp;= \lvert\alpha\rvert w(x) \\
+w(x+y) &amp;\leq w(x) + w(y)
+\end{aligned}
+\tag{4}</span></span></p>
+<ul>
+<li>Norms induce a distance metric on the vector space, <span class="math inline">d (x, y) = w (x − y)</span>, and such a normed vector space is therefore also a metric space.</li>
+<li>Not all metric spaces are normed vector spaces. That is, there exist metric spaces that are not normed vector spaces.</li>
+<li>A metric can define an <em>induced norm</em> <span class="math inline">w</span> over a vector space (via <span class="math inline">w(x) = d(x,0)</span>) if it satisfies the following: <span id="eq-inducednorm"><span class="math display">
+\begin{aligned}
+d(w,v) &amp;= d(u+w, u+v) \\
+d(\alpha u,\alpha v) &amp;= \lvert\alpha\rvert d(u,v)
+\end{aligned}
+\tag{5}</span></span></li>
+</ul>
+</section>
+<section id="sec-innerproductspace" class="level2 page-columns page-full" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="sec-innerproductspace"><span class="header-section-number">1.5</span> Inner product space</h2>
+<p>An inner product space is a vector space <span class="math inline">V</span> over the field <span class="math inline">F</span> together with an inner product. An inner product is a map <span class="math inline">\langle \cdot ,\cdot \rangle :V \times V \to F</span>, that satisfies the properties for all vectors <span class="math inline">x,y,z\in V</span> and all scalars <span class="math inline">a,b \in F</span>. <span id="eq-innerproduct"><span class="math display">
+\begin{aligned}
+\langle x,y\rangle &amp;={\overline {\langle y,x\rangle }} \\
+\langle ax+by,z\rangle &amp;=a \langle x,z\rangle +b\langle y,z\rangle \\
+\langle x,x\rangle &amp;\geq 0 \\
+\langle x,x\rangle = 0 &amp;\iff x = 0 \\
+\end{aligned}
+\tag{6}</span></span></p>
+<ul>
+<li>Conjugate symmetry implies <span class="math inline">\langle x,x\rangle \in \mathbb{R}</span>.</li>
+<li>In many applications, <span class="math inline">F</span> is <span class="math inline">\mathbb{R}</span>, and conjugate symmetry reduces to symmetry.</li>
+<li>Every inner product space induces a norm, called its <em>canonical norm</em>: <span class="math display">\|x\|={\sqrt {\langle x,x\rangle }}</span></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math inline">p</span>-norm (or <span class="math inline">L_p</span>-norm) is defined over a vector space as: <span class="math display">
+\| x \| = \sqrt[p]{\sum_{i=1}^n x_i^p}
+</span></p>
+<p>The distance induced by the <span class="math inline">p</span>-norm is also known as the Minkowski distance of order <span class="math inline">p</span>.</p>
+</div></div><section id="sec-euc_manifold" class="level3">
+<h3 class="anchored" data-anchor-id="sec-euc_manifold">Euclidean space</h3>
+<p>An <span class="math inline">n</span>-dimensional Euclidean space is a particular metric space. In fact, it is a vector space equipped with an inner product. Vectors in Euclidean space are denoted as <span class="math inline">x \in \mathbb{R}^n</span>.</p>
+<ul>
+<li>The inner product for two vectors <span class="math inline">x</span> and <span class="math inline">y</span> is defined as <span class="math inline">\langle x, y \rangle = x \cdot y</span>, where <span class="math inline">x \cdot y = \sum_{i=1}^n x_i y_i</span>.</li>
+<li>The inner product induces a norm (also known as 2-norm, following the definition of the more general case of <span class="math inline">p</span>-norm) <span class="math inline">\| x \| = \sqrt{x \cdot x}</span>.</li>
+<li>The norm induces a distance metric: <span class="math inline">d_{\textrm{euclidean}}(x,y) = \| x - y \|_2</span>.</li>
+</ul>
+<p>We often assume we are working with a Euclidean metric space <span class="math inline">(\mathbb{R}^n, d_{\textrm{euclidean}})</span> without explicitly stating definitions. However, considering these definitions make it easier to understand the more general case of a Riemannian manifold.</p>
+</section>
+</section>
+<section id="reimannian-manifold" class="level2 page-columns page-full" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="reimannian-manifold"><span class="header-section-number">1.6</span> Reimannian Manifold</h2>
+<p>Textbooks on differential geometry, e.g. <span class="citation" data-cites="andrews2020dg">Andrews (<a href="#ref-andrews2020dg" role="doc-biblioref">2020</a>)</span> would provide a more formal entry point and description for Manifolds. I’d like to point out connections here to Euclidean geometry to build some intuition first. In geometry taught in school, Euclidean geometry is introduced through its <a href="https://en.wikipedia.org/wiki/Euclidean_geometry">axioms</a>. In particular, relaxing the fifth postulate (which states that parallel lines do not meet) leads to ideas of spherical and hyperbolic geometry, which can also be viewed as special cases of Reimannian manifolds that have constant, global <em>curvature</em>.</p>
+<p>Generalizing this, we can consider Riemannian manifolds that can have local curvature. This local curvature is allowed to vary smoothly from one position to the next along the manifold. The local region around each position can be treated as a Euclidean space (we’ll introduce the notion of tangent space for this). We can choose a coordinate system locally to account for the local curvature, and then use formal machinery from Euclidean spaces there.</p>
+<p>However, as we move along manifold, we’d like to modify the co-ordinate system itself to account for the local curvature. Because we are working with a smoothly varying curvature, we can do this using smooth transformations of the co-ordinate system - for which we use tools from calculus.</p>
+<section id="jacobians-and-coordinate-transformations" class="level3">
+<h3 class="anchored" data-anchor-id="jacobians-and-coordinate-transformations">Jacobians and coordinate transformations</h3>
+</section>
+<section id="notation" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="notation">Notation</h3>
+<p>A Riemannian manifold is a tuple <span class="math inline">(M,g)</span> where <span class="math inline">M</span> is a set of points and <span class="math inline">g</span> refers to inner products on vector spaces that we define at each point <span class="math inline">p \in M</span>. Vectors that are tangent to the point <span class="math inline">p</span> make up the tangent space denoted by <span class="math inline">T_{p} M</span>.</p>
+<p>Let point <span class="math inline">p</span> and a local co-ordinate system denoted as <span class="math inline">(x^1,...,x^n)</span></p>
+<p>The set where we define each object as a differential operator <span class="math inline">\mathbf{A} = (A^1\frac{\partial}{\partial x^1},...,A^n\frac{\partial}{\partial x^n})</span>, s.t. <span class="math inline">A^i \in \mathbb{R}</span>. Such a set satisfies definition of a vector space. Moreover, each object is tangent to the manifold because of the partial derivatives. Thus, we now have a way to specify objects belonging to the tangent space <span class="math inline">T_{p} M</span>.</p>
+<p>Consider the change of co-ordinates from <span class="math inline">(x^1,...,x^n)</span> to <span class="math inline">(y^1,...,y^n)</span>, where <span class="math inline">y^i = f^i(x^1,...,x^n)</span>. The Jacobian matrix is defined as <span class="math inline">J_{ij} = \frac{\partial y^i}{\partial x^j}</span>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>The differential operators actually define a <em>vector field</em>; each vector field is a vector space on itself.</p>
+</div></div><p>We denote the inner product at <span class="math inline">p \in M</span> as the map: <span class="math inline">g_{p}: T_{p} M \times T_{p} M \rightarrow \mathbb{R}</span>.</p>
+<p>For two vectors <span class="math inline">\mathbf{A}</span> and <span class="math inline">\mathbf{B}</span> in <span class="math inline">T_{p} M</span>, <span class="math inline">\langle \mathbf{A}, \mathbf{B} \rangle _{g_{p}}</span>, the inner product</p>
+<p>Through the distance metric induced by the canonical norm, it is easy to work out that Euclidean space is a special case of a Reimannian Manifold where g_{p} is an identity matrix.</p>
+</section>
+<section id="local" class="level3">
+<h3 class="anchored" data-anchor-id="local">Local</h3>
+<p>Recall that an inner product induces a norm, and the norm induces a distance metric. Since the inner product is locally defined at each point, we can think of the distance metric as being defined at each point. Using this local notion of distance, we can calculate distances between any two points on the manifold through integration. This we have a set of points <span class="math inline">M</span>, where we can calculate distances between any two points</p>
+<p>Note the similarity to definition of a metric space, <a href="#sec-metricspace">Section&nbsp;1.1</a>.</p>
+<p>Note that the metric tensor is an inner product on the tangent space <span class="math inline">T_{p}M</span>. Moreover, the tangent space is a vector space. Recall that any inner product induces a norm, which in turm induces a distance metric. Thus, there is notion of a distance metric for each point on the manifold (and the reason why <span class="math inline">g_p</span> is called a metric tensor).</p>
+<blockquote class="blockquote">
+<p>Note: For the Euclidean manifold, the metric tensor is the identity matrix.</p>
+</blockquote>
+</section>
+</section>
+<section id="heirarchy-of-geometric-transformations" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="heirarchy-of-geometric-transformations"><span class="header-section-number">1.7</span> Heirarchy of geometric transformations</h2>
+<ul>
+<li>Diffeomorphic: Preserves angles, distances, and shape</li>
+<li>Isometric: Preserves angles and distances</li>
+<li>Conformal: Preserves angles</li>
+</ul>
+</section>
+</section>
+<section id="dimensionality-reduction" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Dimensionality reduction</h1>
+<p>Autoencoders have been used for nonlinear dimensionality reduction, manifold learning, and clustering <span class="citation" data-cites="tschannen2018recent">Tschannen, Bachem, and Lucic (<a href="#ref-tschannen2018recent" role="doc-biblioref">2018</a>)</span>. They have been adapted to learn geometry preserving representations, e.g. <span class="citation" data-cites="yonghyeon2021regularized">Yonghyeon et al. (<a href="#ref-yonghyeon2021regularized" role="doc-biblioref">2021</a>)</span>, <span class="citation" data-cites="peterfreund2020local">Peterfreund et al. (<a href="#ref-peterfreund2020local" role="doc-biblioref">2020</a>)</span>.</p>
+<p>Measuring distortion: - <span class="citation" data-cites="mcqueen2016nearly">McQueen, Meila, and Joncas (<a href="#ref-mcqueen2016nearly" role="doc-biblioref">2016</a>)</span></p>
+<section id="measuring-distortion-for-scrna-seq" class="level3">
+<h3 class="anchored" data-anchor-id="measuring-distortion-for-scrna-seq">Measuring distortion for scRNA-seq</h3>
+<section id="structure-of-the-data-matters" class="level4">
+<h4 class="anchored" data-anchor-id="structure-of-the-data-matters">Structure of the data matters</h4>
+</section>
+<section id="local-similarity" class="level4">
+<h4 class="anchored" data-anchor-id="local-similarity">Local similarity</h4>
+<p>KNN-based measures; pick a neighborhood, and quantify overlap of neighborhood sets in reference space and representation.</p>
+</section>
+<section id="global-similarity" class="level4">
+<h4 class="anchored" data-anchor-id="global-similarity">Global similarity</h4>
+<p>Clustering based approaches. Cluster data in reference and representation spaces, quantify overlap of clusters across the two spaces. Can use measures like ARI, NMI, PSI (point set index, <span class="citation" data-cites="rezaei2016set">Rezaei and Fränti (<a href="#ref-rezaei2016set" role="doc-biblioref">2016</a>)</span>).</p>
+</section>
+</section>
+<section id="sec-highdim-curse" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-highdim-curse"><span class="header-section-number">2.1</span> Curse of high dimensionality</h2>
+<p>Intuition for properties of data in 2d / 3d space don’t carry over to high dimensional spaces.</p>
+<ol type="1">
+<li>Most of the volume is at the surface of the hypersphere in high D</li>
+<li>This is a consequence of the phenomena of “concentration of measure”</li>
+</ol>
+<p>Further reading: <span class="citation" data-cites="aggarwal2001surprising">Aggarwal, Hinneburg, and Keim (<a href="#ref-aggarwal2001surprising" role="doc-biblioref">2001</a>)</span>, Chapter 1 of <span class="citation" data-cites="lee2007nonlinear">Lee and Verleysen (<a href="#ref-lee2007nonlinear" role="doc-biblioref">2007</a>)</span>.</p>
+</section>
+<section id="manifold-assumption" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="manifold-assumption"><span class="header-section-number">2.2</span> Manifold assumption</h2>
+<blockquote class="blockquote">
+<p>Many methods attempt to use point samples in high dimensional space to parametrize a low dimensional manifold.</p>
+</blockquote>
+<p>Paraphrasing <span class="citation" data-cites="ganea2019non">Ganea (<a href="#ref-ganea2019non" role="doc-biblioref">2019</a>)</span>, we assume that data lies on a manifold of much smaller dimension (latent) than the ambient dimension (measured). This enables learning and generalization to unseen data points. We further assume that it is a metric space <span class="math inline">(Y, d_Y)</span> and has a smooth differentiable structure that allows learning via optimization.</p>
+<p>Thus we are interested in Riemannian manifolds of intrinsic dimension <span class="math inline">d \leq n</span>. The hope is we can achieve this by learning an a mapping function <span class="math inline">f : X \rightarrow Y</span> from the input high dimensional data space to the low-dimensional representation space.</p>
+</section>
+<section id="dimensionality-reduction-1" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="dimensionality-reduction-1"><span class="header-section-number">2.3</span> Dimensionality reduction</h2>
+<p>These set of <a href="https://drewwilimitis.github.io/Manifold-Learning/">notes</a> contain python implementation of common methods.</p>
+<ul>
+<li>Many methods to reduce dimensionality in a way that preserves pair-wise distances / similarities</li>
+<li>MDS is a linear method</li>
+<li>Isomap preserves geodesic distances</li>
+<li>Diffusion maps consider a notion of reachability of distant points by constructing a diffusion process</li>
+<li>Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods</li>
+</ul>
+<p>Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. E.g. see Johnson-Lindenstrauss transforms referred to in this <a href="https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html">blog post</a> demonstrating applications to transformers.</p>
+<p>The proof in <span class="citation" data-cites="dasgupta2003elementary">Dasgupta and Gupta (<a href="#ref-dasgupta2003elementary" role="doc-biblioref">2003</a>)</span> for the Johnson Lindenstrauss lemma seems accessible.</p>
+<p>Some references from <a href="https://twitter.com/lpachter/status/1431325969411821572?s=21&amp;t=5TsIwpYk5rwp--JHbq_RwA">this twitter thread</a></p>
+<p><a href="https://www.cs.toronto.edu/~hinton/absps/nca.pdf">Nearest component analysis</a></p>
+<p>https://ieeexplore.ieee.org/abstract/document/1661543 - Diffusion maps and compression - Diffusion maps and coarse-graining: a unified framework for dimensionality reduction, graph partitioning, and data set parameterization</p>
+<p><a href="https://icml.cc/2011/papers/551_icmlpaper.pdf">Sparse random projections</a></p>
+</section>
+</section>
+<section id="evaluating-distortion" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Evaluating distortion</h1>
+<section id="using-jaccard-similarity" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="using-jaccard-similarity"><span class="header-section-number">3.1</span> Using Jaccard similarity</h2>
+<p>Consider representations of point <span class="math inline">p</span> embedded in two metric spaces $(X, d_{X}) and in <span class="math inline">(Y, d_{Y})</span>. We denote the k-nearest neighbors of <span class="math inline">p</span> in the two metric spaces as <span class="math inline">K_{X}(p)</span> and <span class="math inline">K_{Y}(p)</span>. The Jaccard similarity between the neighborhood sets is defined as: <span class="math display">
+J_{XY}(p) = \frac{|K_{X}(p) \cap K_{Y}(p)|}{|K_{X}(p) \cup K_{Y}(p)|}
+</span></p>
+<p>Such a quantification was recently proposed in the context of scRNA-seq data by <span class="citation" data-cites="cooley2019novel">Cooley et al. (<a href="#ref-cooley2019novel" role="doc-biblioref">2019</a>)</span>.</p>
+</section>
+</section>
+<section id="isometry-in-autoencoder-representations" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Isometry in autoencoder representations</h1>
+<p>Relative representations: https://arxiv.org/pdf/2209.15430.pdf</p>
+</section>
+<section id="cell-types-and-manifolds" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Cell types and manifolds</h1>
+<ul>
+<li>We assume that cellular identity and diversity that we would like to interpret can be captured by the position of cells on a low-dimensional manifold.</li>
+<li>Further, we assume that the (high dimensional) feature set we want to measure (e.g.&nbsp;genome-wide mRNA abundance) is explained well by some stochastic generative process.</li>
+<li>Such a generative process takes co-ordinates along a low dimensional manifold as input, and produces the feature values one attempts to measure experimentally.</li>
+<li>The measurement procedure introduces undesirable noise in these feature values.</li>
+<li>Our hope is that we have:
+<ol type="i">
+<li>a well-understood noise model with its own parameters to explain variability in the observed values</li>
+<li>a way to learn the manifold from the structure of the data (cells x genes matrix)</li>
+<li>a metric on the manifold that enables analyses of cellular homogeneity and diversity</li>
+</ol></li>
+</ul>
+<p>Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in <span class="citation" data-cites="skinnider2019evaluating">Skinnider, Squair, and Foster (<a href="#ref-skinnider2019evaluating" role="doc-biblioref">2019</a>)</span>.</p>
+</section>
+<section id="noise-models" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Noise models</h1>
+</section>
+<section id="similarities-and-distances" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Similarities and distances</h1>
+<p><span class="citation" data-cites="ganea2019non">(see <a href="#ref-ganea2019non" role="doc-biblioref">Ganea 2019</a> for a nice exposition)</span></p>
+</section>
+<section id="diffusion-maps" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Diffusion maps</h1>
+<p>How to define a metric such that overall structure of the data is preserved better in lower dimensional?</p>
+<p>In high dimensional space, a small amount of noise per dimension can adds up very quickly, and distances are not as reliable. How can we still preserve topology of data?</p>
+<p>Diffusion maps are designed to achieve exactly that<span class="citation" data-cites="coifman2005geometric de2008introduction">(<a href="#ref-coifman2005geometric" role="doc-biblioref">Coifman et al. 2005</a>; <a href="#ref-de2008introduction" role="doc-biblioref">De la Porte et al. 2008</a>)</span>. “PAGA” <span class="citation" data-cites="wolf2019paga">(<a href="#ref-wolf2019paga" role="doc-biblioref">Wolf et al. 2019</a>)</span> interprets diffusion maps in the context of single-cell RNA-sequencing data.</p>
+<p><span class="math display">
+P = K^{-1}D
+</span></p>
+</section>
+<section id="unresolved-issues" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Unresolved issues</h1>
+<ul>
+<li>Equivalence of metrics?</li>
+<li>Bregman divergence?</li>
+</ul>
+</section>
+<section id="further-reading" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Further reading</h1>
+<p><span class="citation" data-cites="suarez2021tutorial">Suárez, Garcı́a, and Herrera (<a href="#ref-suarez2021tutorial" role="doc-biblioref">2021</a>)</span> survey techniques for distance metric learning towards improving classifier performance.</p>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-aggarwal2001surprising" class="csl-entry" role="listitem">
+Aggarwal, Charu C, Alexander Hinneburg, and Daniel A Keim. 2001. <span>“On the Surprising Behavior of Distance Metrics in High Dimensional Space.”</span> In <em>Database Theory—ICDT 2001: 8th International Conference London, UK, January 4–6, 2001 Proceedings 8</em>, 420–34. Springer.
+</div>
+<div id="ref-andrews2020dg" class="csl-entry" role="listitem">
+Andrews, Ben. 2020. <span>“Lectures on Differential Geometry.”</span> Australian National University. <a href="https://maths-people.anu.edu.au/~andrews/DG/">https://maths-people.anu.edu.au/~andrews/DG/</a>.
+</div>
+<div id="ref-coifman2005geometric" class="csl-entry" role="listitem">
+Coifman, Ronald R, Stephane Lafon, Ann B Lee, Mauro Maggioni, Boaz Nadler, Frederick Warner, and Steven W Zucker. 2005. <span>“Geometric Diffusions as a Tool for Harmonic Analysis and Structure Definition of Data: Diffusion Maps.”</span> <em>Proceedings of the National Academy of Sciences</em> 102 (21): 7426–31.
+</div>
+<div id="ref-cooley2019novel" class="csl-entry" role="listitem">
+Cooley, Shamus M, Timothy Hamilton, Samuel D Aragones, J Christian J Ray, and Eric J Deeds. 2019. <span>“A Novel Metric Reveals Previously Unrecognized Distortion in Dimensionality Reduction of scRNA-Seq Data.”</span> <em>BioRxiv</em>, 689851.
+</div>
+<div id="ref-dasgupta2003elementary" class="csl-entry" role="listitem">
+Dasgupta, Sanjoy, and Anupam Gupta. 2003. <span>“An Elementary Proof of a Theorem of Johnson and Lindenstrauss.”</span> <em>Random Structures &amp; Algorithms</em> 22 (1): 60–65.
+</div>
+<div id="ref-de2008introduction" class="csl-entry" role="listitem">
+De la Porte, J, BM Herbst, W Hereman, and SJ Van Der Walt. 2008. <span>“An Introduction to Diffusion Maps.”</span> In <em>Proceedings of the 19th Symposium of the Pattern Recognition Association of South Africa (PRASA 2008), Cape Town, South Africa</em>, 15–25.
+</div>
+<div id="ref-ganea2019non" class="csl-entry" role="listitem">
+Ganea, Octavian-Eugen. 2019. <span>“Non-Euclidean Neural Representation Learning of Words, Entities and Hierarchies.”</span> PhD thesis, ETH Zurich.
+</div>
+<div id="ref-lee2007nonlinear" class="csl-entry" role="listitem">
+Lee, John A, and Michel Verleysen. 2007. <em>Nonlinear Dimensionality Reduction</em>. Vol. 1. Springer.
+</div>
+<div id="ref-mcqueen2016nearly" class="csl-entry" role="listitem">
+McQueen, James, Marina Meila, and Dominique Joncas. 2016. <span>“Nearly Isometric Embedding by Relaxation.”</span> <em>Advances in Neural Information Processing Systems</em> 29.
+</div>
+<div id="ref-peterfreund2020local" class="csl-entry" role="listitem">
+Peterfreund, Erez, Ofir Lindenbaum, Felix Dietrich, Tom Bertalan, Matan Gavish, Ioannis G Kevrekidis, and Ronald R Coifman. 2020. <span>“Local Conformal Autoencoder for Standardized Data Coordinates.”</span> <em>Proceedings of the National Academy of Sciences</em> 117 (49): 30918–27.
+</div>
+<div id="ref-rezaei2016set" class="csl-entry" role="listitem">
+Rezaei, Mohammad, and Pasi Fränti. 2016. <span>“Set Matching Measures for External Cluster Validity.”</span> <em>IEEE Transactions on Knowledge and Data Engineering</em> 28 (8): 2173–86.
+</div>
+<div id="ref-skinnider2019evaluating" class="csl-entry" role="listitem">
+Skinnider, Michael A, Jordan W Squair, and Leonard J Foster. 2019. <span>“Evaluating Measures of Association for Single-Cell Transcriptomics.”</span> <em>Nature Methods</em> 16 (5): 381–86.
+</div>
+<div id="ref-suarez2021tutorial" class="csl-entry" role="listitem">
+Suárez, Juan Luis, Salvador Garcı́a, and Francisco Herrera. 2021. <span>“A Tutorial on Distance Metric Learning: Mathematical Foundations, Algorithms, Experimental Analysis, Prospects and Challenges.”</span> <em>Neurocomputing</em> 425: 300–322.
+</div>
+<div id="ref-tschannen2018recent" class="csl-entry" role="listitem">
+Tschannen, Michael, Olivier Bachem, and Mario Lucic. 2018. <span>“Recent Advances in Autoencoder-Based Representation Learning.”</span> <em>arXiv Preprint arXiv:1812.05069</em>.
+</div>
+<div id="ref-wolf2019paga" class="csl-entry" role="listitem">
+Wolf, F Alexander, Fiona K Hamey, Mireya Plass, Jordi Solana, Joakim S Dahlin, Berthold Göttgens, Nikolaus Rajewsky, Lukas Simon, and Fabian J Theis. 2019. <span>“PAGA: Graph Abstraction Reconciles Clustering with Trajectory Inference Through a Topology Preserving Map of Single Cells.”</span> <em>Genome Biology</em> 20 (1): 1–9.
+</div>
+<div id="ref-yonghyeon2021regularized" class="csl-entry" role="listitem">
+Yonghyeon, LEE, Sangwoong Yoon, MinJun Son, and Frank C Park. 2021. <span>“Regularized Autoencoders for Isometric Representation Learning.”</span> In <em>International Conference on Learning Representations</em>.
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
