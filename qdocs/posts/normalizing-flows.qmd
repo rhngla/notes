@@ -2,7 +2,7 @@
 title: "Normalizing flows:"
 author: "Rohan Gala"
 date: "2023-04-08"
-categories: [math]
+categories: [math, ml]
 image: "image.jpg"
 toc: true
 number-sections: true

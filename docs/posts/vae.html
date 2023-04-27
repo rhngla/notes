@@ -176,9 +176,14 @@ div.csl-indent {
 
 
 
-<p>These notes provide an explanation for variational autoencoders</p>
-<p>There is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 1) deterministic approximations, which include maximum likelihood and variational methods and 2) Monte Carlo methods.</p>
-<p>I liked <a href="https://mbernste.github.io/posts/elbo/">Matthew Bernstein’s</a> explanation, and here is my version based on it.</p>
+<p>There is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 1. deterministic approximations, which include maximum likelihood and variational methods 2. Monte Carlo methods</p>
+<p>Some resources I used to compile this post:</p>
+<ul>
+<li><a href="https://mbernste.github.io/posts/vae/">Matthew Bernstein’s blog</a></li>
+<li><a href="https://yugeten.github.io/posts/2020/06/elbo/">Yuge Shi’s blog</a></li>
+<li><a href="http://akosiorek.github.io/what_is_wrong_with_vaes/">Adam Kosiorek’s blog</a></li>
+<li><span class="citation" data-cites="hoffman2016elbo">Hoffman and Johnson (<a href="#ref-hoffman2016elbo" role="doc-biblioref">2016</a>)</span></li>
+</ul>
 <p>Notation:</p>
 <p>Latent variable models:</p>
 <p>We view individual data points as particular values <span class="math inline">x</span> of random variable <span class="math inline">X</span> drawn from it’s distribution <span class="math inline">p_X</span>.</p>
@@ -199,13 +204,15 @@ p(x) &amp;= \int p_{\theta}(x|z) p(z) \frac{q(z)}{q(z)} dz \\
 </span></p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>Notes appear in the margin</p>
+<p>This appears in the margin</p>
 </div></div><section id="sec-named_sec" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Named section</h1>
 <section id="references" class="level3">
 <h3 class="anchored" data-anchor-id="references">References</h3>
-<div id="refs" role="list">
-
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-hoffman2016elbo" class="csl-entry" role="listitem">
+Hoffman, Matthew D, and Matthew J Johnson. 2016. <span>“Elbo Surgery: Yet Another Way to Carve up the Variational Evidence Lower Bound.”</span> In <em>Workshop in Advances in Approximate Bayesian Inference, NIPS</em>. Vol. 1. 2.
+</div>
 </div>
 
 

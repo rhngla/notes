@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Rohan Gala">
+<meta name="dcterms.date" content="2023-04-27">
 
-<title>notes - Notes</title>
+<title>notes - Notation for conditional distributions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,27 +22,44 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -60,40 +79,25 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -103,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">notes</span>
     </a>
   </div>
@@ -114,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
+    <a class="nav-link" href="../about.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -132,204 +136,71 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Notes</h1>
+    <div class="quarto-title column-body">
+      <h1 class="title">Notation for conditional distributions</h1>
                       </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Rohan Gala </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 27, 2023</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="math">math <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ml">ml <span class="quarto-category-count">(1)</span></div><div class="category" data-category="news">news <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#references" id="toc-references" class="nav-link active" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
+<p>Continuous probability distributions are commonly specified through the probability density function <span class="math inline">p(x)</span>. A distribution with parameters <span class="math inline">\theta</span> can be viewed as a conditional distribution <span class="math inline">p(x|\theta)</span>. In particular, the following notation is interchangeably used in the literature: <span class="math display">p_\theta(x) \equiv p(x;\theta) \equiv p(x|\theta)</span></p>
+<p>Any subtlety in terms of whether the notation choice depends on whether <span class="math inline">\theta</span> is a parameter (i.e.&nbsp;a constant without a prior distribution associated with it), or is a random variable is up to the author to clarify and use consistently. See community discussions <span class="citation" data-cites="faisse2014notation">Fraïssé (<a href="#ref-faisse2014notation" role="doc-biblioref">2017</a>)</span>, <span class="citation" data-cites="learner2011notation">Learner (<a href="#ref-learner2011notation" role="doc-biblioref">2011</a>)</span>, and <span class="citation" data-cites="bartlett2015paramrv">Bartlett (<a href="#ref-bartlett2015paramrv" role="doc-biblioref">2015</a>)</span>.</p>
+<p>At times, authors also drop the dependence on <span class="math inline">\theta</span> and simply write <span class="math inline">p_{\theta}(x)</span> as <span class="math inline">p(x)</span>. This can be a source of a lot of confusion, and both authors and readers should be careful to prevent misundertanding.</p>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-bartlett2015paramrv" class="csl-entry" role="listitem">
+Bartlett, Jonathan. 2015. <span>“Bayesian Inference: Are Parameters Fixed or Random?”</span> 2015. <a href="https://thestatsgeek.com/2015/04/22/bayesian-inference-are-parameters-fixed-or-random/">https://thestatsgeek.com/2015/04/22/bayesian-inference-are-parameters-fixed-or-random/</a>.
+</div>
+<div id="ref-faisse2014notation" class="csl-entry" role="listitem">
+Fraïssé. 2017. <span>“What Does a Semicolon Denote in the Context of Probability and Statistics?”</span> 2017. <a href="https://math.stackexchange.com/questions/2559085/what-does-a-semicolon-denote-in-the-context-of-probability-and-statistics">https://math.stackexchange.com/questions/2559085/what-does-a-semicolon-denote-in-the-context-of-probability-and-statistics</a>.
+</div>
+<div id="ref-learner2011notation" class="csl-entry" role="listitem">
+Learner. 2011. <span>“What Is the Difference Between the Vertical Bar and Semi-Colon Notations?”</span> 2011. <a href="https://stats.stackexchange.com/questions/10234/what-is-the-difference-between-the-vertical-bar-and-semi-colon-notations">https://stats.stackexchange.com/questions/10234/what-is-the-difference-between-the-vertical-bar-and-semi-colon-notations</a>.
+</div>
+</div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1682618816233" data-listing-reading-time-sort="2">
-<div class="thumbnail">
-<p><a href="./posts/vae.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./posts/vae.html">
-<h3 class="no-anchor listing-title">
-Variational Autoencoders
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-There is a class of inference problems for which…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/vae.html">
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1682578800000" data-listing-file-modified-sort="1682618792058" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./posts/notation_dist.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./posts/notation_dist.html">
-<h3 class="no-anchor listing-title">
-Notation for conditional distributions
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-Continuous probability distributions are commonly specified through the probability density function <span class="math inline">p(x)</span>. A distribution with parameters <span class="math inline">\theta</span> can be…<span class="math inline"></span><span class="math display"></span>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/notation_dist.html">
-<div class="listing-date">
-Apr 27, 2023
-</div>
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="math,ml" data-listing-date-sort="1680937200000" data-listing-file-modified-sort="1682547266463" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
-<div class="thumbnail">
-<p><a href="./posts/normalizing-flows.html"> <img src="./posts/image.jpg" class="thumbnail-image"> </a></p>
-</div>
-<div class="body">
-<a href="./posts/normalizing-flows.html">
-<h3 class="no-anchor listing-title">
-Normalizing flows:
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('math'); return false;">
-math
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('ml'); return false;">
-ml
-</div>
-</div>
-<a href="./posts/normalizing-flows.html">
-<div class="listing-description">
-Consider differentiable functions <span class="math inline">f</span> and <span class="math inline">g</span>, where <span class="math inline">g</span> is assumed to be one-to-one (injective) on the interval <span class="math inline">[a,b]</span>. If we consider the change of variable <span class="math inline">x~\rightarrow~g(x)</span>, the following relationship…<span id="eq-change-of-one-var"><span class="math display"></span></span>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/normalizing-flows.html">
-<div class="listing-date">
-Apr 8, 2023
-</div>
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="math" data-listing-date-sort="1680850800000" data-listing-file-modified-sort="1682547756669" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12">
-<div class="thumbnail">
-<p><a href="./posts/spaces.html"> <img src="./posts/image.jpg" class="thumbnail-image"> </a></p>
-</div>
-<div class="body">
-<a href="./posts/spaces.html">
-<h3 class="no-anchor listing-title">
-Concepts in dimensionality reduction
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('math'); return false;">
-math
-</div>
-</div>
-<a href="./posts/spaces.html">
-<div class="listing-description">
-We’ll start with some definitions - the goal is to situate ourselves with:
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/spaces.html">
-<div class="listing-date">
-Apr 7, 2023
-</div>
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="news" data-listing-date-sort="1680591600000" data-listing-file-modified-sort="1680908489600" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./posts/welcome/index.html"> <p class="card-img-top"><img src="posts/welcome/thumbnail.jpg"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./posts/welcome/index.html">
-<h3 class="no-anchor listing-title">
-Welcome To My Blog
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('news'); return false;">
-news
-</div>
-</div>
-<a href="./posts/welcome/index.html">
-<div class="listing-description">
-This is the first post in a Quarto blog. Welcome!
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/welcome/index.html">
-<div class="listing-date">
-Apr 4, 2023
-</div>
-<div class="listing-author">
-Tristan O’Malley
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

@@ -5,7 +5,7 @@ toc: true
 number-sections: true
 number-depth: 2
 highlight-style: pygments
-bibliography: vae.bib
+bibliography: ../refs.bib
 
 format:
   html:
@@ -17,12 +17,16 @@ editor:
     render-on-save: true
 ---
 
-These notes provide an explanation for variational autoencoders
+There is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 
+1. deterministic approximations, which include maximum likelihood and variational methods
+2. Monte Carlo methods
 
-There is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 1) deterministic approximations, which include maximum likelihood and variational methods and 2) Monte Carlo methods.
+Some resources I used to compile this post:
 
-
-I liked [Matthew Bernstein's](https://mbernste.github.io/posts/elbo/) explanation, and here is my version based on it.
+ - [Matthew Bernstein's blog](https://mbernste.github.io/posts/vae/)
+ - [Yuge Shi's blog](https://yugeten.github.io/posts/2020/06/elbo/)
+ - [Adam Kosiorek's blog](http://akosiorek.github.io/what_is_wrong_with_vaes/)
+ - @hoffman2016elbo
 
 Notation:
 
@@ -52,23 +56,11 @@ p(x) &= \int p_{\theta}(x|z) p(z) \frac{q(z)}{q(z)} dz \\
 \end{aligned}
 $$
 
-
-
-
-
-
-
-
-
-
-
 ::: {.column-margin}
-Notes appear in the margin
+This appears in the margin
 :::
 
 # Named section {#sec-named_sec}
-
-
 
 ### References
 

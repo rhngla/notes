@@ -1,0 +1,31 @@
+---
+title: "Notation for conditional distributions"
+author: Rohan Gala
+date: "2023-04-27"
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: pygments
+bibliography: ../refs.bib
+
+format:
+  html:
+    theme: journal
+    code-fold: true
+    html-math-method: katex
+
+editor:
+    render-on-save: true
+---
+
+Continuous probability distributions are commonly specified through the probability density function $p(x)$. A distribution with parameters $\theta$ can be viewed as a conditional distribution $p(x|\theta)$. In particular, the following notation is interchangeably used in the literature:
+$$p_\theta(x) \equiv p(x;\theta) \equiv p(x|\theta)$$
+
+Any subtlety in terms of whether the notation choice depends on whether $\theta$ is a parameter (i.e. a constant without a prior distribution associated with it), or is a random variable is up to the author to clarify and use consistently. See community discussions @faisse2014notation, @learner2011notation, and @bartlett2015paramrv.
+
+At times, authors also drop the dependence on $\theta$ and simply write $p_{\theta}(x)$ as $p(x)$. This can be a source of a lot of confusion, and both authors and readers should be careful to prevent misundertanding.
+
+### References
+
+::: {#refs}
+:::

@@ -1,5 +1,5 @@
 ---
-title: "Connecting the dots"
+title: "Concepts in dimensionality reduction"
 author: "Rohan Gala"
 date: "2023-04-07"
 categories: [math]
@@ -13,7 +13,6 @@ bibliography: "../refs.bib"
 code-fold: true
 ---
 
-A primer on fundamental concepts relevant to study distortion in the context of dimensionality reduction.
 
 We'll start with some definitions - the goal is to situate ourselves with:
  
@@ -21,9 +20,7 @@ We'll start with some definitions - the goal is to situate ourselves with:
  - `spaces` they live in
  - `rules` that govern relationships and operations between them.
  
- Ultimately we want to construct analysis tools i.e. operations to manipulate such objects constructed from data, and discover relationships without violating (or perhaps  knowingly violating) definitions/ underlying assumptions.
-
-Further, through these definitions we will become familiar with hierarchies of such objects, spaces, and rules. Some definitions are more abstract, and some are special cases with additional rules. I find that being aware of where in the abstraction hierarchy we operate in is helpful to avoid getting overwhelmed by complexity.
+ Ultimately we want to construct analysis tools i.e. operations to manipulate such objects constructed from data, and discover relationships without violating (or perhaps  knowingly violating) definitions/ underlying assumptions. Further, through these definitions we will become familiar with hierarchies of such objects, spaces, and rules. Some definitions are more abstract, and some are special cases with additional rules. Being aware of where in the abstraction hierarchy we choose to operate is helpful to manage complexity.
 
 # Fundamentals
 
@@ -142,23 +139,21 @@ The distance induced by the $p$-norm is also known as the Minkowski distance of 
 An $n$-dimensional Euclidean space is a particular metric space. In fact, it is a vector space equipped with an inner product. Vectors in Euclidean space are denoted as $x \in \mathbb{R}^n$. 
 
  - The inner product for two vectors $x$ and $y$ is defined as $\langle x, y \rangle = x \cdot y$, where $x \cdot y = \sum_{i=1}^n x_i y_i$.
-
  - The inner product induces a norm (also known as 2-norm, following the definition of the more general case of $p$-norm) $\| x \| = \sqrt{x \cdot x}$.
-
  - The norm induces a distance metric: $d_{\textrm{euclidean}}(x,y) = \| x - y \|_2$. 
 
 We often assume we are working with a Euclidean metric space $(\mathbb{R}^n, d_{\textrm{euclidean}})$ without explicitly stating definitions. However, considering these definitions make it easier to understand the more general case of a Riemannian manifold.
 
 ## Reimannian Manifold
 
-Textbooks on differential geometry, e.g. @andrews2020dg would provide a more formal entry point and description for Manifolds. I'd like to point out connections hereto Euclidean geometry to build some intuition first. In geometry taught in school, Euclidean geometry is introduced through its [axioms](https://en.wikipedia.org/wiki/Euclidean_geometry). In particular, relaxing the fifth postulate (which states that parallel lines do not meet) leads to ideas of spherical and hyperbolic geometry, which can also be viewed as special cases of Reimannian manifolds with constant, global _curvature_.
+Textbooks on differential geometry, e.g. @andrews2020dg would provide a more formal entry point and description for Manifolds. I'd like to point out connections here to Euclidean geometry to build some intuition first. In geometry taught in school, Euclidean geometry is introduced through its [axioms](https://en.wikipedia.org/wiki/Euclidean_geometry). In particular, relaxing the fifth postulate (which states that parallel lines do not meet) leads to ideas of spherical and hyperbolic geometry, which can also be viewed as special cases of Reimannian manifolds that have constant, global _curvature_.
 
 Generalizing this, we can consider Riemannian manifolds that can have local curvature. This local curvature is allowed to vary smoothly from one position to the next along the manifold. The local region around each position can be treated as a Euclidean space (we'll introduce the notion of tangent space for this). We can choose a coordinate system locally to account for the local curvature, and then use formal machinery from Euclidean spaces there.
 
 However, as we move along manifold, we'd like to modify the co-ordinate system itself to account for the local curvature. Because we are working with a smoothly varying curvature, we can do this using smooth transformations of the co-ordinate system - for which we use tools from calculus.
 
 ### Jacobians and coordinate transformations
-Let 
+
 
 
 ### Notation
@@ -201,10 +196,6 @@ Note that the metric tensor is an inner product on the tangent space $T_{p}M$. M
 # Dimensionality reduction
 
 Autoencoders have been used for nonlinear dimensionality reduction, manifold learning, and clustering @tschannen2018recent. They have been adapted to learn geometry preserving representations, e.g. @yonghyeon2021regularized, @peterfreund2020local. 
-
-Some definitions: 
- - Isometric mapping: preserves distances
- - Conformal mapping: of degree 1 preserves angles
 
 Measuring distortion:
  - @mcqueen2016nearly 
@@ -320,39 +311,3 @@ $$
 
 ::: {#refs}
 :::
-
-
-
-
-Let $\mathcal{N}$ be a Riemannian manifold of dimension $n$ with local coordinates $x \in \mathbb{R}^{n}$ and Riemannian metric $H(x) \in R^{n \times n}$ and $\mathcal{M}$ be a Riemannian manifold of dimension m with local coordinates $z$ and Riemannian metric $G(z) \in \mathbb{R}^{m \times m}$. Let $f : \mathcal{N} \rightarrow \mathcal{M}$. Let $J_f(x) := \frac{\partial{f}}{\partial x}|_x \in \mathbb{R}^{m \times n}$. Let $H(x) = I$ and $G(z) = I$
-
-\subsection*{Proposition}
-Consider augmented samples $x_i = x + \epsilon_i$ where $\epsilon_i$ are i.i.d with zero mean and $\mathrm{Var}(\epsilon_i) = \frac{1}{2}\sigma ^2 I$ for small $\sigma$, and $z_i = f(x_i)$. When $\det(J(x)J(x)^T) = c$ for some $c > 0$, $mathbb{E}[\|z_i - z_j\|^2]$ is minimized by $J(x)J(x)^T = c^{\frac{1}{m}}I$, i.e. when $J(x)$ has orthogonal rows.
-
-\subsection*{Proof}
-
-$$z_i = f(x_i)= z + J(x)^T\epsilon_i$$
-
-$e_{ij} = \epsilon_{i} - \epsilon_{j}$ has zero mean and $\mathrm{Var}(e_{ij}) = \sigma ^2 I$
-
-$$
-\begin{aligned}
-\mathbb{E}(\|z_i - z_j\|^2) &= \mathbb{E}[(J(x)^T(\epsilon_i - \epsilon_j))^T (J(x)^T(\epsilon_i - \epsilon_j))] \\
-&= \mathbb{E}[(\epsilon_i - \epsilon_j)^T J(x)J(x)^T(\epsilon_i - \epsilon_j)] \\
-&= \sigma^2 \mathrm{tr}(J(x)J(x)^T) \\
-\end{aligned}
-$$
-
-This problem is equivalent to:
-$$
-\begin{aligned}
-\min \quad &\mathrm{tr}(A) \\
-\mathrm{s.t.} \quad &\det(A) = c
-\end{aligned}
-$$
-
-where $A = J(x)J(x)^T$. Note that $\mathrm{tr}(A) = \sum_i{\lambda_i}$ and $\det(A) = \prod_i{\lambda_i}$. Therefore, by arithmetic mean-geometric mean inequality, $\mathrm{tr}(A)$ is minimized when 
-
-$$
-\lambda_1 = \lambda_2 = ... = \lambda_m
-$$

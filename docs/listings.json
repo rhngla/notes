@@ -3,6 +3,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/vae.html",
+      "/posts/notation_dist.html",
       "/posts/normalizing-flows.html",
       "/posts/spaces.html",
       "/posts/welcome/index.html"
