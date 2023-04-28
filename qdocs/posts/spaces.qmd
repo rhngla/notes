@@ -20,7 +20,7 @@ We'll start with some definitions - the goal is to situate ourselves with:
  - `spaces` they live in
  - `rules` that govern relationships and operations between them.
  
- Ultimately we want to construct analysis tools i.e. operations to manipulate such objects constructed from data, and discover relationships without violating (or perhaps  knowingly violating) definitions/ underlying assumptions. Further, through these definitions we will become familiar with hierarchies of such objects, spaces, and rules. Some definitions are more abstract, and some are special cases with additional rules. Being aware of where in the abstraction hierarchy we choose to operate is helpful to manage complexity.
+ Ultimately we want to construct analysis tools i.e. operations to manipulate such objects constructed from data, and discover relationships without violating definitions and underlying assumptions (or at least doing so knowingly). Further, through these definitions we notice somewhat hierarchical relationships of such objects, spaces, and rules. Some definitions are more abstract, and some are special cases with additional rules. Being aware of where in the abstraction hierarchy we operate is helpful to manage complexity while analyzing data.
 
 # Fundamentals
 
@@ -146,15 +146,21 @@ We often assume we are working with a Euclidean metric space $(\mathbb{R}^n, d_{
 
 ## Reimannian Manifold
 
-Textbooks on differential geometry, e.g. @andrews2020dg would provide a more formal entry point and description for Manifolds. I'd like to point out connections here to Euclidean geometry to build some intuition first. In geometry taught in school, Euclidean geometry is introduced through its [axioms](https://en.wikipedia.org/wiki/Euclidean_geometry). In particular, relaxing the fifth postulate (which states that parallel lines do not meet) leads to ideas of spherical and hyperbolic geometry, which can also be viewed as special cases of Reimannian manifolds that have constant, global _curvature_.
+Textbooks on differential geometry, e.g. @andrews2020dg would provide a more formal entry point and description for Manifolds. I'd like to point out connections here to Euclidean geometry to build some intuition first. In geometry taught in school, Euclidean geometry is introduced through its [axioms](https://en.wikipedia.org/wiki/Euclidean_geometry). In particular, relaxing the fifth postulate (also referred at as the [parallel postulate](https://en.wikipedia.org/wiki/Parallel_postulate)) leads to ideas of spherical and hyperbolic geometry, which can also be viewed as special cases of Reimannian manifolds that have constant, _global curvature_.
 
-Generalizing this, we can consider Riemannian manifolds that can have local curvature. This local curvature is allowed to vary smoothly from one position to the next along the manifold. The local region around each position can be treated as a Euclidean space (we'll introduce the notion of tangent space for this). We can choose a coordinate system locally to account for the local curvature, and then use formal machinery from Euclidean spaces there.
+Riemannian manifolds allow for _local curvature_. This local curvature is allowed to vary smoothly from one position to the next along the manifold. The local region around each position can be treated as a Euclidean space (we'll introduce the notion of tangent space for this). We can choose a coordinate system locally to account for the local curvature, and then keep using intuitions for Euclidean spaces there.
 
 However, as we move along manifold, we'd like to modify the co-ordinate system itself to account for the local curvature. Because we are working with a smoothly varying curvature, we can do this using smooth transformations of the co-ordinate system - for which we use tools from calculus.
 
-### Jacobians and coordinate transformations
+::: {.callout-important collapse="false"}
+Sections below are under construction! 
+:::
 
+### Coordinate transformations
 
+ - Discuss Jacobians
+ - Coordinate transformations in $\mathbb{R}^n$
+ - Invertible transformations (connection to normalizing flows)
 
 ### Notation
 A Riemannian manifold is a tuple $(M,g)$ where $M$ is a set of points and $g$ refers to inner products on vector spaces that we define at each point $p \in M$. Vectors that are tangent to the point $p$ make up the tangent space denoted by $T_{p} M$. 
@@ -164,7 +170,6 @@ Let point $p$ and a local co-ordinate system denoted as $(x^1,...,x^n)$
 The set where we define each object as a differential operator $\mathbf{A} = (A^1\frac{\partial}{\partial x^1},...,A^n\frac{\partial}{\partial x^n})$, s.t. $A^i \in \mathbb{R}$. Such a set satisfies definition of a vector space. Moreover, each object is tangent to the manifold because of the partial derivatives. Thus, we now have a way to specify objects belonging to the tangent space $T_{p} M$.
 
 Consider the change of co-ordinates from $(x^1,...,x^n)$ to $(y^1,...,y^n)$, where $y^i = f^i(x^1,...,x^n)$. The Jacobian matrix is defined as $J_{ij} = \frac{\partial y^i}{\partial x^j}$.
-
 
 
 ::: {.column-margin}
@@ -187,31 +192,23 @@ Note that the metric tensor is an inner product on the tangent space $T_{p}M$. M
 
 > Note: For the Euclidean manifold, the metric tensor is the identity matrix. 
 
+Categorizing geometric transforms:
 
-## Heirarchy of geometric transformations
-  - Diffeomorphic: Preserves angles, distances, and shape
-  - Isometric: Preserves angles and distances
-  - Conformal: Preserves angles
+- Diffeomorphic: Preserves angles, distances, and shape
+- Isometric: Preserves angles and distances
+- Conformal: Preserves angles
 
 # Dimensionality reduction
 
-Autoencoders have been used for nonlinear dimensionality reduction, manifold learning, and clustering @tschannen2018recent. They have been adapted to learn geometry preserving representations, e.g. @yonghyeon2021regularized, @peterfreund2020local. 
+ - Autoencoders have been used for nonlinear dimensionality reduction, manifold learning, and clustering @tschannen2018recent. 
+ - They have been adapted to learn geometry preserving representations, e.g. @yonghyeon2021regularized, @peterfreund2020local. 
 
 Measuring distortion:
  - @mcqueen2016nearly 
-
-
-### Measuring distortion for scRNA-seq
-
-#### Structure of the data matters
-
-#### Local similarity
-
-KNN-based measures; pick a neighborhood, and quantify overlap of neighborhood sets in reference space and representation.
-
-#### Global similarity
-
-Clustering based approaches. Cluster data in reference and representation spaces, quantify overlap of clusters across the two spaces. Can use measures like ARI, NMI, PSI (point set index, @rezaei2016set).
+ - Structure of the data matters
+ - Local similarity
+ - KNN-set-based measures (assuming Euclidian metric locally)
+ - ARI, NMI, PSI (point set index, @rezaei2016set) for global similarity
 
 ## Curse of high dimensionality {#sec-highdim-curse}
 
@@ -226,47 +223,40 @@ Further reading: @aggarwal2001surprising, Chapter 1 of @lee2007nonlinear.
 
 > Many methods attempt to use point samples in high dimensional space to parametrize a low dimensional manifold.
 
-Paraphrasing @ganea2019non, we assume that data lies on a manifold of much smaller dimension (latent) than the ambient dimension (measured). This enables learning and generalization to unseen data points. We further assume that it is a metric space $(Y, d_Y)$ and has a smooth differentiable structure that allows learning via optimization. 
+Paraphrasing a nice introduction in @ganea2019non, we assume that data lies on a manifold of much smaller dimension (latent) than the ambient dimension (measured). This enables learning and generalization to unseen data points. We further assume that it is a metric space $(Y, d_Y)$ and has a smooth differentiable structure that allows learning via optimization. 
 
 Thus we are interested in Riemannian manifolds of intrinsic dimension $d \leq n$. The hope is we can achieve this by learning an a mapping function $f : X \rightarrow Y$ from the input high dimensional data space to the low-dimensional representation space.
 
 ## Dimensionality reduction
 
-These set of [notes](https://drewwilimitis.github.io/Manifold-Learning/) contain python implementation of common methods. 
+These set of [notes by Drew Wilimitis](https://drewwilimitis.github.io/Manifold-Learning/) contain python implementation of common methods. 
+
+Various computational methods have been designed to uncover a lower dimension manifold that preserve some notion of distances and structure of data observed in high dimension.
+
+- MDS: preserve pairwise distances (using some common metric, e.g. Euclidean)
+- Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops, using  some common metric)
+- Diffusion maps: consider a notion of reachability of distant points by constructing a diffusion process [@coifman2005geometric; @de2008introduction]
+- Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods
+- Similarities and distances - see @ganea2019non
+ 
+Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. e.g. [transformer architectures](https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html). 
+
+TODO:
+
+ - Proof in @dasgupta2003elementary for the Johnson Lindenstrauss lemma.
+ - [Nearest component analysis](https://www.cs.toronto.edu/~hinton/absps/nca.pdf)
+ - [Unifying dimensionality reduction, graph partitioning, and data set parameterization](https://ieeexplore.ieee.org/abstract/document/1661543)
+ - [Sparse random projections](https://icml.cc/2011/papers/551_icmlpaper.pdf)
+ - Include references from [this twitter thread](https://twitter.com/lpachter/status/1431325969411821572?s=21&t=5TsIwpYk5rwp--JHbq_RwA)
 
 
- - Many methods to reduce dimensionality in a way that preserves pair-wise distances / similarities
- - MDS is a linear method
- - Isomap preserves geodesic distances
- - Diffusion maps consider a notion of reachability of distant points by constructing a diffusion process
- - Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods
-
-Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. E.g. see Johnson-Lindenstrauss transforms referred to in this [blog post](https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html) demonstrating applications to transformers. 
-
-The proof in @dasgupta2003elementary for the Johnson Lindenstrauss lemma seems accessible. 
-
-Some references from [this twitter thread](https://twitter.com/lpachter/status/1431325969411821572?s=21&t=5TsIwpYk5rwp--JHbq_RwA)
-
-  [Nearest component analysis](https://www.cs.toronto.edu/~hinton/absps/nca.pdf)
-
-https://ieeexplore.ieee.org/abstract/document/1661543 - Diffusion maps and compression - Diffusion maps and coarse-graining: a unified framework for dimensionality reduction, graph partitioning, and data set parameterization
-
-[Sparse random projections](https://icml.cc/2011/papers/551_icmlpaper.pdf)
-
-# Evaluating distortion
-
-## Using Jaccard similarity
+#### Using Jaccard similarity
 
 Consider representations of point $p$ embedded in two metric spaces $(X, d_{X}) and in $(Y, d_{Y})$. We denote the k-nearest neighbors of $p$ in the two metric spaces as $K_{X}(p)$ and $K_{Y}(p)$. The Jaccard similarity between the neighborhood sets is defined as:
 $$
 J_{XY}(p) = \frac{|K_{X}(p) \cap K_{Y}(p)|}{|K_{X}(p) \cup K_{Y}(p)|}
 $$
 
-Such a quantification was recently proposed in the context of scRNA-seq data by @cooley2019novel.
-
-# Isometry in autoencoder representations
-
-Relative representations: https://arxiv.org/pdf/2209.15430.pdf
 
 # Cell types and manifolds
  - We assume that cellular identity and diversity that we would like to interpret can be captured by the position of cells on a low-dimensional manifold.
@@ -278,34 +268,16 @@ Relative representations: https://arxiv.org/pdf/2209.15430.pdf
     ii. a way to learn the manifold from the structure of the data (cells x genes matrix)
     iii. a metric on the manifold that enables analyses of cellular homogeneity and diversity
 
-Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in @skinnider2019evaluating. 
+Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in @skinnider2019evaluating and @cooley2019novel.
 
-# Noise models
+ - Discuss @wolf2019paga, who adapt diffusion maps for scRNA-seq analysis.
 
-# Similarities and distances
-
-[see @ganea2019non for a nice exposition]
-
-# Diffusion maps
-How to define a metric such that overall structure of the data is preserved better in lower dimensional?
-
-In high dimensional space, a small amount of noise per dimension can adds up very quickly, and distances are not as reliable. How can we still preserve topology of data?
-
-Diffusion maps are designed to achieve exactly that[@coifman2005geometric; @de2008introduction].
-"PAGA" [@wolf2019paga] interprets diffusion maps in the context of single-cell RNA-sequencing data. 
-
-$$
-P = K^{-1}D
-$$
-
-# Unresolved issues
-
-  - Equivalence of metrics?
-  - Bregman divergence?
 
 # Further reading
 
-@suarez2021tutorial survey techniques for distance metric learning towards improving classifier performance. 
+- Equivalence of metrics?
+- Bregman divergence?
+- @suarez2021tutorial survey techniques for distance metric learning towards improving classifier performance. 
 
 ### References
 
