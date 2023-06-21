@@ -21,7 +21,7 @@ In my view, the main concepts to be familiar with are:
  - [Attention mechanism, and transformer architecture](#attention-mechanism-and-transformer-architecture)
  - [Multi-task learning](#multi-task-learning)
 
-@raschka2023llm outlines some key papers and developments in the context of large language models, and @weng2018attention provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in the transformer. 
+@raschka2023llm outlines some key papers and developments in the context of large language models, and @weng2018attention provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in @vaswani2017attention. 
 
 ### Generative sequence modeling
 
@@ -31,7 +31,7 @@ Let different words be specific values of $n$ random variables. Then the distrib
 
 $$p(s_1, s_2, ..., s_n) = p(s_1) p(s_2 | s_1) p(s_3 | s_1, s_2) ... p(s_n | s_1, s_2, ..., s_{n-1})$$
 
-It's important to understand that the notion of 'words' is arbitrary for such modeling. Even for language, once can break up words at the character or even byte level (e.g. see [byte pair encoding](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt)). This is a crucial think to keep in mind for the notions of multi-task learning and foundational models. 
+It's important to understand that the notion of 'words' is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level (e.g. see [byte pair encoding](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt)). This is a crucial think to keep in mind for the notions of multi-task learning and foundational models. 
 
 When generating new sequences, we are recursively sampling particular conditional distributions, e.g. $p(s_i | s_1, ... s_{i-1})$ to ultimately look like we are sampling from $p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})$.
 
@@ -55,7 +55,7 @@ y_{i} &= \sum_j{A_{ij}v_j}
 \end{align}
 $$
 
-$K, Q \in \mathbb{R}^{T \times d_\textrm{kq}}$ and $V \in \mathbb{R}^{T \times d_\textrm{out}}$, are trainable weights. $\textrm{softmax}$ ensures $\sum_j{A_{ij}=1} \forall i$,  and $A \in \mathbb{R}_{\geq 0}^{T \times T}$ is the attention matrix. 
+$K, Q \in \mathbb{R}^{T \times d_\textrm{kq}}$ and $V \in \mathbb{R}^{T \times d_\textrm{out}}$, are trainable weights. $\textrm{softmax}$ ensures $\sum_j{A_{ij}=1} \space \forall \space i$,  and $A \in \mathbb{R}_{\geq 0}^{T \times T}$ is the attention matrix. 
 
 Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of disallowing particular pairwise-interactions between the input sequence elements in contributing to a particular output.
 
@@ -99,11 +99,11 @@ The most developed, least noisy single-cell resolution _-omics_ datasets are fro
 
 Typical tasks include determining identifiable cell types, specifying differentially expressed genes across conditions (aging, disease, perturbations), inferring developmental trajectories of particular cell types, identifying gene regulatory networks etc.
 
-The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth and benchmarks, and ultimately mathematical definitions of tasks.
+The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and often lack of a mathematically precise definition for tasks.
 
-The team at [OpenProblems](https://openproblems.bio/events/) have continued to push for standardization and benchmarking, but the output (both in terms of benchmarking datasets and state-of-the-art models) seems to have limited influence on academic research on the these topics.
+The team at [OpenProblems](https://openproblems.bio/events/) have continued to push for standardization and benchmarking through formal descriptions of tasks, e.g. @luecken2021sandbox. Still, the output of such efforts (both in terms of benchmarking datasets and state-of-the-art models) seems to have had limited influence on subsequent academic research.
 
-Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above. 
+Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above.
 
 Recent papers have applied transformer architectures to single cell genomics:
 
