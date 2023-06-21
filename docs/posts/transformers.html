@@ -183,7 +183,7 @@ div.csl-indent {
 </nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
 
 
 
@@ -195,37 +195,49 @@ div.csl-indent {
 <li><a href="#attention-mechanism-and-transformer-architecture">Attention mechanism, and transformer architecture</a></li>
 <li><a href="#multi-task-learning">Multi-task learning</a></li>
 </ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
 <p><span class="citation" data-cites="raschka2023llm">Raschka (<a href="#ref-raschka2023llm" role="doc-biblioref">2023</a>)</span> outlines some key papers and developments in the context of large language models, and <span class="citation" data-cites="weng2018attention">Weng (<a href="#ref-weng2018attention" role="doc-biblioref">2018</a>)</span> provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in <span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#ref-vaswani2017attention" role="doc-biblioref">2017</a>)</span>.</p>
-<section id="generative-sequence-modeling" class="level3">
+</div></div><section id="generative-sequence-modeling" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="generative-sequence-modeling">Generative sequence modeling</h3>
 <p>Language has a natural sequential structure. The generative modeling task is to learn a probability distribution over sequences of words.</p>
 <p>Let different words be specific values of <span class="math inline">n</span> random variables. Then the distribution we’d like to learn from data is <span class="math inline">p(s_1, s_2, ..., s_n)</span>. The sequential ordering motivates a particular factorization of this joint distribution:</p>
 <p><span class="math display">p(s_1, s_2, ..., s_n) = p(s_1) p(s_2 | s_1) p(s_3 | s_1, s_2) ... p(s_n | s_1, s_2, ..., s_{n-1})</span></p>
-<p>It’s important to understand that the notion of ‘words’ is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level (e.g.&nbsp;see <a href="https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt">byte pair encoding</a>). This is a crucial think to keep in mind for the notions of multi-task learning and foundational models.</p>
+<p>It’s important to understand that the notion of ‘words’ is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level. This is a crucial think to keep in mind for the notions of multi-task learning and foundational models.</p>
 <p>When generating new sequences, we are recursively sampling particular conditional distributions, e.g.&nbsp;<span class="math inline">p(s_i | s_1, ... s_{i-1})</span> to ultimately look like we are sampling from <span class="math inline">p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})</span>.</p>
 <p>This looks like <span class="math inline">p(\textrm{outputs}|\textrm{inputs})</span>. We’ll refer to this in the section on multi-task learning.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
 <p><span class="citation" data-cites="phuong2022formal">Phuong and Hutter (<a href="#ref-phuong2022formal" role="doc-biblioref">2022</a>)</span> describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.</p>
-</section>
-<section id="attention-mechanism-and-transformer-architecture" class="level3">
+</div></div></section>
+<section id="attention-mechanism-and-transformer-architecture" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="attention-mechanism-and-transformer-architecture">Attention mechanism and transformer architecture</h3>
-<p><span class="citation" data-cites="smola2019attn">Alex Smola (<a href="#ref-smola2019attn" role="doc-biblioref">2019</a>)</span> motivates the attention mechanism with kernel regression, and <span class="citation" data-cites="schlag2021linear">Schlag, Irie, and Schmidhuber (<a href="#ref-schlag2021linear" role="doc-biblioref">2021</a>)</span> link attention to fast weight programming.</p>
-<p><span class="citation" data-cites="schlag2021linear">Schlag, Irie, and Schmidhuber (<a href="#ref-schlag2021linear" role="doc-biblioref">2021</a>)</span> explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to <span class="citation" data-cites="cover1965geometrical">Cover (<a href="#ref-cover1965geometrical" role="doc-biblioref">1965</a>)</span>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="citation" data-cites="smola2019attn">Alex Smola (<a href="#ref-smola2019attn" role="doc-biblioref">2019</a>)</span> motivates the attention mechanism with kernel regression</p>
+</div><div class="">
+<p><span class="citation" data-cites="schlag2021linear">Schlag, Irie, and Schmidhuber (<a href="#ref-schlag2021linear" role="doc-biblioref">2021</a>)</span> link attention to fast weight programming. They also explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to <span class="citation" data-cites="cover1965geometrical">Cover (<a href="#ref-cover1965geometrical" role="doc-biblioref">1965</a>)</span>.</p>
+</div></div>
 <p>A self-attention layer maps an input sequence of length <span class="math inline">T</span>, denoted as <span class="math inline">(x_1,...,x_T), x_i \in \mathbb{R}^{d_\textrm{in} \times 1}</span> to an output sequence <span class="math inline">(y_1,...,y_T), y_i \in \mathbb{R}^{d_\textrm{out} \times 1}</span> as</p>
 <p><span class="math display">
-\begin{align}
+\begin{aligned}
 k_i, v_i, q_i &amp;= Kx_i,Vx_i,Qx_i \\
 A_{ij} &amp;= \textrm{softmax}(k_i^\top q_j) \\
 y_{i} &amp;= \sum_j{A_{ij}v_j}
-\end{align}
+\end{aligned}
 </span></p>
 <p><span class="math inline">K, Q \in \mathbb{R}^{T \times d_\textrm{kq}}</span> and <span class="math inline">V \in \mathbb{R}^{T \times d_\textrm{out}}</span>, are trainable weights. <span class="math inline">\textrm{softmax}</span> ensures <span class="math inline">\sum_j{A_{ij}=1} \space \forall \space i</span>, and <span class="math inline">A \in \mathbb{R}_{\geq 0}^{T \times T}</span> is the attention matrix.</p>
 <p>Setting certain entries of the <span class="math inline">A_{ij}</span> to zero is referred to as masking, and it has the effect of disallowing particular pairwise-interactions between the input sequence elements in contributing to a particular output.</p>
 <p>For language, setting the upper triangular entries (including the diagonal) to be zero is a common choice. This mask pattern ensures that <span class="math inline">y_i</span> is only based on <span class="math inline">(x_1, ..., x_{i-1})</span>.</p>
 <p>In the absence of masking, each output takes on the form <span class="math inline">y_j = \sum_i{g_j(x_i)}</span>, for some function <span class="math inline">g_j</span>. This form renders it invariant to ordering i.e.&nbsp;permutations of the input sequence.</p>
-<p>On a related note, <span class="citation" data-cites="zaheer2017deep">Zaheer et al. (<a href="#ref-zaheer2017deep" role="doc-biblioref">2017</a>)</span> had shown that for universal function approximators (e.g.&nbsp;neural networks) <span class="math inline">h</span> and <span class="math inline">g</span>, a function <span class="math inline">f</span> of the form <span class="math inline">f(x_1, ... x_n) = h(\sum_i(g(x_i)))</span> is a universal approximator for any permutation invariant function.</p>
-<p>I’ve ignored scaling and nonlinearities for simplicity in the description above. Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing.</p>
-<p>At this point, I’d highly recommend the implementation walkthrough by Karpathy <span class="citation" data-cites="karpathy2023llm">(<a href="#ref-karpathy2023llm" role="doc-biblioref">2023</a>)</span>. He’s a skilled teacher and watching him live-code is instructive.</p>
-</section>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>On a related note, <span class="citation" data-cites="zaheer2017deep">Zaheer et al. (<a href="#ref-zaheer2017deep" role="doc-biblioref">2017</a>)</span> had shown that for universal function approximators (e.g.&nbsp;neural networks) <span class="math inline">h</span> and <span class="math inline">g</span>, a function <span class="math inline">f</span> of the form <span class="math display">f(x_1, ... x_n) = h(\sum_i(g(x_i)))</span> is a universal approximator for any permutation invariant function.</p>
+</div></div><p>I’ve ignored scaling and nonlinearities for simplicity in the description above. Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>I highly recommend the implementation walkthrough by Karpathy <span class="citation" data-cites="karpathy2023llm">(<a href="#ref-karpathy2023llm" role="doc-biblioref">2023</a>)</span>. He’s a skilled teacher and watching him live-code is instructive.</p>
+</div></div></section>
 <section id="multi-task-learning" class="level3">
 <h3 class="anchored" data-anchor-id="multi-task-learning">Multi-task learning</h3>
 <p>In one version (e.g.&nbsp;GPT and variants), these transformer models are trained to simply predict the next word. That is, the model learns distributions <span class="math inline">p(s_i | s_1, ..., s_{i-1})</span> for all <span class="math inline">i \in (1,...,n)</span>.</p>
@@ -242,14 +254,16 @@ y_{i} &amp;= \sum_j{A_{ij}v_j}
 <p>In my view this is essentially echoing the central observations of <span class="citation" data-cites="radford2019language">Radford et al. (<a href="#ref-radford2019language" role="doc-biblioref">2019</a>)</span> and <span class="citation" data-cites="brown2020language">Brown et al. (<a href="#ref-brown2020language" role="doc-biblioref">2020</a>)</span>.</p>
 <p>With the hype about large language models gripping other domains, it is worth asking if the these ideas are applicable models in other domains that do not have the special place of language.</p>
 </section>
-<section id="transformers-for-single-cell-resolution-datasets" class="level3">
+<section id="transformers-for-single-cell-resolution-datasets" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="transformers-for-single-cell-resolution-datasets">Transformers for single-cell resolution datasets</h3>
 <p>The most developed, least noisy single-cell resolution <em>-omics</em> datasets are from transcriptomics. For most analyses, the dataset is a table rows are cells, columns are genes, and entries are the gene expression values. Additional metadata, e.g.&nbsp;disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.</p>
 <p>Typical tasks include determining identifiable cell types, specifying differentially expressed genes across conditions (aging, disease, perturbations), inferring developmental trajectories of particular cell types, identifying gene regulatory networks etc.</p>
 <p>The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and often lack of a mathematically precise definition for tasks.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
 <p>The team at <a href="https://openproblems.bio/events/">OpenProblems</a> have continued to push for standardization and benchmarking through formal descriptions of tasks, e.g. <span class="citation" data-cites="luecken2021sandbox">Luecken et al. (<a href="#ref-luecken2021sandbox" role="doc-biblioref">2021</a>)</span>. Still, the output of such efforts (both in terms of benchmarking datasets and state-of-the-art models) seems to have had limited influence on subsequent academic research.</p>
-<p>Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above.</p>
-<p>Recent papers have applied transformer architectures to single cell genomics:</p>
+</div></div><p>Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above.</p>
+<p>Recent studies applying transformer-based models to single cell genomics have generated quite some buzz:</p>
 <ul>
 <li><span class="citation" data-cites="yang2022scbert">Yang et al. (<a href="#ref-yang2022scbert" role="doc-biblioref">2022</a>)</span></li>
 <li><span class="citation" data-cites="cui2022scformer">Cui et al. (<a href="#ref-cui2022scformer" role="doc-biblioref">2022</a>)</span>, rebranded as <span class="citation" data-cites="cui2023scgpt">Cui et al. (<a href="#ref-cui2023scgpt" role="doc-biblioref">2023</a>)</span></li>

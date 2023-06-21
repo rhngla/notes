@@ -21,7 +21,9 @@ In my view, the main concepts to be familiar with are:
  - [Attention mechanism, and transformer architecture](#attention-mechanism-and-transformer-architecture)
  - [Multi-task learning](#multi-task-learning)
 
+::: {.column-margin}
 @raschka2023llm outlines some key papers and developments in the context of large language models, and @weng2018attention provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in @vaswani2017attention. 
+:::
 
 ### Generative sequence modeling
 
@@ -31,28 +33,34 @@ Let different words be specific values of $n$ random variables. Then the distrib
 
 $$p(s_1, s_2, ..., s_n) = p(s_1) p(s_2 | s_1) p(s_3 | s_1, s_2) ... p(s_n | s_1, s_2, ..., s_{n-1})$$
 
-It's important to understand that the notion of 'words' is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level (e.g. see [byte pair encoding](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt)). This is a crucial think to keep in mind for the notions of multi-task learning and foundational models. 
+It's important to understand that the notion of 'words' is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level. This is a crucial think to keep in mind for the notions of multi-task learning and foundational models. 
 
 When generating new sequences, we are recursively sampling particular conditional distributions, e.g. $p(s_i | s_1, ... s_{i-1})$ to ultimately look like we are sampling from $p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})$.
 
 This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll refer to this in the section on multi-task learning. 
 
+::: {.column-margin}
 @phuong2022formal describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.
+:::
 
 ### Attention mechanism and transformer architecture
 
-@smola2019attn motivates the attention mechanism with kernel regression, and @schlag2021linear link attention to fast weight programming.
+::: {.column-margin}
+@smola2019attn motivates the attention mechanism with kernel regression
+:::
 
-@schlag2021linear explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to @cover1965geometrical.
+::: {.column-margin}
+@schlag2021linear link attention to fast weight programming. They also explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to @cover1965geometrical.
+:::
 
 A self-attention layer maps an input sequence of length $T$, denoted as $(x_1,...,x_T), x_i \in \mathbb{R}^{d_\textrm{in} \times 1}$ to an output sequence $(y_1,...,y_T), y_i \in \mathbb{R}^{d_\textrm{out} \times 1}$ as
 
 $$
-\begin{align}
+\begin{aligned}
 k_i, v_i, q_i &= Kx_i,Vx_i,Qx_i \\
 A_{ij} &= \textrm{softmax}(k_i^\top q_j) \\
 y_{i} &= \sum_j{A_{ij}v_j}
-\end{align}
+\end{aligned}
 $$
 
 $K, Q \in \mathbb{R}^{T \times d_\textrm{kq}}$ and $V \in \mathbb{R}^{T \times d_\textrm{out}}$, are trainable weights. $\textrm{softmax}$ ensures $\sum_j{A_{ij}=1} \space \forall \space i$,  and $A \in \mathbb{R}_{\geq 0}^{T \times T}$ is the attention matrix. 
@@ -63,11 +71,15 @@ For language, setting the upper triangular entries (including the diagonal) to b
 
 In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$. This form renders it invariant to ordering i.e. permutations of the input sequence. 
 
-On a related note, @zaheer2017deep had shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $f(x_1, ... x_n) = h(\sum_i(g(x_i)))$ is a universal approximator for any permutation invariant function.
+::: {.column-margin}
+On a related note, @zaheer2017deep had shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $$f(x_1, ... x_n) = h(\sum_i(g(x_i)))$$ is a universal approximator for any permutation invariant function.
+:::
 
 I've ignored scaling and nonlinearities for simplicity in the description above. Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing.
 
-At this point, I'd highly recommend the implementation walkthrough by Karpathy [-@karpathy2023llm]. He's a skilled teacher and watching him live-code is instructive.
+::: {.column-margin}
+I highly recommend the implementation walkthrough by Karpathy [-@karpathy2023llm]. He's a skilled teacher and watching him live-code is instructive.
+:::
 
 ### Multi-task learning
 
@@ -101,11 +113,13 @@ Typical tasks include determining identifiable cell types, specifying differenti
 
 The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and often lack of a mathematically precise definition for tasks.
 
+::: {.column-margin}
 The team at [OpenProblems](https://openproblems.bio/events/) have continued to push for standardization and benchmarking through formal descriptions of tasks, e.g. @luecken2021sandbox. Still, the output of such efforts (both in terms of benchmarking datasets and state-of-the-art models) seems to have had limited influence on subsequent academic research.
+:::
 
 Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above.
 
-Recent papers have applied transformer architectures to single cell genomics:
+Recent studies applying transformer-based models to single cell genomics have generated quite some buzz:
 
  - @yang2022scbert
  - @cui2022scformer, rebranded as @cui2023scgpt
