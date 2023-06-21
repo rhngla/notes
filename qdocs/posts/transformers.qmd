@@ -1,8 +1,8 @@
 ---
 title: "Transformers and foundational models for X"
 author: "Rohan Gala"
-date: "2023-06-01"
-categories: [math]
+date: "2023-06-20"
+categories: ["machine learning"]
 image: "image.jpg"
 toc: true
 number-sections: true
@@ -15,11 +15,9 @@ code-fold: true
 
 Here I keep track of sources that have helped me understand this topic better.
 
-### Learning resources
-
 In my view, the main concepts to be familiar with are:
 
- - Generative modeling for sequences
+ - [Generative modeling for sequences](#generative-sequence-modeling)
  - Attention mechanism, and transformer architecture
  - Multi-task learning
 
@@ -48,7 +46,7 @@ When generating new sequences, we are recursively sampling particular conditiona
 
 This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll refer to this in the section on multi-task learning. 
 
-#### Attention mechanism and transformer architecture
+### Attention mechanism and transformer architecture
 
 A self-attention layer maps an input sequence $\{x_i\}^T_{i=1}$, $x_i \in \mathbb{R}^{d \times 1}$ to an output sequence $\{y_i\}^T_{i=1}$, $y_i \in \mathbb{R}^{d_\textrm{value} \times 1}$ as
 
@@ -72,7 +70,7 @@ On a related note, @zaheer2017deep had shown that if $h$ and $g$ are universal f
 
 Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These are all simple enough, but turn out to be important to prevent gradients from exploding or vanishing in practice.
 
-#### Multi-task learning
+### Multi-task learning
 
 In one version (e.g. GPT and variants), these transformer models are trained to simply predict the next word. That is, the model learns distributions $p(s_i | s_1, ..., s_{i-1})$ for all $i \in \{1,...,n\}$.
 
@@ -84,6 +82,23 @@ Moreover, the underlying input does not have to be "words", but instead can be m
 
 In my view, this is key to the idea of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance is possible on a variety of tasks, even though the task is not explicitly specified while training.
 
+### Foundation models
+
+I went through the workshop [https://crfm.stanford.edu/workshop.html] and paper [https://arxiv.org/pdf/2108.07258.pdf] that popularized this term. 
+
+The emergence aspect is related to generalization over tasks. Homogenization is the idea that these models are learning something general and flexible enough to be useful for a variety of downstream tasks. 
+
+While there are open source datasets and algorithms, both of these have been kept secret at most companies 
+
+Emergence needs scale, and therefore resources. For the case of genomics, it is still unclear whether we have tasks that are rich enough to warrant the scale of resources that are required to train these models.
+
+HAI is focused on building infrastructure to build out academic LLMs. 
+
+In the workshop, according to Jack Clark (2021):
+
+> Big models are models that can take in arbitrary inputs and generate unpredictable (frequently, useful) outputs. They're trained on very large datasets and demonstrate a broad set of capabilities, many of which need to be discovered post training. 
+
+
 ### Transformers in scRNA-seq
 
 The transformer architectures are now being applied to single cell genomics datasets. 
@@ -94,7 +109,14 @@ The goal is to learn interpretable representations of cells that may be analyzed
 
 Crucially, genes have no natural, fixed ordering as in other sequential data (language, music etc.). 
 
-Recent papers that have applied transformer architectures to single cell genomics include [@yang2022scbert, @cui2022scformer, @cui2023scgpt, @shen2023generative, @theodoris2023].
+Recent papers that have applied transformer architectures to single cell genomics include 
+
+ - @yang2022scbert
+ - @cui2022scformer
+ - @cui2023scgpt
+ - @shen2023generative
+ - @theodoris2023
+ - @hao2023foundation
 
 (To be continued)
 

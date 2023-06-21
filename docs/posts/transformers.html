@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Rohan Gala">
-<meta name="dcterms.date" content="2023-06-01">
+<meta name="dcterms.date" content="2023-06-20">
 
 <title>notes - Transformers and foundational models for X</title>
 <style>
@@ -139,7 +139,7 @@ div.csl-indent {
     <div class="quarto-title column-body">
       <h1 class="title">Transformers and foundational models for X</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">math</div>
+                <div class="quarto-category">machine learning</div>
               </div>
                   </div>
   </div>
@@ -157,7 +157,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 1, 2023</p>
+        <p class="date">June 20, 2023</p>
       </div>
     </div>
     
@@ -173,8 +173,10 @@ div.csl-indent {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#learning-resources" id="toc-learning-resources" class="nav-link active" data-scroll-target="#learning-resources">Learning resources</a></li>
-  <li><a href="#generative-sequence-modeling" id="toc-generative-sequence-modeling" class="nav-link" data-scroll-target="#generative-sequence-modeling">Generative sequence modeling</a></li>
+  <li><a href="#generative-sequence-modeling" id="toc-generative-sequence-modeling" class="nav-link active" data-scroll-target="#generative-sequence-modeling">Generative sequence modeling</a></li>
+  <li><a href="#attention-mechanism-and-transformer-architecture" id="toc-attention-mechanism-and-transformer-architecture" class="nav-link" data-scroll-target="#attention-mechanism-and-transformer-architecture">Attention mechanism and transformer architecture</a></li>
+  <li><a href="#multi-task-learning" id="toc-multi-task-learning" class="nav-link" data-scroll-target="#multi-task-learning">Multi-task learning</a></li>
+  <li><a href="#foundation-models" id="toc-foundation-models" class="nav-link" data-scroll-target="#foundation-models">Foundation models</a></li>
   <li><a href="#transformers-in-scrna-seq" id="toc-transformers-in-scrna-seq" class="nav-link" data-scroll-target="#transformers-in-scrna-seq">Transformers in scRNA-seq</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -187,11 +189,9 @@ div.csl-indent {
 
 
 <p>Here I keep track of sources that have helped me understand this topic better.</p>
-<section id="learning-resources" class="level3">
-<h3 class="anchored" data-anchor-id="learning-resources">Learning resources</h3>
 <p>In my view, the main concepts to be familiar with are:</p>
 <ul>
-<li>Generative modeling for sequences</li>
+<li><a href="#generative-sequence-modeling">Generative modeling for sequences</a></li>
 <li>Attention mechanism, and transformer architecture</li>
 <li>Multi-task learning</li>
 </ul>
@@ -200,7 +200,6 @@ div.csl-indent {
 <p><span class="citation" data-cites="schlag2021linear">Schlag, Irie, and Schmidhuber (<a href="#ref-schlag2021linear" role="doc-biblioref">2021</a>)</span> provide a clear and concise description of the attention mechanism, and could be a good starting point for that reason. They also explore models with linear version attention, in the context of associative memory and explore capacity of such models with different choices of kernels, activation functions, and update rules.</p>
 <p>On the practical side, the implementation walkthrough by Karpathy <span class="citation" data-cites="karpathy2023llm">(<a href="#ref-karpathy2023llm" role="doc-biblioref">2023</a>)</span> is excellent. He’s a skilled teacher and watching an expert like him live-code is instructive.</p>
 <p><span class="citation" data-cites="phuong2022formal">Phuong and Hutter (<a href="#ref-phuong2022formal" role="doc-biblioref">2022</a>)</span> describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.</p>
-</section>
 <section id="generative-sequence-modeling" class="level3">
 <h3 class="anchored" data-anchor-id="generative-sequence-modeling">Generative sequence modeling</h3>
 <p>Language has a natural sequential structure. The generative modeling task is to learn a probability distribution over sequences of words.</p>
@@ -209,8 +208,9 @@ div.csl-indent {
 <p>It’s important to understand that the notion of ‘words’ is arbitrary for such modeling. Even for language, once can break up words at the character or even byte level (e.g.&nbsp;see <a href="https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt">byte pair encoding</a>). This is a crucial think to keep in mind for the notions of multi-task learning and foundational models.</p>
 <p>When generating new sequences, we are recursively sampling particular conditional distributions, e.g.&nbsp;<span class="math inline">p(s_i | s_1, ... s_{i-1})</span> to ultimately look like we are sampling from <span class="math inline">p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})</span>.</p>
 <p>This looks like <span class="math inline">p(\textrm{outputs}|\textrm{inputs})</span>. We’ll refer to this in the section on multi-task learning.</p>
-<section id="attention-mechanism-and-transformer-architecture" class="level4">
-<h4 class="anchored" data-anchor-id="attention-mechanism-and-transformer-architecture">Attention mechanism and transformer architecture</h4>
+</section>
+<section id="attention-mechanism-and-transformer-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="attention-mechanism-and-transformer-architecture">Attention mechanism and transformer architecture</h3>
 <p>A self-attention layer maps an input sequence <span class="math inline">\{x_i\}^T_{i=1}</span>, <span class="math inline">x_i \in \mathbb{R}^{d \times 1}</span> to an output sequence <span class="math inline">\{y_i\}^T_{i=1}</span>, <span class="math inline">y_i \in \mathbb{R}^{d_\textrm{value} \times 1}</span> as</p>
 <p><span class="math display">
 \begin{align}
@@ -226,14 +226,25 @@ y_{i} &amp;= \sum_j{A_{ij}v_j}
 <p>On a related note, <span class="citation" data-cites="zaheer2017deep">Zaheer et al. (<a href="#ref-zaheer2017deep" role="doc-biblioref">2017</a>)</span> had shown that if <span class="math inline">h</span> and <span class="math inline">g</span> are universal function approximators (e.g.&nbsp;neural networks), <span class="math inline">f(x_1, ... x_n) = h(\sum_i(g(x_i)))</span> approximates for any permutation invariant function.</p>
 <p>Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These are all simple enough, but turn out to be important to prevent gradients from exploding or vanishing in practice.</p>
 </section>
-<section id="multi-task-learning" class="level4">
-<h4 class="anchored" data-anchor-id="multi-task-learning">Multi-task learning</h4>
+<section id="multi-task-learning" class="level3">
+<h3 class="anchored" data-anchor-id="multi-task-learning">Multi-task learning</h3>
 <p>In one version (e.g.&nbsp;GPT and variants), these transformer models are trained to simply predict the next word. That is, the model learns distributions <span class="math inline">p(s_i | s_1, ..., s_{i-1})</span> for all <span class="math inline">i \in \{1,...,n\}</span>.</p>
 <p>So far, the recipe seems straightforward, and still doesn’t provide an intuitive understanding for why large language models seem magical. <span class="citation" data-cites="radford2019language">Radford et al. (<a href="#ref-radford2019language" role="doc-biblioref">2019</a>)</span> fill this gap. The idea is that for language, the task itself is a sequence of tokens.</p>
 <p>Tasks can take the form of “translate to hindi” or “write python code for” etc. Here the sequence of words that specify the task are themselves part of the input sequence. The implication is that while we learn <span class="math inline">p(output|input)</span>, we are also learning <span class="math inline">p(output | input, task)</span>, without needing task-specific architecture or training!</p>
 <p>Moreover, the underlying input does not have to be “words”, but instead can be more parcellated and abstract <a href="https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt">byte pair encodings</a>.</p>
 <p>In my view, this is key to the idea of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance is possible on a variety of tasks, even though the task is not explicitly specified while training.</p>
 </section>
+<section id="foundation-models" class="level3">
+<h3 class="anchored" data-anchor-id="foundation-models">Foundation models</h3>
+<p>I went through the workshop [https://crfm.stanford.edu/workshop.html] and paper [https://arxiv.org/pdf/2108.07258.pdf] that popularized this term.</p>
+<p>The emergence aspect is related to generalization over tasks. Homogenization is the idea that these models are learning something general and flexible enough to be useful for a variety of downstream tasks.</p>
+<p>While there are open source datasets and algorithms, both of these have been kept secret at most companies</p>
+<p>Emergence needs scale, and therefore resources. For the case of genomics, it is still unclear whether we have tasks that are rich enough to warrant the scale of resources that are required to train these models.</p>
+<p>HAI is focused on building infrastructure to build out academic LLMs.</p>
+<p>In the workshop, according to Jack Clark (2021):</p>
+<blockquote class="blockquote">
+<p>Big models are models that can take in arbitrary inputs and generate unpredictable (frequently, useful) outputs. They’re trained on very large datasets and demonstrate a broad set of capabilities, many of which need to be discovered post training.</p>
+</blockquote>
 </section>
 <section id="transformers-in-scrna-seq" class="level3">
 <h3 class="anchored" data-anchor-id="transformers-in-scrna-seq">Transformers in scRNA-seq</h3>
@@ -241,7 +252,15 @@ y_{i} &amp;= \sum_j{A_{ij}v_j}
 <p>The dataset is a table of, in which each row is a cell, and each column is a gene. Additional metadata, e.g.&nbsp;disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.</p>
 <p>The goal is to learn interpretable representations of cells that may be analyzed to uncover identifiable clusters (“cell types”).</p>
 <p>Crucially, genes have no natural, fixed ordering as in other sequential data (language, music etc.).</p>
-<p>Recent papers that have applied transformer architectures to single cell genomics include <span class="citation" data-cites="yang2022scbert">Theodoris et al. (<a href="#ref-theodoris2023" role="doc-biblioref">2023</a>)</span>.</p>
+<p>Recent papers that have applied transformer architectures to single cell genomics include</p>
+<ul>
+<li><span class="citation" data-cites="yang2022scbert">Yang et al. (<a href="#ref-yang2022scbert" role="doc-biblioref">2022</a>)</span></li>
+<li><span class="citation" data-cites="cui2022scformer">Cui et al. (<a href="#ref-cui2022scformer" role="doc-biblioref">2022</a>)</span></li>
+<li><span class="citation" data-cites="cui2023scgpt">Cui et al. (<a href="#ref-cui2023scgpt" role="doc-biblioref">2023</a>)</span></li>
+<li><span class="citation" data-cites="shen2023generative">Shen et al. (<a href="#ref-shen2023generative" role="doc-biblioref">2023</a>)</span></li>
+<li><span class="citation" data-cites="theodoris2023">Theodoris et al. (<a href="#ref-theodoris2023" role="doc-biblioref">2023</a>)</span></li>
+<li><span class="citation" data-cites="hao2023foundation">Hao et al. (<a href="#ref-hao2023foundation" role="doc-biblioref">2023</a>)</span></li>
+</ul>
 <p>(To be continued)</p>
 </section>
 <section id="references" class="level3">
@@ -255,6 +274,9 @@ Cui, Haotian, Chloe Wang, Hassaan Maan, Nan Duan, and Bo Wang. 2022. <span>“sc
 </div>
 <div id="ref-cui2023scgpt" class="csl-entry" role="listitem">
 Cui, Haotian, Chloe Wang, Hassaan Maan, and Bo Wang. 2023. <span>“scGPT: Towards Building a Foundation Model for Single-Cell Multi-Omics Using Generative AI.”</span> <em>bioRxiv</em>, 2023–04.
+</div>
+<div id="ref-hao2023foundation" class="csl-entry" role="listitem">
+Hao, Minsheng, Jing Gong, Xin Zeng, Chiming Liu, Yucheng Guo, Xingyi Cheng, Taifeng Wang, Jianzhu Ma, Le Song, and Xuegong Zhang. 2023. <span>“Large Scale Foundation Model on Single-Cell Transcriptomics.”</span> <em>bioRxiv</em>. <a href="https://doi.org/10.1101/2023.05.29.542705">https://doi.org/10.1101/2023.05.29.542705</a>.
 </div>
 <div id="ref-karpathy2023llm" class="csl-entry" role="listitem">
 Karpathy, Andrej. 2023. <span>“Neural Networks: Zero to Hero.”</span> 2023. <a href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ">https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ</a>.

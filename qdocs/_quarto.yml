@@ -3,6 +3,7 @@ project:
   type: website
   output-dir: ../docs
   render:
+    - index.qmd
     - posts/spaces.qmd
     - posts/notation_dist.qmd
     - posts/transformers.qmd
