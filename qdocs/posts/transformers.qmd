@@ -3,7 +3,7 @@ title: "Transformers and foundational models for X"
 author: "Rohan Gala"
 date: "2023-06-20"
 categories: ["machine learning"]
-image: "image.jpg"
+#image: "image.jpg"
 toc: true
 number-sections: true
 number-depth: 2
@@ -18,19 +18,10 @@ Here I keep track of sources that have helped me understand this topic better.
 In my view, the main concepts to be familiar with are:
 
  - [Generative modeling for sequences](#generative-sequence-modeling)
- - Attention mechanism, and transformer architecture
- - Multi-task learning
+ - [Attention mechanism, and transformer architecture](#attention-mechanism-and-transformer-architecture)
+ - [Multi-task learning](#multi-task-learning)
 
 @raschka2023llm outlines some key papers and developments in the context of large language models, and @weng2018attention provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in the transformer. 
-
-Smola [-@smola2019attn] motivates the attention mechanism with kernel regression, providing some intuition for why it works.
-
-@schlag2021linear provide a clear and concise description of the attention mechanism, and could be a good starting point for that reason. They also explore models with linear version attention, in the context of associative memory and explore capacity of such models with different choices of kernels, activation functions, and update rules. 
-
-On the practical side, the implementation walkthrough by Karpathy [-@karpathy2023llm] is excellent. He's a skilled teacher and watching an expert like him live-code is instructive.
-
-@phuong2022formal describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.
-
 
 ### Generative sequence modeling
 
@@ -46,9 +37,15 @@ When generating new sequences, we are recursively sampling particular conditiona
 
 This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll refer to this in the section on multi-task learning. 
 
+@phuong2022formal describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.
+
 ### Attention mechanism and transformer architecture
 
-A self-attention layer maps an input sequence $\{x_i\}^T_{i=1}$, $x_i \in \mathbb{R}^{d \times 1}$ to an output sequence $\{y_i\}^T_{i=1}$, $y_i \in \mathbb{R}^{d_\textrm{value} \times 1}$ as
+@smola2019attn motivates the attention mechanism with kernel regression, and @schlag2021linear link attention to fast weight programming.
+
+@schlag2021linear explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to @cover1965geometrical.
+
+A self-attention layer maps an input sequence of length $T$, denoted as $(x_1,...,x_T), x_i \in \mathbb{R}^{d_\textrm{in} \times 1}$ to an output sequence $(y_1,...,y_T), y_i \in \mathbb{R}^{d_\textrm{out} \times 1}$ as
 
 $$
 \begin{align}
@@ -58,67 +55,65 @@ y_{i} &= \sum_j{A_{ij}v_j}
 \end{align}
 $$
 
-I've ignored scaling and nonlinearities for simplicity here. 
+$K, Q \in \mathbb{R}^{T \times d_\textrm{kq}}$ and $V \in \mathbb{R}^{T \times d_\textrm{out}}$, are trainable weights. $\textrm{softmax}$ ensures $\sum_j{A_{ij}=1} \forall i$,  and $A \in \mathbb{R}_{\geq 0}^{T \times T}$ is the attention matrix. 
 
-The $\textrm{softmax}$ operation is applied along the T dimension, and $K$, $V$, $Q$ are trainable weight matrices. $A \in \mathbb{R}_{\geq 0}^{T \times T}$ is the attention matrix. Setting certain entries of the $A_{ij}$ to be zero is referred to as masking, and it has the effect of disallowing certain interactions between the input sequence elements in predicting a particular output.
+Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of disallowing particular pairwise-interactions between the input sequence elements in contributing to a particular output.
 
-For language, setting the upper triangular entries (including the diagonal) to be zero is a common choice. This mask pattern ensures that $y_i$ is only based on $\{x_1, ..., x_{i-1}\}$.
+For language, setting the upper triangular entries (including the diagonal) to be zero is a common choice. This mask pattern ensures that $y_i$ is only based on $(x_1, ..., x_{i-1})$.
 
-In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$, which renders it invariant to the ordering of the input sequence i.e. permutation invariance. 
+In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$. This form renders it invariant to ordering i.e. permutations of the input sequence. 
 
-On a related note, @zaheer2017deep had shown that if $h$ and $g$ are universal function approximators (e.g. neural networks), $f(x_1, ... x_n) = h(\sum_i(g(x_i)))$ approximates for any permutation invariant function.
+On a related note, @zaheer2017deep had shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $f(x_1, ... x_n) = h(\sum_i(g(x_i)))$ is a universal approximator for any permutation invariant function.
 
-Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These are all simple enough, but turn out to be important to prevent gradients from exploding or vanishing in practice.
+I've ignored scaling and nonlinearities for simplicity in the description above. Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing.
+
+At this point, I'd highly recommend the implementation walkthrough by Karpathy [-@karpathy2023llm]. He's a skilled teacher and watching him live-code is instructive.
 
 ### Multi-task learning
 
-In one version (e.g. GPT and variants), these transformer models are trained to simply predict the next word. That is, the model learns distributions $p(s_i | s_1, ..., s_{i-1})$ for all $i \in \{1,...,n\}$.
+In one version (e.g. GPT and variants), these transformer models are trained to simply predict the next word. That is, the model learns distributions $p(s_i | s_1, ..., s_{i-1})$ for all $i \in (1,...,n)$.
 
-So far, the recipe seems straightforward, and still doesn't provide an intuitive understanding for why large language models seem magical. @radford2019language fill this gap. The idea is that for language, the task itself is a sequence of tokens. 
+So far, a clear reason for why large language models seem magical is missing. Why bother increasing size of models, why invest so much in collecting the data and compute resources?
 
-Tasks can take the form of "translate to hindi" or "write python code for" etc. Here the sequence of words that specify the task are themselves part of the input sequence. The implication is that while we learn $p(output|input)$, we are also learning $p(output | input, task)$, without needing task-specific architecture or training!
+I think @radford2019language, and later @brown2020language provide this missing reason. The main realization is that for language, the task itself is a sequence of tokens. Tasks can take the form of "translate to german" or "write python code for" etc. Here the sequence of words that specify the task are themselves part of the input sequence.
 
 Moreover, the underlying input does not have to be "words", but instead can be more parcellated and abstract [byte pair encodings](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt).
 
-In my view, this is key to the idea of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance is possible on a variety of tasks, even though the task is not explicitly specified while training.
+The implication is that while we learn $p(output|input)$, we are also learning $p(output | input, task)$, without needing task-specific architecture or training!
+
+In my view, this is a central requirement for a meaningful notion of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance is possible on a variety of tasks, even though the task is not explicitly specified while training.
 
 ### Foundation models
 
-I went through the workshop [https://crfm.stanford.edu/workshop.html] and paper [https://arxiv.org/pdf/2108.07258.pdf] that popularized this term. 
+The term "foundational models" was popularized by @bommasani2021opportunities, and an accompanying [workshop at Stanford University](https://crfm.stanford.edu/workshop.html). 
 
-The emergence aspect is related to generalization over tasks. Homogenization is the idea that these models are learning something general and flexible enough to be useful for a variety of downstream tasks. 
+@bommasani2021opportunities describe the notion of emergence (generalization over tasks, and therefore related to zero-shot performance) and homogenization (learning something useful for a variety of downstream tasks, and therefore the pre-training is amenable to fine-tuning).
 
-While there are open source datasets and algorithms, both of these have been kept secret at most companies 
+In my view this is essentially echoing the central observations of @radford2019language and @brown2020language.
 
-Emergence needs scale, and therefore resources. For the case of genomics, it is still unclear whether we have tasks that are rich enough to warrant the scale of resources that are required to train these models.
+With the hype about large language models gripping other domains, it is worth asking if the these ideas are applicable models in other domains that do not have the special place of language.
 
-HAI is focused on building infrastructure to build out academic LLMs. 
+### Transformers for single-cell resolution datasets
 
-In the workshop, according to Jack Clark (2021):
+The most developed, least noisy single-cell resolution _-omics_ datasets are from transcriptomics. For most analyses, the dataset is a table rows are cells,  columns are genes, and entries are the gene expression values. Additional metadata, e.g. disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.
 
-> Big models are models that can take in arbitrary inputs and generate unpredictable (frequently, useful) outputs. They're trained on very large datasets and demonstrate a broad set of capabilities, many of which need to be discovered post training. 
+Typical tasks include determining identifiable cell types, specifying differentially expressed genes across conditions (aging, disease, perturbations), inferring developmental trajectories of particular cell types, identifying gene regulatory networks etc.
 
+The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth and benchmarks, and ultimately mathematical definitions of tasks.
 
-### Transformers in scRNA-seq
+The team at [OpenProblems](https://openproblems.bio/events/) have continued to push for standardization and benchmarking, but the output (both in terms of benchmarking datasets and state-of-the-art models) seems to have limited influence on academic research on the these topics.
 
-The transformer architectures are now being applied to single cell genomics datasets. 
+Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above. 
 
-The dataset is a table of, in which each row is a cell, and each column is a gene. Additional metadata, e.g. disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.
-
-The goal is to learn interpretable representations of cells that may be analyzed to uncover identifiable clusters ("cell types").
-
-Crucially, genes have no natural, fixed ordering as in other sequential data (language, music etc.). 
-
-Recent papers that have applied transformer architectures to single cell genomics include 
+Recent papers have applied transformer architectures to single cell genomics:
 
  - @yang2022scbert
- - @cui2022scformer
- - @cui2023scgpt
+ - @cui2022scformer, rebranded as @cui2023scgpt
  - @shen2023generative
  - @theodoris2023
  - @hao2023foundation
 
-(To be continued)
+ (to be continued)
 
 ### References
 

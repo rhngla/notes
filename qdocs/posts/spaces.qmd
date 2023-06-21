@@ -3,7 +3,7 @@ title: "Concepts in dimensionality reduction"
 author: "Rohan Gala"
 date: "2023-04-07"
 categories: [math]
-image: "image.jpg"
+#image: "image.jpg"
 toc: true
 number-sections: true
 number-depth: 2
