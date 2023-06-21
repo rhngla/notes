@@ -117,9 +117,9 @@ div.csl-indent {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+  <li class="nav-item compact">
+    <a class="nav-link" href="../about.qmd" rel="" target="">
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/rhngla" rel="" target=""><i class="bi bi-github" role="img">
@@ -409,24 +409,16 @@ Important
 </section>
 <section id="dimensionality-reduction-1" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="dimensionality-reduction-1"><span class="header-section-number">2.3</span> Dimensionality reduction</h2>
-<p>These set of <a href="https://drewwilimitis.github.io/Manifold-Learning/">notes by Drew Wilimitis</a> contain python implementation of common methods.</p>
+<p>These set of <a href="https://drewwilimitis.github.io/Manifold-Learning/">notes by Drew Wilimitis</a> also contain python implementation of common methods.</p>
 <p>Various computational methods have been designed to uncover a lower dimension manifold that preserve some notion of distances and structure of data observed in high dimension.</p>
 <ul>
 <li>MDS: preserve pairwise distances (using some common metric, e.g.&nbsp;Euclidean)</li>
-<li>Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops, using some common metric)</li>
-<li>Diffusion maps: consider a notion of reachability of distant points by constructing a diffusion process <span class="citation" data-cites="coifman2005geometric de2008introduction">(<a href="#ref-coifman2005geometric" role="doc-biblioref">Coifman et al. 2005</a>; <a href="#ref-de2008introduction" role="doc-biblioref">De la Porte et al. 2008</a>)</span></li>
+<li>Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops. Assumes a metric to define nearest neighbor)</li>
+<li>Diffusion maps: consider notion of reachability of distant points by constructing a diffusion process <span class="citation" data-cites="coifman2005geometric de2008introduction">(<a href="#ref-coifman2005geometric" role="doc-biblioref">Coifman et al. 2005</a>; <a href="#ref-de2008introduction" role="doc-biblioref">De la Porte et al. 2008</a>)</span></li>
 <li>Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods</li>
-<li>Similarities and distances - see <span class="citation" data-cites="ganea2019non">Ganea (<a href="#ref-ganea2019non" role="doc-biblioref">2019</a>)</span></li>
 </ul>
 <p>Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. e.g.&nbsp;<a href="https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html">transformer architectures</a>.</p>
-<p>TODO:</p>
-<ul>
-<li>Proof in <span class="citation" data-cites="dasgupta2003elementary">Dasgupta and Gupta (<a href="#ref-dasgupta2003elementary" role="doc-biblioref">2003</a>)</span> for the Johnson Lindenstrauss lemma.</li>
-<li><a href="https://www.cs.toronto.edu/~hinton/absps/nca.pdf">Nearest component analysis</a></li>
-<li><a href="https://ieeexplore.ieee.org/abstract/document/1661543">Unifying dimensionality reduction, graph partitioning, and data set parameterization</a></li>
-<li><a href="https://icml.cc/2011/papers/551_icmlpaper.pdf">Sparse random projections</a></li>
-<li>Include references from <a href="https://twitter.com/lpachter/status/1431325969411821572?s=21&amp;t=5TsIwpYk5rwp--JHbq_RwA">this twitter thread</a></li>
-</ul>
+<p>TODO: - Similarities and distances discussion in <span class="citation" data-cites="ganea2019non">Ganea (<a href="#ref-ganea2019non" role="doc-biblioref">2019</a>)</span> - Proof in <span class="citation" data-cites="dasgupta2003elementary">Dasgupta and Gupta (<a href="#ref-dasgupta2003elementary" role="doc-biblioref">2003</a>)</span> for the Johnson Lindenstrauss lemma. - <a href="https://www.cs.toronto.edu/~hinton/absps/nca.pdf">Nearest component analysis</a> - <a href="https://ieeexplore.ieee.org/abstract/document/1661543">Unifying dimensionality reduction, graph partitioning, and data set parameterization</a> - <a href="https://icml.cc/2011/papers/551_icmlpaper.pdf">Sparse random projections</a> - Include references from <a href="https://twitter.com/lpachter/status/1431325969411821572?s=21&amp;t=5TsIwpYk5rwp--JHbq_RwA">this twitter thread</a></p>
 <section id="using-jaccard-similarity" class="level4">
 <h4 class="anchored" data-anchor-id="using-jaccard-similarity">Using Jaccard similarity</h4>
 <p>Consider representations of point <span class="math inline">p</span> embedded in two metric spaces $(X, d_{X}) and in <span class="math inline">(Y, d_{Y})</span>. We denote the k-nearest neighbors of <span class="math inline">p</span> in the two metric spaces as <span class="math inline">K_{X}(p)</span> and <span class="math inline">K_{Y}(p)</span>. The Jaccard similarity between the neighborhood sets is defined as: <span class="math display">
@@ -450,9 +442,7 @@ J_{XY}(p) = \frac{|K_{X}(p) \cap K_{Y}(p)|}{|K_{X}(p) \cup K_{Y}(p)|}
 </ol></li>
 </ul>
 <p>Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in <span class="citation" data-cites="skinnider2019evaluating">Skinnider, Squair, and Foster (<a href="#ref-skinnider2019evaluating" role="doc-biblioref">2019</a>)</span> and <span class="citation" data-cites="cooley2019novel">Cooley et al. (<a href="#ref-cooley2019novel" role="doc-biblioref">2019</a>)</span>.</p>
-<ul>
-<li>Discuss <span class="citation" data-cites="wolf2019paga">Wolf et al. (<a href="#ref-wolf2019paga" role="doc-biblioref">2019</a>)</span>, who adapt diffusion maps for scRNA-seq analysis.</li>
-</ul>
+<p><span class="citation" data-cites="wolf2019paga">Wolf et al. (<a href="#ref-wolf2019paga" role="doc-biblioref">2019</a>)</span> apply diffusion maps for scRNA-seq analysis.</p>
 </section>
 <section id="further-reading" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Further reading</h1>

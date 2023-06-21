@@ -1,0 +1,42 @@
+---
+title: "Set cover problem"
+author: Rohan Gala
+date: "2023-04-27"
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: pygments
+bibliography: ../refs.bib
+
+format:
+  html:
+    theme: journal
+    code-fold: true
+    html-math-method: katex
+
+editor:
+    render-on-save: true
+---
+
+The set cover problem refers to finding `K` non-empty subsets $s_1,...,s_K$, where each set $s_i$ consists of elements from a universe $U$, such that $\bigcup_i s_i = U$ and $|s_i| \geq 1$.
+
+The number of feasible solutions to the set cover problem is given by the [Stirling number of the second kind](https://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind), denoted by $S(n, k)$, which describes the number of ways to partition a set of $n$ elements into $k$ non-empty subsets.
+
+
+
+Choose $k$ elements from $n$ elements and fix the order
+
+This can be done in $\binom{n}{k} \times k!$ ways
+
+Then partition the remaining $n-k$ elements into $k$ subsets.
+
+This can be done in $S(n-k, k)$ ways, where $S(n, k)$ is the Stirling number of the second kind.
+
+
+
+
+
+### References
+
+::: {#refs}
+:::

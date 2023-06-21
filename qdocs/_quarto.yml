@@ -2,7 +2,10 @@
 project:
   type: website
   output-dir: ../docs
-
+  render:
+    - posts/spaces.qmd
+    - posts/notation_dist.qmd
+    - posts/transformers.qmd
 
 website:
   title: "notes"

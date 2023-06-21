@@ -229,20 +229,20 @@ Thus we are interested in Riemannian manifolds of intrinsic dimension $d \leq n$
 
 ## Dimensionality reduction
 
-These set of [notes by Drew Wilimitis](https://drewwilimitis.github.io/Manifold-Learning/) contain python implementation of common methods. 
+These set of [notes by Drew Wilimitis](https://drewwilimitis.github.io/Manifold-Learning/) also contain python implementation of common methods. 
 
 Various computational methods have been designed to uncover a lower dimension manifold that preserve some notion of distances and structure of data observed in high dimension.
 
 - MDS: preserve pairwise distances (using some common metric, e.g. Euclidean)
-- Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops, using  some common metric)
-- Diffusion maps: consider a notion of reachability of distant points by constructing a diffusion process [@coifman2005geometric; @de2008introduction]
+- Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops. Assumes a metric to define nearest neighbor)
+- Diffusion maps: consider notion of reachability of distant points by constructing a diffusion process [@coifman2005geometric; @de2008introduction]
 - Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods
-- Similarities and distances - see @ganea2019non
+
  
-Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. e.g. [transformer architectures](https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html). 
+Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. e.g. [transformer architectures](https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html).
 
 TODO:
-
+ - Similarities and distances discussion in @ganea2019non
  - Proof in @dasgupta2003elementary for the Johnson Lindenstrauss lemma.
  - [Nearest component analysis](https://www.cs.toronto.edu/~hinton/absps/nca.pdf)
  - [Unifying dimensionality reduction, graph partitioning, and data set parameterization](https://ieeexplore.ieee.org/abstract/document/1661543)
@@ -270,8 +270,7 @@ $$
 
 Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in @skinnider2019evaluating and @cooley2019novel.
 
- - Discuss @wolf2019paga, who adapt diffusion maps for scRNA-seq analysis.
-
+@wolf2019paga apply diffusion maps for scRNA-seq analysis.
 
 # Further reading
 
