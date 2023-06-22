@@ -53,21 +53,22 @@ This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll refer to this in th
 @schlag2021linear link attention to fast weight programming. They also explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to @cover1965geometrical.
 :::
 
-A self-attention layer maps an input sequence of length $T$, denoted as $(x_1,...,x_T), x_i \in \mathbb{R}^{d_\textrm{in} \times 1}$ to an output sequence $(y_1,...,y_T), y_i \in \mathbb{R}^{d_\textrm{out} \times 1}$ as
+@phuong2022formal are perhaps the best resource for consistent notation. Here I show a stripped down version of self-attention mainly to highlight how attention captures dependence of the output on particular entries of the input sequence.
+
+We denote the $i$-th input as $x_i \in \mathbb{R}^{d_{\textrm{in}}}$. Similarly the $j$-th output $y \in \mathbb{R}^{d_{\textrm{out}}}$. Let length of the sequence $T$.
 
 $$
 \begin{aligned}
-k_i, v_i, q_i &= Kx_i,Vx_i,Qx_i \\
-A_{ij} &= \textrm{softmax}(k_i^\top q_j) \\
-y_{i} &= \sum_j{A_{ij}v_j}
+k_i, q_i, v_i &= Kx_i, Qx_i, Vx_i &\quad k,q \in \mathbb{R}^{d_{\textrm{key-query}}}, v \in \mathbb{R}^{d_{out}} \\
+A_{ij} &= k_i^\top q_j &\quad A \in \mathbb{R}^{T \times T}\\
+B_{ij} &= {\exp (A_{ij})} / {\sum_k \exp (A_{ik})} \\
+y_i &= \sum_j{B_{ij}v_j} 
 \end{aligned}
 $$
 
-$K, Q \in \mathbb{R}^{T \times d_\textrm{kq}}$ and $V \in \mathbb{R}^{T \times d_\textrm{out}}$, are trainable weights. $\textrm{softmax}$ ensures $\sum_j{A_{ij}=1} \space \forall \space i$,  and $A \in \mathbb{R}_{\geq 0}^{T \times T}$ is the attention matrix. 
+$K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}$ and $V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}$, are trainable weights. $A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of preventing interaction between the $i$-th and $j$-th inputs in constructing the $i$-th output.
 
-Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of disallowing particular pairwise-interactions between the input sequence elements in contributing to a particular output.
-
-For language, setting the upper triangular entries (including the diagonal) to be zero is a common choice. This mask pattern ensures that $y_i$ is only based on $(x_1, ..., x_{i-1})$.
+For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs, i.e. $(x_1, ..., x_{i})$.
 
 In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$. This form renders it invariant to ordering i.e. permutations of the input sequence. 
 
