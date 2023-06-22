@@ -55,7 +55,7 @@ This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll refer to this in th
 
 I mainly want to highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in @phuong2022formal.
 
-We denote the $i$-th input as $x_i \in \mathbb{R}^{d_{\textrm{in}}}$. Similarly the $j$-th output $y \in \mathbb{R}^{d_{\textrm{out}}}$. Let length of the sequence $T$.
+Let length of the sequence $T$. We denote the $i$-th input as $x_i \in \mathbb{R}^{d_{\textrm{in}}}$. Similarly the $j$-th output $y_j \in \mathbb{R}^{d_{\textrm{out}}}$. $K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}$ and $V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}$, are trainable weight matrices. 
 
 $$
 \begin{aligned}
@@ -66,7 +66,7 @@ y_i &= \sum_j{B_{ij}v_j}
 \end{aligned}
 $$
 
-$K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}$ and $V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}$, are trainable weights. $A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of preventing interaction between the $i$-th and $j$-th inputs in constructing the $i$-th output.
+$A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of preventing interaction between the $i$-th and $j$-th inputs in constructing the $i$-th output.
 
 For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs of the sequence, i.e. $(x_1, ..., x_{i})$ (causality for temporal sequences). Since the product of lower triangular matrices remains lower triangular, stacking attention layers with this mask pattern retains such dependence throughout - which can be useful depending on the use case.  
 
