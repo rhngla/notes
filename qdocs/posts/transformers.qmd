@@ -70,7 +70,7 @@ $A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to
 
 For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs of the sequence, i.e. $(x_1, ..., x_{i})$ (causality for temporal sequences). Since the product of lower triangular matrices remains lower triangular, stacking attention layers with this mask pattern retains such dependence throughout - which can be useful depending on the use case.  
 
-I expect that particular masking patterns, whether masking retains dependencies when stacked, sparsity of the attention matrix (and of $K$, $Q$, $V$ matrices) are important questions for specific applications. 
+I expect that choice of particular masking patterns and sparsity of the attention matrix (and of $K$, $Q$, $V$ matrices) are important questions for specific applications. 
 
 In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$. This form renders it invariant to ordering i.e. permutations of the input sequence. 
 
