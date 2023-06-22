@@ -197,8 +197,11 @@ div.csl-indent {
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p><span class="citation" data-cites="raschka2023llm">Raschka (<a href="#ref-raschka2023llm" role="doc-biblioref">2023</a>)</span> outlines some key papers and developments in the context of large language models, and <span class="citation" data-cites="weng2018attention">Weng (<a href="#ref-weng2018attention" role="doc-biblioref">2018</a>)</span> provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in <span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#ref-vaswani2017attention" role="doc-biblioref">2017</a>)</span>.</p>
-</div></div><section id="generative-sequence-modeling" class="level3 page-columns page-full">
+<p><span class="citation" data-cites="raschka2023llm">Raschka (<a href="#ref-raschka2023llm" role="doc-biblioref">2023</a>)</span> outlines some key papers and developments in the context of large language models.</p>
+</div><div class="">
+<p><span class="citation" data-cites="weng2018attention">Weng (<a href="#ref-weng2018attention" role="doc-biblioref">2018</a>)</span> provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in <span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#ref-vaswani2017attention" role="doc-biblioref">2017</a>)</span>.</p>
+</div></div>
+<section id="generative-sequence-modeling" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="generative-sequence-modeling">Generative sequence modeling</h3>
 <p>Language has a natural sequential structure. The generative modeling task is to learn a probability distribution over sequences of words.</p>
 <p>Let different words be specific values of <span class="math inline">n</span> random variables. Then the distribution we’d like to learn from data is <span class="math inline">p(s_1, s_2, ..., s_n)</span>. The sequential ordering motivates a particular factorization of this joint distribution:</p>
@@ -212,13 +215,13 @@ div.csl-indent {
 </div></div></section>
 <section id="attention-mechanism-and-transformer-architecture" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="attention-mechanism-and-transformer-architecture">Attention mechanism and transformer architecture</h3>
+<p>I mainly want to highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in <span class="citation" data-cites="phuong2022formal">Phuong and Hutter (<a href="#ref-phuong2022formal" role="doc-biblioref">2022</a>)</span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p><span class="citation" data-cites="smola2019attn">Alex Smola (<a href="#ref-smola2019attn" role="doc-biblioref">2019</a>)</span> motivates the attention mechanism with kernel regression</p>
+<p><span class="citation" data-cites="smola2019attn">Alex Smola (<a href="#ref-smola2019attn" role="doc-biblioref">2019</a>)</span> motivates the attention mechanism with kernel regression.</p>
 </div><div class="">
 <p><span class="citation" data-cites="schlag2021linear">Schlag, Irie, and Schmidhuber (<a href="#ref-schlag2021linear" role="doc-biblioref">2021</a>)</span> link attention to fast weight programming. They also explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to <span class="citation" data-cites="cover1965geometrical">Cover (<a href="#ref-cover1965geometrical" role="doc-biblioref">1965</a>)</span>.</p>
 </div></div>
-<p>I mainly want to highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in <span class="citation" data-cites="phuong2022formal">Phuong and Hutter (<a href="#ref-phuong2022formal" role="doc-biblioref">2022</a>)</span>.</p>
 <p>Let length of the sequence <span class="math inline">T</span>. We denote the <span class="math inline">i</span>-th input as <span class="math inline">x_i \in \mathbb{R}^{d_{\textrm{in}}}</span>. Similarly the <span class="math inline">j</span>-th output <span class="math inline">y_j \in \mathbb{R}^{d_{\textrm{out}}}</span>. <span class="math inline">K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}</span> and <span class="math inline">V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}</span>, are trainable weight matrices.</p>
 <p><span class="math display">
 \begin{aligned}
@@ -234,7 +237,7 @@ y_i &amp;= \sum_j{B_{ij}v_j}
 <p>In the absence of masking, each output takes on the form <span class="math inline">y_j = \sum_i{g_j(x_i)}</span>, for some function <span class="math inline">g_j</span>. This form renders it invariant to ordering i.e.&nbsp;permutations of the input sequence.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>On a related note, <span class="citation" data-cites="zaheer2017deep">Zaheer et al. (<a href="#ref-zaheer2017deep" role="doc-biblioref">2017</a>)</span> had shown that for universal function approximators (e.g.&nbsp;neural networks) <span class="math inline">h</span> and <span class="math inline">g</span>, a function <span class="math inline">f</span> of the form <span class="math display">f(x_1, ... x_n) = h(\sum_i(g(x_i)))</span> is a universal approximator for any permutation invariant function.</p>
+<p><span class="citation" data-cites="zaheer2017deep">Zaheer et al. (<a href="#ref-zaheer2017deep" role="doc-biblioref">2017</a>)</span> have shown that for universal function approximators (e.g.&nbsp;neural networks) <span class="math inline">h</span> and <span class="math inline">g</span>, a function <span class="math inline">f</span> of the form <span class="math display">f(x_1, ... x_n) = h(\sum_i{g(x_i)})</span> is a universal approximator for any permutation invariant function.</p>
 </div></div><p>Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing.</p>
 <p>The transformer in <span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#ref-vaswani2017attention" role="doc-biblioref">2017</a>)</span> also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to provide context from a different source - and I suspect this is key for multimodal applications.</p>
 

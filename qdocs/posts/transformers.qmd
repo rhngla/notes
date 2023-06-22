@@ -22,7 +22,11 @@ In my view, the main concepts to be familiar with are:
  - [Multi-task learning](#multi-task-learning)
 
 ::: {.column-margin}
-@raschka2023llm outlines some key papers and developments in the context of large language models, and @weng2018attention provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in @vaswani2017attention. 
+@raschka2023llm outlines some key papers and developments in the context of large language models.  
+:::
+
+::: {.column-margin}
+@weng2018attention provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in @vaswani2017attention.
 :::
 
 ### Generative sequence modeling
@@ -45,15 +49,15 @@ This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll revisit this view i
 
 ### Attention mechanism and transformer architecture
 
+I mainly want to highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in @phuong2022formal.
+
 ::: {.column-margin}
-@smola2019attn motivates the attention mechanism with kernel regression
+@smola2019attn motivates the attention mechanism with kernel regression.
 :::
 
 ::: {.column-margin}
 @schlag2021linear link attention to fast weight programming. They also explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to @cover1965geometrical.
 :::
-
-I mainly want to highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in @phuong2022formal.
 
 Let length of the sequence $T$. We denote the $i$-th input as $x_i \in \mathbb{R}^{d_{\textrm{in}}}$. Similarly the $j$-th output $y_j \in \mathbb{R}^{d_{\textrm{out}}}$. $K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}$ and $V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}$, are trainable weight matrices. 
 
@@ -75,7 +79,7 @@ I expect that choice of particular masking patterns and sparsity of the attentio
 In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$. This form renders it invariant to ordering i.e. permutations of the input sequence. 
 
 ::: {.column-margin}
-On a related note, @zaheer2017deep had shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $$f(x_1, ... x_n) = h(\sum_i(g(x_i)))$$ is a universal approximator for any permutation invariant function.
+@zaheer2017deep have shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $$f(x_1, ... x_n) = h(\sum_i{g(x_i)})$$ is a universal approximator for any permutation invariant function.
 :::
 
 Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing. 
