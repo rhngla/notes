@@ -68,7 +68,7 @@ $$
 
 $K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}$ and $V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}$, are trainable weights. $A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of preventing interaction between the $i$-th and $j$-th inputs in constructing the $i$-th output.
 
-For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs, i.e. $(x_1, ..., x_{i})$.
+For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs of the sequence, i.e. $(x_1, ..., x_{i})$ (causality for temporal sequences). Since the product of lower triangular matrices remains lower triangular, stacking attention layers with this mask pattern retains such dependence throughout - which can be useful depending on the use case.  
 
 In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$. This form renders it invariant to ordering i.e. permutations of the input sequence. 
 
@@ -76,10 +76,11 @@ In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)
 On a related note, @zaheer2017deep had shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $$f(x_1, ... x_n) = h(\sum_i(g(x_i)))$$ is a universal approximator for any permutation invariant function.
 :::
 
-I've ignored scaling and nonlinearities for simplicity in the description above. Aside from the attention mechanism, the transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing.
+
+Other from attention, the decoder-only transformer architecture includes residual connections, layer normalization, and scaling in the calculation of the attention matrix. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing.
 
 ::: {.column-margin}
-I highly recommend the implementation walkthrough by Karpathy [-@karpathy2023llm]. He's a skilled teacher and watching him live-code is instructive.
+I highly recommend the GPT implementation walkthrough by Karpathy [-@karpathy2023llm]. He's a skilled teacher and watching him live-code is instructive.
 :::
 
 ### Multi-task learning
