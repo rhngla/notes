@@ -53,7 +53,7 @@ This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll refer to this in th
 @schlag2021linear link attention to fast weight programming. They also explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to @cover1965geometrical.
 :::
 
-@phuong2022formal are perhaps the best resource for consistent notation. Here I show a stripped down version of self-attention mainly to highlight how attention captures dependence of the output on particular entries of the input sequence.
+I mainly want to highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in @phuong2022formal.
 
 We denote the $i$-th input as $x_i \in \mathbb{R}^{d_{\textrm{in}}}$. Similarly the $j$-th output $y \in \mathbb{R}^{d_{\textrm{out}}}$. Let length of the sequence $T$.
 
