@@ -2,7 +2,8 @@
 title: "Concepts in dimensionality reduction"
 author: "Rohan Gala"
 date: "2023-04-07"
-categories: [math]
+categories: ["math", "machine-learning"]
+date-modified: last-modified
 #image: "image.jpg"
 toc: true
 number-sections: true

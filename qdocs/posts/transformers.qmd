@@ -2,6 +2,7 @@
 title: "Transformers and foundational models for X"
 author: "Rohan Gala"
 date: "2023-06-20"
+date-modified: last-modified
 categories: ["machine learning"]
 #image: "image.jpg"
 toc: true
@@ -27,6 +28,10 @@ In my view, the main concepts to be familiar with are:
 
 ::: {.column-margin}
 @weng2018attention provides an overview of the attention mechanism, and some historical notes for the peculiar keys, values, queries nomenclature used in @vaswani2017attention.
+:::
+
+::: {.column-margin}
+@bloem2019transformers provides a more pedagogical view of the transformer architecture, and has nice visualizations as well.
 :::
 
 ### Generative sequence modeling
@@ -59,7 +64,7 @@ I mainly want to highlight how attention captures dependence of the output on pa
 @schlag2021linear link attention to fast weight programming. They also explore the linear version of attention in the context of associative memory and explore memory capacity of such models with different choices of kernels, activation functions, etc., connecting to a rich literature on such investigations dating all the way back to @cover1965geometrical.
 :::
 
-Let length of the sequence $T$. We denote the $i$-th input as $x_i \in \mathbb{R}^{d_{\textrm{in}}}$. Similarly the $j$-th output $y_j \in \mathbb{R}^{d_{\textrm{out}}}$. $K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}$ and $V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}$, are trainable weight matrices. 
+Let length of the sequence $T$. We denote the $i$-th input as ${x_i \in \mathbb{R}^{d_{\textrm{in}}}}$. Similarly the $j$-th output ${y_j \in \mathbb{R}^{d_{\textrm{out}}}}$. Matrices ${K, Q \in \mathbb{R}^{d_\textrm{key-query} \times d_{\textrm{in}}}}$ and ${V \in \mathbb{R}^{d_\textrm{out} \times d_{\textrm{in}}}}$ are trainable weights. 
 
 $$
 \begin{aligned}
@@ -98,7 +103,7 @@ So far, a clear reason for why large language models seem magical is missing. Wh
 
 I think @radford2019language, and later @brown2020language provide this missing reason. The main realization is that for language, the task itself is a sequence of tokens. Tasks can take the form of "translate to german" or "write python code for" etc. Here the sequence of words that specify the task are themselves part of the input sequence.
 
-Moreover, the underlying input does not have to be "words", but instead can be more parcellated and abstract [byte pair encodings](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt).
+Moreover, the underlying input does not have to be "words", but instead can be more parcellated and abstract, e.g. [byte pair encodings](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt).
 
 The implication is that while we learn $p(output|input)$, we are also learning $p(output | input, task)$, without needing task-specific architecture or training!
 

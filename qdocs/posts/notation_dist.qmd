@@ -2,6 +2,8 @@
 title: "Notation for conditional distributions"
 author: Rohan Gala
 date: "2023-04-27"
+date-modified: last-modified
+categories: ["math"]
 toc: true
 number-sections: true
 number-depth: 2
