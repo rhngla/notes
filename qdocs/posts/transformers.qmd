@@ -37,7 +37,7 @@ It's important to understand that the notion of 'words' is arbitrary for such mo
 
 When generating new sequences, we are recursively sampling particular conditional distributions, e.g. $p(s_i | s_1, ... s_{i-1})$ to ultimately look like we are sampling from $p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})$.
 
-This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll refer to this in the section on multi-task learning. 
+This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll revisit this view in the section on multi-task learning. 
 
 ::: {.column-margin}
 @phuong2022formal describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.

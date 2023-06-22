@@ -205,7 +205,7 @@ div.csl-indent {
 <p><span class="math display">p(s_1, s_2, ..., s_n) = p(s_1) p(s_2 | s_1) p(s_3 | s_1, s_2) ... p(s_n | s_1, s_2, ..., s_{n-1})</span></p>
 <p>It’s important to understand that the notion of ‘words’ is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level. This is a crucial think to keep in mind for the notions of multi-task learning and foundational models.</p>
 <p>When generating new sequences, we are recursively sampling particular conditional distributions, e.g.&nbsp;<span class="math inline">p(s_i | s_1, ... s_{i-1})</span> to ultimately look like we are sampling from <span class="math inline">p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})</span>.</p>
-<p>This looks like <span class="math inline">p(\textrm{outputs}|\textrm{inputs})</span>. We’ll refer to this in the section on multi-task learning.</p>
+<p>This looks like <span class="math inline">p(\textrm{outputs}|\textrm{inputs})</span>. We’ll revisit this view in the section on multi-task learning.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="citation" data-cites="phuong2022formal">Phuong and Hutter (<a href="#ref-phuong2022formal" role="doc-biblioref">2022</a>)</span> describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.</p>
