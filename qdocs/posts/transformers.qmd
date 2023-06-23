@@ -105,7 +105,7 @@ I think @radford2019language, and later @brown2020language provide this missing 
 
 Moreover, the underlying input does not have to be "words", but instead can be more parcellated and abstract, e.g. [byte pair encodings](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt).
 
-The implication is that while we learn $p(output|input)$, we are also learning $p(output | input, task)$, without needing task-specific architecture or training!
+The implication is that while we learn $p(\textrm{output}|\textrm{input})$, we are also learning ${p(\textrm{output} | \textrm{input}, \textrm{task})}$, without needing task-specific architecture or training!
 
 In my view, this is a central requirement for a meaningful notion of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance is possible on a variety of tasks, even though the task is not explicitly specified while training.
 
@@ -113,9 +113,7 @@ In my view, this is a central requirement for a meaningful notion of foundationa
 
 The term "foundational models" was popularized by @bommasani2021opportunities, and an accompanying [workshop at Stanford University](https://crfm.stanford.edu/workshop.html). 
 
-@bommasani2021opportunities describe the notion of emergence (generalization over tasks, and therefore related to zero-shot performance) and homogenization (learning something useful for a variety of downstream tasks, and therefore the pre-training is amenable to fine-tuning).
-
-In my view this is essentially echoing the central observations of @radford2019language and @brown2020language.
+@bommasani2021opportunities describe the notion of emergence (generalization over tasks, and therefore related to zero-shot performance) and homogenization (learning something useful for a variety of downstream tasks, and therefore the pre-training is amenable to fine-tuning). These essentially echo the central observations of @radford2019language and @brown2020language.
 
 With the hype about large language models gripping other domains, it is worth asking if the these ideas are applicable models in other domains that do not have the special place of language.
 
@@ -135,7 +133,9 @@ Transcriptomic data contain neither a natural sequential ordering, nor a large e
 
 Recent studies applying transformer-based models to single cell genomics have generated quite some buzz:
 
+ - @le2021transformer
  - @yang2022scbert
+ - @ma2023single
  - @cui2022scformer, rebranded as @cui2023scgpt
  - @shen2023generative
  - @theodoris2023
