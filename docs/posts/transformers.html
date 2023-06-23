@@ -215,7 +215,7 @@ div.csl-indent {
 <p>Language has a natural sequential structure. The generative modeling task is to learn a probability distribution over sequences of words.</p>
 <p>Let different words be specific values of <span class="math inline">n</span> random variables. Then the distribution we’d like to learn from data is <span class="math inline">p(s_1, s_2, ..., s_n)</span>. The sequential ordering motivates a particular factorization of this joint distribution:</p>
 <p><span class="math display">p(s_1, s_2, ..., s_n) = p(s_1) p(s_2 | s_1) p(s_3 | s_1, s_2) ... p(s_n | s_1, s_2, ..., s_{n-1})</span></p>
-<p>It’s important to understand that the notion of ‘words’ is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level. This is a crucial think to keep in mind for the notions of multi-task learning and foundational models.</p>
+<p>It’s important to understand that the notion of ‘words’ is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level. This idea is important for notions of multi-task learning and foundational models.</p>
 <p>When generating new sequences, we are recursively sampling particular conditional distributions, e.g.&nbsp;<span class="math inline">p(s_i | s_1, ... s_{i-1})</span> to ultimately look like we are sampling from <span class="math inline">p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})</span>.</p>
 <p>This looks like <span class="math inline">p(\textrm{outputs}|\textrm{inputs})</span>. We’ll revisit this view in the section on multi-task learning.</p>
 
