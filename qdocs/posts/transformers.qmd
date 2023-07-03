@@ -75,7 +75,7 @@ y_i &= \sum_j{B_{ij}v_j}
 \end{aligned}
 $$
 
-$A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of preventing interaction between the $i$-th and $j$-th inputs in constructing the $i$-th output.
+$A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of preventing multiplicative interaction between the $i$-th and $j$-th inputs in constructing the $i$-th output.
 
 For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs of the sequence, i.e. $(x_1, ..., x_{i})$ (causality for temporal sequences). Since the product of lower triangular matrices remains lower triangular, stacking attention layers with this mask pattern retains such dependence throughout - which can be useful depending on the use case.  
 
@@ -87,9 +87,9 @@ In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)
 @zaheer2017deep have shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $$f(x_1, ... x_n) = h(\sum_i{g(x_i)})$$ is a universal approximator for any permutation invariant function.
 :::
 
-Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing. 
+Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing. Language models also share weights between the embedding layer `(vocabulary_size x embedding_dimension)`. It remains to be seen if such tricks could be helpful for other applications.
 
-The transformer in @vaswani2017attention also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to provide context from a different source - and I suspect this is key for multimodal applications.
+The transformer in @vaswani2017attention also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to provide context from a different source.
 
 ::: {.column-margin}
 I highly recommend the GPT implementation walkthrough by Karpathy [-@karpathy2023llm]. He's a skilled teacher and watching him live-code is instructive.
@@ -109,17 +109,23 @@ The implication is that while we learn $p(\textrm{output}|\textrm{input})$, we a
 
 In my view, this is a central requirement for a meaningful notion of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance is possible on a variety of tasks, even though the task is not explicitly specified while training.
 
-### Foundation models
+### Foundational models
 
 The term "foundational models" was popularized by @bommasani2021opportunities, and an accompanying [workshop at Stanford University](https://crfm.stanford.edu/workshop.html). 
 
 @bommasani2021opportunities describe the notion of emergence (generalization over tasks, and therefore related to zero-shot performance) and homogenization (learning something useful for a variety of downstream tasks, and therefore the pre-training is amenable to fine-tuning). These essentially echo the central observations of @radford2019language and @brown2020language.
 
-With the hype about large language models gripping other domains, it is worth asking if the these ideas are applicable models in other domains that do not have the special place of language.
+The idea of fine-tuning and using pre-trained model components on related datasets or tasks (e.g. transfer learning) has been a motivation behind efforts to curate such models in various domains, even before large language models became common e.g. [https://pytorch.org/hub/](https://pytorch.org/hub/). Unlike the multi-task learning in large language models, the scope of tasks for which pre-trained models may be useful in other domains is usually limited.
+
+### Towards scientific applications
+
+The output of language models can be directly parsed by humans. Let's say we ask a language model to write science fiction based on a fictional planet, for which we make up the rules of physics. The output from these models can be directly parsed, and evaluated for quality.
+
+This is usually not the case for scientific applications. The model makes predictions, but for tools to make sense of when predictions are to be trusted are lacking.
 
 ### Transformers for single-cell resolution datasets
 
-The most developed, least noisy single-cell resolution _-omics_ datasets are from transcriptomics. For most analyses, the dataset is a table rows are cells,  columns are genes, and entries are the gene expression values. Additional metadata, e.g. disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.
+The most developed, least noisy single-cell resolution _-omics_ datasets are from transcriptomics. For most analyses, the dataset is a table where rows are cells, columns are genes, and entries are the gene expression values. Additional metadata, e.g. disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.
 
 Typical tasks include determining identifiable cell types, specifying differentially expressed genes across conditions (aging, disease, perturbations), inferring developmental trajectories of particular cell types, identifying gene regulatory networks etc.
 
@@ -135,11 +141,13 @@ Recent studies applying transformer-based models to single cell genomics have ge
 
  - @le2021transformer
  - @yang2022scbert
+ - @connell2022genellm
+ - @shen2023generative
  - @ma2023single
  - @cui2022scformer, rebranded as @cui2023scgpt
- - @shen2023generative
  - @theodoris2023
  - @hao2023foundation
+ - @gong2023xtrimogene
 
  (to be continued)
 

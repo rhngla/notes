@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Rohan Gala">
+<meta name="dcterms.date" content="2023-07-03">
 
-<title>notes - Notes</title>
+<title>notes - Gradients through stochastic nodes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,27 +22,44 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -60,40 +79,25 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -103,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">notes</span>
     </a>
   </div>
@@ -114,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="./about.qmd" rel="" target="">
+    <a class="nav-link" href="../about.qmd" rel="" target="">
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
@@ -132,186 +136,115 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Notes</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Gradients through stochastic nodes</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">machine learning</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Rohan Gala </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 3, 2023</p>
+      </div>
+    </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">July 3, 2023</p>
+      </div>
+    </div>
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(2)</span></div><div class="category" data-category="machine-learning">machine-learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="math">math <span class="quarto-category-count">(2)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#references" id="toc-references" class="nav-link active" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
 
 
 
 
+<p>Calculating gradients through computational nodes that involve sampling from a distribution is non-trivial. There are two main strategies, one involving <em>score function</em> estimators, and another involving reparametrization. The following notes are primarily based on the introduction in <span class="citation" data-cites="maddison2016concrete">Maddison, Mnih, and Teh (<a href="#ref-maddison2016concrete" role="doc-biblioref">2016</a>)</span>.</p>
+<p>Consider a stochastic node, where we sample values <span class="math inline">x</span> of a random variable <span class="math inline">X</span> from a distribution <span class="math inline">p_{X|\phi}</span>, where <span class="math inline">\phi</span> are parameters of the distribution, which may be specified by an upstream neural network.</p>
+<p>Let’s also assume a deterministic and differentiable function <span class="math inline">f_{\theta}</span> with parameters <span class="math inline">\theta</span> applied to samples <span class="math inline">x</span>, and we are interested in parameters <span class="math inline">\theta</span> and <span class="math inline">\phi</span> that optimize an objective that consists of an average over the samples drawn from <span class="math inline">p_{X|\phi}</span> as follows:</p>
+<p><span id="eq-objective"><span class="math display">
+\begin{aligned}
+\mathcal{L}(\theta, \phi) &amp;= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \int{f_{\theta}(x)p_{\phi}(x)dx}
+\end{aligned}
+\tag{1}</span></span></p>
+<p>We require estimates of gradients <span class="math inline">\nabla_{\theta}\mathcal{L}</span> and <span class="math inline">\nabla_{\phi}\mathcal{L}</span> for optimization with gradient descent. <span id="eq-gradtheta"><span class="math display">
+\begin{aligned}
+\nabla_{\theta}\mathcal{L} &amp;= \nabla_{\theta}\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] \\
+&amp;=  \int{\nabla_{\theta} f_{\theta}(x) p_{\phi}(x)dx} \\
+&amp;=  \mathbb{E}_{x \sim p_{X|\phi}}[\nabla_{\theta}f_{\theta}(x)]
+\end{aligned}
+\tag{2}</span></span></p>
+<p>The gradient with respect to <span class="math inline">\theta</span> in <a href="#eq-gradtheta">Eq.&nbsp;2</a> can still be cast as an expectation over samples from the distribution <span class="math inline">p_{X|\phi}</span>. So we can simply draw samples from the distribution and estimate the gradient, because <span class="math inline">\nabla_{\theta}f_{\theta}</span> is well-defined. In the extreme case, the estimate (albeit a noisy one) is obtained simply from a single sample <span class="math inline">x</span>.</p>
+<p><span id="eq-gradphi"><span class="math display">
+\begin{aligned}
+\nabla_{\phi}\mathcal{L} &amp;= \nabla_{\phi}\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] \\
+&amp;= \int{f_{\theta}(x) \nabla_{\phi} p_{\phi}(x)dx}
+\end{aligned}
+\tag{3}</span></span></p>
+<p>It may be tempting think of <a href="#eq-gradphi">Eq.&nbsp;3</a> as <span class="math inline">\mathbb{E}_{x \sim \nabla_{\phi} p_{X|\phi}}[f_{\theta}(x)]</span> in an analogous manner. This would be wrong, because <span class="math inline">\nabla_{\phi} p_{\phi}(x)</span> not a valid probability density function.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>A valid probability density function is guaranteed to be non-negative everywhere, and integrate to unity over its domain.</p>
+</div></div><p>Instead we’ll use an identity that sometimes referred to as the log-derivative trick to rewrite <a href="#eq-gradphi">Eq.&nbsp;3</a> as follows:</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Log-derivative trick: <span class="math display">
+\nabla_{x}f(x) = f(x)\nabla_x{\log(x)}
+</span></p>
+</div></div><p><span id="eq-score"><span class="math display">
+\begin{aligned}
+\int{f_{\theta}(x) \nabla_{\phi} p_{\phi}(x)dx} &amp;= \int{(f_{\theta}(x)  \nabla_{\phi} \log{p_{\phi}(x)}) p_{\phi}(x) dx} \\
+\implies \nabla_{\phi}\mathcal{L} &amp;=\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x) \nabla_{\phi}{\log{p_{\phi}(x)}}]
+\end{aligned}
+\tag{4}</span></span></p>
+<p><a href="#eq-score">Eq.&nbsp;4</a> shows that the gradient is once again over samples from the distribution <span class="math inline">p_{X|\phi}</span>. As before, in the extreme case this may be estimated with a single sample.</p>
+<p>If we view <span class="math inline">p_{\phi}(x)</span> as a likelihood function, then <span class="math inline">\nabla_{\phi}{\log{p_{\phi}(x)}}</span> is referred to as the <em>score function</em>. The estimate of the gradient includes the score function, and so it is referred to as a <em>score function estimator</em>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>The bias and variance over different samples of the data are an important characterization of estimators. The score function is of relevance here, e.g.&nbsp;see these <a href="https://cseweb.ucsd.edu/~elkan/291winter2005/lect09.pdf">Lecture notes</a> and discussion about the Cramér-Rao bound.</p>
+</div></div><p>Another way to estimate the gradient through stochastic nodes is to use the <em>reparametrization trick</em>. This is possible when the distribution <span class="math inline">p_{X|\phi}</span> can be composed with a deterministic function <span class="math inline">g_\psi</span> applied to samples <span class="math inline">z</span> drawn from a fixed distribution <span class="math inline">p_{Z}</span>.</p>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-maddison2016concrete" class="csl-entry" role="listitem">
+Maddison, Chris J, Andriy Mnih, and Yee Whye Teh. 2016. <span>“The Concrete Distribution: A Continuous Relaxation of Discrete Random Variables.”</span> <em>arXiv Preprint arXiv:1611.00712</em>.
+</div>
+</div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="machine learning" data-listing-date-sort="1688367600000" data-listing-file-modified-sort="1688414156585" data-listing-date-modified-sort="1688414156000" data-listing-reading-time-sort="3">
-<div class="thumbnail">
-<p><a href="./posts/stochastic-nodes.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./posts/stochastic-nodes.html">
-<h3 class="no-anchor listing-title">
-Gradients through stochastic nodes
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
-machine learning
-</div>
-</div>
-<a href="./posts/stochastic-nodes.html">
-<div class="listing-description">
-Calculating gradients through computational nodes that involve sampling from a distribution is non-trivial. There are two main strategies, one involving <em>score function</em> estimators, and another involving reparametrization. The following notes are primarily based on the…<span class="citation" data-cites="maddison2016concrete"></span>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/stochastic-nodes.html">
-<div class="listing-date">
-Jul 3, 2023
-</div>
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="machine learning" data-listing-date-sort="1687244400000" data-listing-file-modified-sort="1688414253096" data-listing-date-modified-sort="1688414253000" data-listing-reading-time-sort="8">
-<div class="thumbnail">
-<p><a href="./posts/transformers.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./posts/transformers.html">
-<h3 class="no-anchor listing-title">
-Transformers and foundational models for X
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
-machine learning
-</div>
-</div>
-<a href="./posts/transformers.html">
-<div class="listing-description">
-Here I keep track of sources that have helped me understand this topic better.
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/transformers.html">
-<div class="listing-date">
-Jun 20, 2023
-</div>
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="math" data-listing-date-sort="1682578800000" data-listing-file-modified-sort="1687471457233" data-listing-date-modified-sort="1687471457000" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./posts/notation_dist.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./posts/notation_dist.html">
-<h3 class="no-anchor listing-title">
-Notation for conditional distributions
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('math'); return false;">
-math
-</div>
-</div>
-<a href="./posts/notation_dist.html">
-<div class="listing-description">
-Continuous probability distributions are commonly specified through the probability density function <span class="math inline">p(x)</span>. A distribution with parameters <span class="math inline">\theta</span> can be…<span class="math inline"></span><span class="math display"></span>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/notation_dist.html">
-<div class="listing-date">
-Apr 27, 2023
-</div>
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="math,machine-learning" data-listing-date-sort="1680850800000" data-listing-file-modified-sort="1687471482037" data-listing-date-modified-sort="1687471482000" data-listing-reading-time-sort="11">
-<div class="thumbnail">
-<p><a href="./posts/spaces.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./posts/spaces.html">
-<h3 class="no-anchor listing-title">
-Concepts in dimensionality reduction
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('math'); return false;">
-math
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('machine-learning'); return false;">
-machine-learning
-</div>
-</div>
-<a href="./posts/spaces.html">
-<div class="listing-description">
-We’ll start with some definitions - the goal is to situate ourselves with:
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/spaces.html">
-<div class="listing-date">
-Apr 7, 2023
-</div>
-<div class="listing-author">
-Rohan Gala
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

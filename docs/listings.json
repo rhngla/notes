@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/stochastic-nodes.html",
       "/posts/transformers.html",
       "/posts/notation_dist.html",
       "/posts/spaces.html"

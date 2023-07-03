@@ -1,0 +1,81 @@
+---
+title: "Gradients through stochastic nodes"
+author: "Rohan Gala"
+date: "2023-07-03"
+date-modified: last-modified
+categories: ["machine learning"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: pygments
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+---
+
+Calculating gradients through computational nodes that involve sampling from a distribution is non-trivial. There are two main strategies, one involving _score function_ estimators, and another involving reparametrization. The following notes are primarily based on the introduction in @maddison2016concrete.
+
+Consider a stochastic node, where we sample values $x$ of a random variable $X$ from a distribution $p_{X|\phi}$, where $\phi$ are parameters of the distribution, which may be specified by an upstream neural network.
+
+Let's also assume a deterministic and differentiable function $f_{\theta}$ with parameters $\theta$ applied to samples $x$, and we are interested in parameters $\theta$ and $\phi$ that optimize an objective that consists of an average over the samples drawn from $p_{X|\phi}$ as follows:
+
+$$
+\begin{aligned}
+\mathcal{L}(\theta, \phi) &= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \int{f_{\theta}(x)p_{\phi}(x)dx}
+\end{aligned}
+$$ {#eq-objective}
+
+We require estimates of gradients $\nabla_{\theta}\mathcal{L}$ and $\nabla_{\phi}\mathcal{L}$ for optimization with gradient descent.
+$$
+\begin{aligned}
+\nabla_{\theta}\mathcal{L} &= \nabla_{\theta}\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] \\
+&=  \int{\nabla_{\theta} f_{\theta}(x) p_{\phi}(x)dx} \\
+&=  \mathbb{E}_{x \sim p_{X|\phi}}[\nabla_{\theta}f_{\theta}(x)]
+\end{aligned}
+$$ {#eq-gradtheta}
+
+The gradient with respect to $\theta$ in [Eq. @eq-gradtheta] can still be cast as an expectation over samples from the distribution $p_{X|\phi}$. So we can simply draw samples from the distribution and estimate the gradient, because $\nabla_{\theta}f_{\theta}$ is well-defined. In the extreme case, the estimate (albeit a noisy one) is obtained simply from a single sample $x$.
+
+$$
+\begin{aligned}
+\nabla_{\phi}\mathcal{L} &= \nabla_{\phi}\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] \\
+&= \int{f_{\theta}(x) \nabla_{\phi} p_{\phi}(x)dx}
+\end{aligned}
+$$ {#eq-gradphi}
+
+It may be tempting think of [Eq. @eq-gradphi] as $\mathbb{E}_{x \sim \nabla_{\phi} p_{X|\phi}}[f_{\theta}(x)]$ in an analogous manner. This would be wrong, because $\nabla_{\phi} p_{\phi}(x)$ not a valid probability density function.
+
+:::{.column-margin}
+A valid probability density function is guaranteed to be non-negative everywhere, and integrate to unity over its domain.
+:::
+
+Instead we'll use an identity that sometimes referred to as the log-derivative trick to rewrite [Eq. @eq-gradphi] as follows:
+
+:::{.column-margin}
+Log-derivative trick:
+$$
+\nabla_{x}f(x) = f(x)\nabla_x{\log(x)}
+$$
+:::
+
+$$
+\begin{aligned}
+\int{f_{\theta}(x) \nabla_{\phi} p_{\phi}(x)dx} &= \int{(f_{\theta}(x)  \nabla_{\phi} \log{p_{\phi}(x)}) p_{\phi}(x) dx} \\
+\implies \nabla_{\phi}\mathcal{L} &=\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x) \nabla_{\phi}{\log{p_{\phi}(x)}}] 
+\end{aligned}
+$$ {#eq-score}
+
+[Eq. @eq-score] shows that the gradient is once again over samples from the distribution $p_{X|\phi}$. As before, in the extreme case this may be estimated with a single sample.
+
+If we view $p_{\phi}(x)$ as a likelihood function, then $\nabla_{\phi}{\log{p_{\phi}(x)}}$ is referred to as the _score function_. The estimate of the gradient includes the score function, and so it is referred to as a _score function estimator_.
+
+:::{.column-margin}
+The bias and variance over different samples of the data are an important characterization of estimators. The score function is of relevance here, e.g. see these [Lecture notes](https://cseweb.ucsd.edu/~elkan/291winter2005/lect09.pdf) and discussion about the Cramér-Rao bound.
+:::
+
+Another way to estimate the gradient through stochastic nodes is to use the _reparametrization trick_. This is possible when the distribution $p_{X|\phi}$ can be composed with a deterministic function $g_\psi$ applied to samples $z$ drawn from a fixed distribution $p_{Z}$. 
+
+### References
+
+::: {#refs}
+:::
