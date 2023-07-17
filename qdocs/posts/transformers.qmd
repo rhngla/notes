@@ -121,7 +121,9 @@ The idea of fine-tuning and using pre-trained model components on related datase
 
 The output of language models can be directly parsed by humans. Let's say we ask a language model to write science fiction based on a fictional planet, for which we make up the rules of physics. The output from these models can be directly parsed, and evaluated for quality.
 
-This is usually not the case for scientific applications. The model makes predictions, but for tools to make sense of when predictions are to be trusted are lacking.
+This fact is exploited for public facing language models such as chatGPT. In this talk titled the [State of GPT @karpathy2023stategpt], Karpathy describes finetuning, reward modeling, and reinforcement learning using the reward model; all of these hinge on the fact that humans can understand and evaluate outputs of such language models.
+
+This is usually not the case for scientific applications. Models trained on vast amounts of data can certainly make predictions, but when to trust and invest in such predictions (for scientific applications) is generally a very hard, unsolved problem for now in my opinion.
 
 ### Transformers for single-cell resolution datasets
 
@@ -129,7 +131,7 @@ The most developed, least noisy single-cell resolution _-omics_ datasets are fro
 
 Typical tasks include determining identifiable cell types, specifying differentially expressed genes across conditions (aging, disease, perturbations), inferring developmental trajectories of particular cell types, identifying gene regulatory networks etc.
 
-The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and often lack of a mathematically precise definition for tasks.
+The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and lack of mathematically precise definition of tasks.
 
 ::: {.column-margin}
 The team at [OpenProblems](https://openproblems.bio/events/) have continued to push for standardization and benchmarking through formal descriptions of tasks, e.g. @luecken2021sandbox. Still, the output of such efforts (both in terms of benchmarking datasets and state-of-the-art models) seems to have had limited influence on subsequent academic research.
@@ -137,7 +139,7 @@ The team at [OpenProblems](https://openproblems.bio/events/) have continued to p
 
 Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above.
 
-Recent studies applying transformer-based models to single cell genomics have generated quite some buzz:
+Recent studies applying transformer-based models to single cell genomics consider similar pre-training tasks and model architectures. 
 
  - @le2021transformer
  - @yang2022scbert

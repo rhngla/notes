@@ -8,6 +8,7 @@ project:
     - posts/notation_dist.qmd
     - posts/transformers.qmd
     - posts/stochastic-nodes.qmd
+    - posts/information.qmd
 
 website:
   title: "notes"

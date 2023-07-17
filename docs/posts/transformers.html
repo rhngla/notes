@@ -164,7 +164,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">July 3, 2023</p>
+        <p class="date-modified">July 17, 2023</p>
       </div>
     </div>
       
@@ -252,7 +252,7 @@ y_i &amp;= \sum_j{B_{ij}v_j}
 <p>The transformer in <span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#ref-vaswani2017attention" role="doc-biblioref">2017</a>)</span> also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to provide context from a different source.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>I highly recommend the GPT implementation walkthrough by Karpathy <span class="citation" data-cites="karpathy2023llm">(<a href="#ref-karpathy2023llm" role="doc-biblioref">2023</a>)</span>. He’s a skilled teacher and watching him live-code is instructive.</p>
+<p>I highly recommend the GPT implementation walkthrough by Karpathy <span class="citation" data-cites="karpathy2023llm">(<a href="#ref-karpathy2023llm" role="doc-biblioref">2023a</a>)</span>. He’s a skilled teacher and watching him live-code is instructive.</p>
 </div></div></section>
 <section id="multi-task-learning" class="level3">
 <h3 class="anchored" data-anchor-id="multi-task-learning">Multi-task learning</h3>
@@ -272,18 +272,19 @@ y_i &amp;= \sum_j{B_{ij}v_j}
 <section id="towards-scientific-applications" class="level3">
 <h3 class="anchored" data-anchor-id="towards-scientific-applications">Towards scientific applications</h3>
 <p>The output of language models can be directly parsed by humans. Let’s say we ask a language model to write science fiction based on a fictional planet, for which we make up the rules of physics. The output from these models can be directly parsed, and evaluated for quality.</p>
-<p>This is usually not the case for scientific applications. The model makes predictions, but for tools to make sense of when predictions are to be trusted are lacking.</p>
+<p>This fact is exploited for public facing language models such as chatGPT. In this talk titled the <span class="citation" data-cites="karpathy2023stategpt">(State of GPT <a href="#ref-karpathy2023stategpt" role="doc-biblioref">Karpathy 2023b</a>)</span>, Karpathy describes finetuning, reward modeling, and reinforcement learning using the reward model; all of these hinge on the fact that humans can understand and evaluate outputs of such language models.</p>
+<p>This is usually not the case for scientific applications. Models trained on vast amounts of data can certainly make predictions, but when to trust and invest in such predictions (for scientific applications) is generally a very hard, unsolved problem for now in my opinion.</p>
 </section>
 <section id="transformers-for-single-cell-resolution-datasets" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="transformers-for-single-cell-resolution-datasets">Transformers for single-cell resolution datasets</h3>
 <p>The most developed, least noisy single-cell resolution <em>-omics</em> datasets are from transcriptomics. For most analyses, the dataset is a table where rows are cells, columns are genes, and entries are the gene expression values. Additional metadata, e.g.&nbsp;disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.</p>
 <p>Typical tasks include determining identifiable cell types, specifying differentially expressed genes across conditions (aging, disease, perturbations), inferring developmental trajectories of particular cell types, identifying gene regulatory networks etc.</p>
-<p>The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and often lack of a mathematically precise definition for tasks.</p>
+<p>The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and lack of mathematically precise definition of tasks.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>The team at <a href="https://openproblems.bio/events/">OpenProblems</a> have continued to push for standardization and benchmarking through formal descriptions of tasks, e.g. <span class="citation" data-cites="luecken2021sandbox">Luecken et al. (<a href="#ref-luecken2021sandbox" role="doc-biblioref">2021</a>)</span>. Still, the output of such efforts (both in terms of benchmarking datasets and state-of-the-art models) seems to have had limited influence on subsequent academic research.</p>
 </div></div><p>Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above.</p>
-<p>Recent studies applying transformer-based models to single cell genomics have generated quite some buzz:</p>
+<p>Recent studies applying transformer-based models to single cell genomics consider similar pre-training tasks and model architectures.</p>
 <ul>
 <li><span class="citation" data-cites="le2021transformer">Le et al. (<a href="#ref-le2021transformer" role="doc-biblioref">2021</a>)</span></li>
 <li><span class="citation" data-cites="yang2022scbert">Yang et al. (<a href="#ref-yang2022scbert" role="doc-biblioref">2022</a>)</span></li>
@@ -331,7 +332,10 @@ Gong, Jing, Minsheng Hao, Xin Zeng, Chiming Liu, Jianzhu Ma, Xingyi Cheng, Taife
 Hao, Minsheng, Jing Gong, Xin Zeng, Chiming Liu, Yucheng Guo, Xingyi Cheng, Taifeng Wang, Jianzhu Ma, Le Song, and Xuegong Zhang. 2023. <span>“Large Scale Foundation Model on Single-Cell Transcriptomics.”</span> <em>bioRxiv</em>. <a href="https://doi.org/10.1101/2023.05.29.542705">https://doi.org/10.1101/2023.05.29.542705</a>.
 </div>
 <div id="ref-karpathy2023llm" class="csl-entry" role="listitem">
-Karpathy, Andrej. 2023. <span>“Neural Networks: Zero to Hero.”</span> 2023. <a href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ">https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ</a>.
+Karpathy, Andrej. 2023a. <span>“Neural Networks: Zero to Hero.”</span> 2023. <a href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ">https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ</a>.
+</div>
+<div id="ref-karpathy2023stategpt" class="csl-entry" role="listitem">
+———. 2023b. <span>“State of GPT.”</span> 2023. <a href="https://www.youtube.com/watch?v=bZQun8Y4L2A">https://www.youtube.com/watch?v=bZQun8Y4L2A</a>.
 </div>
 <div id="ref-le2021transformer" class="csl-entry" role="listitem">
 Le, Nguyen Quoc Khanh, Quang-Thai Ho, Trinh-Trung-Duong Nguyen, and Yu-Yen Ou. 2021. <span>“A Transformer Architecture Based on BERT and 2D Convolutional Neural Network to Identify DNA Enhancers from Sequence Information.”</span> <em>Briefings in Bioinformatics</em> 22 (5): bbab005.

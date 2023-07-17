@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Rohan Gala">
-<meta name="dcterms.date" content="2023-07-03">
+<meta name="dcterms.date" content="2023-07-13">
 
-<title>notes - Gradients through stochastic nodes</title>
+<title>notes - Information, entropy, and KL divergence</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,26 +22,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -137,8 +118,10 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Gradients through stochastic nodes</h1>
+      <h1 class="title">Information, entropy, and KL divergence</h1>
                                 <div class="quarto-categories">
+                <div class="quarto-category">fundamentals</div>
+                <div class="quarto-category">math</div>
                 <div class="quarto-category">machine learning</div>
               </div>
                   </div>
@@ -157,14 +140,14 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 3, 2023</p>
+        <p class="date">July 13, 2023</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">July 13, 2023</p>
+        <p class="date-modified">July 17, 2023</p>
       </div>
     </div>
       
@@ -175,16 +158,7 @@ div.csl-indent {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#the-set-up" id="toc-the-set-up" class="nav-link active" data-scroll-target="#the-set-up">The set up</a></li>
-  <li><a href="#updates-to-theta" id="toc-updates-to-theta" class="nav-link" data-scroll-target="#updates-to-theta">Updates to <span class="math inline">\theta</span></a></li>
-  <li><a href="#updates-to-phi" id="toc-updates-to-phi" class="nav-link" data-scroll-target="#updates-to-phi">Updates to <span class="math inline">\phi</span></a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
@@ -192,72 +166,178 @@ div.csl-indent {
 
 
 
-<p>Calculating gradients through nodes in a computational graph that involve sampling from a distribution (for which we want to learn parameters) is non-trivial. Intuitively, this is because the samples of the distribution don’t maintain a dependency with the distribution parameters. This prevents application of the chain rule used for backpropagation to obtain gradients w.r.t the distribution parameters.</p>
-<p>There are two main strategies to get around this, one involving <em>score function</em> estimators, and another involving reparametrization. See <span class="citation" data-cites="schulman2015gradient">Schulman et al. (<a href="#ref-schulman2015gradient" role="doc-biblioref">2015</a>)</span> for a more formal treatment.</p>
-<p>Roughly, the score function estimator-based approach is more general but more noisy. It leads to a surrogate loss function specified at the stochastic node, which permits gradient updates to the parameters of the distribution.</p>
-<p>The reparametrization “trick” (when possible) allows reformulating the distribution such that distribution parameters become part of a deterministic function applied to samples obtained from a fixed distribution.</p>
-<section id="the-set-up" class="level3">
-<h3 class="anchored" data-anchor-id="the-set-up">The set up</h3>
-<p>Consider a stochastic node, where we sample values <span class="math inline">x</span> of a random variable <span class="math inline">X</span> from a distribution <span class="math inline">p_{X|\phi}</span> and <span class="math inline">\phi</span> are distribution parameters. Note that <span class="math inline">\phi</span> which themselves be specified by an upstream neural network.</p>
-<p>Let’s also assume a deterministic and differentiable function <span class="math inline">f_{\theta}</span> with parameters <span class="math inline">\theta</span> applied to samples <span class="math inline">x</span>, and we are interested in parameters <span class="math inline">\theta</span> and <span class="math inline">\phi</span> that optimize an objective that consists of an average over the samples drawn from <span class="math inline">p_{X|\phi}</span> as follows:</p>
-<p><span id="eq-objective"><span class="math display">
-\begin{aligned}
-\mathcal{L}(\theta, \phi) &amp;= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \int{f_{\theta}(x)p_{\phi}(x)dx}
-\end{aligned}
-\tag{1}</span></span></p>
-</section>
-<section id="updates-to-theta" class="level3">
-<h3 class="anchored" data-anchor-id="updates-to-theta">Updates to <span class="math inline">\theta</span></h3>
-<p>First we evaluate the gradient <span class="math inline">\nabla_{\theta}\mathcal{L}</span> required to update parameters <span class="math inline">\theta</span> of the deterministic function <span class="math inline">f_{\theta}</span>: <span id="eq-gradtheta"><span class="math display">
-\begin{aligned}
-\nabla_{\theta}\mathcal{L} &amp;= \nabla_{\theta}\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] \\
-&amp;=  \int{\nabla_{\theta} f_{\theta}(x) p_{\phi}(x)dx} \\
-&amp;=  \mathbb{E}_{x \sim p_{X|\phi}}[\nabla_{\theta}f_{\theta}(x)]
-\end{aligned}
-\tag{2}</span></span></p>
-<p>We see that the gradient in <a href="#eq-gradtheta">Eq.&nbsp;2</a> can be cast as an expectation over samples from the distribution <span class="math inline">p_{X|\phi}</span>. So we can simply draw samples from the distribution and estimate the gradient, because <span class="math inline">\nabla_{\theta}f_{\theta}</span> is well-defined. In the extreme case, the estimate (albeit a noisy one) is obtained simply from a single sample <span class="math inline">x</span>. So far so good.</p>
-</section>
-<section id="updates-to-phi" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="updates-to-phi">Updates to <span class="math inline">\phi</span></h3>
-<p><span id="eq-gradphi"><span class="math display">
-\begin{aligned}
-\nabla_{\phi}\mathcal{L} &amp;= \nabla_{\phi}\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] \\
-&amp;= \int{f_{\theta}(x) \nabla_{\phi} p_{\phi}(x)dx}
-\end{aligned}
-\tag{3}</span></span></p>
-<p>It may be tempting think of <a href="#eq-gradphi">Eq.&nbsp;3</a> as <span class="math inline">\mathbb{E}_{x \sim \nabla_{\phi} p_{X|\phi}}[f_{\theta}(x)]</span> in an analogous manner - this would be wrong, because <span class="math inline">\nabla_{\phi} p_{\phi}(x)</span> not a valid probability density function.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>A valid probability density function should be non-negative everywhere, and integrate to unity over its domain.</p>
-</div></div><p>Instead we’ll use an identity that is often referred to as the log-derivative trick to rewrite <a href="#eq-gradphi">Eq.&nbsp;3</a> as follows:</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>Log-derivative trick: <span class="math display">
-\nabla_{x}h(x) = h(x)\nabla_x{\log(x)}
-</span></p>
-</div></div><p><span id="eq-score"><span class="math display">
-\begin{aligned}
-\int{f_{\theta}(x) \nabla_{\phi} p_{\phi}(x)dx} &amp;= \int{(f_{\theta}(x)  \nabla_{\phi} \log{p_{\phi}(x)}) p_{\phi}(x) dx} \\
-\implies \nabla_{\phi}\mathcal{L} &amp;=\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x) \nabla_{\phi}{\log{p_{\phi}(x)}}]
-\end{aligned}
-\tag{4}</span></span></p>
-<p><a href="#eq-score">Eq.&nbsp;4</a> shows that the gradient is once again over samples from the distribution <span class="math inline">p_{X|\phi}</span>. As before, in the extreme case this may be estimated with a single sample.</p>
-<p>If we view <span class="math inline">p_{\phi}(x)</span> as a likelihood function, then <span class="math inline">\nabla_{\phi}{\log{p_{\phi}(x)}}</span> is referred to as the <em>score function</em>. The estimate of the gradient includes the score function, and so it is referred to as a <em>score function estimator</em>.</p>
-<p>This estimator suggests <span class="math inline">\mathcal{L}_{\textrm{surrogate}}=~\mathbb{E}_{x \sim p_{X|\phi}}{[f_{\theta}(x)\log{p_{\phi}(x)}]}</span> as a surrogate loss function where <span class="math inline">f_{\theta}(x)</span> is treated as a constant (because it does not depend on <span class="math inline">\phi</span>).</p>
-<p>It is worth thinking about the extreme case, when <span class="math inline">f_{\theta}(x)</span> itself is a constant independent of <span class="math inline">x</span>. This would suggest that the parameter <span class="math inline">\phi</span> does not influence the loss, and so we would expect the gradient for <span class="math inline">\phi</span> to be zero in expectation.</p>
-<p>This is indeed the case,</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>The bias and variance over different samples of the data are an important characterization of estimators. The score function is of relevance here, e.g.&nbsp;see these <a href="https://cseweb.ucsd.edu/~elkan/291winter2005/lect09.pdf">Lecture notes</a> and discussion about the Cramér-Rao bound.</p>
-</div></div><p>Another way to estimate the gradient through stochastic nodes is to use the <em>reparametrization trick</em>. This is possible when the distribution <span class="math inline">p_{X|\phi}</span> can be composed with a deterministic function <span class="math inline">g_\psi</span> applied to samples <span class="math inline">z</span> drawn from a fixed distribution <span class="math inline">p_{Z}</span>.</p>
-</section>
-<section id="references" class="level3">
-<h3 class="anchored" data-anchor-id="references">References</h3>
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-schulman2015gradient" class="csl-entry" role="listitem">
-Schulman, John, Nicolas Heess, Theophane Weber, and Pieter Abbeel. 2015. <span>“Gradient Estimation Using Stochastic Computation Graphs.”</span> <em>Advances in Neural Information Processing Systems</em> 28.
+<p>Information and entropy are important concepts in modern statistical learning. The origins of these closely related concepts can be traced back to physical systems. Classical thermodynamics and heat engines motivate a continuous perspective, and Shannon’s information theory for data encoding and decoding motivate a discrete perspective for these concepts.</p>
+<p>While these physical systems can help build intuition, leaning hard on analogies can make it confusing for the problem at hand. Here I present a self-contained introduction to these concepts without reference to physical systems.</p>
+<p>I’ll assume continuous values for our random variables throughout. For the discrete case, the only change is to think of <span class="math inline">p_X</span> as a probability mass function (rather than a density function), and the rest of the description on this page holds.</p>
+<div id="tbl-terminology-tbl-colwidths251555" class="anchored">
+<table class="table-striped table-hover table">
+<caption>Table&nbsp;1: Notation and definitions</caption>
+<colgroup>
+<col style="width: 29%">
+<col style="width: 35%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Quantity</th>
+<th style="text-align: left;">Refers to</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>random variable</code></td>
+<td style="text-align: left;"><span class="math inline">X</span></td>
+<td style="text-align: left;">Function that maps events to values</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>distribution</code></td>
+<td style="text-align: left;"><span class="math inline">q_X</span></td>
+<td style="text-align: left;">A particular probability density function</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>density</code></td>
+<td style="text-align: left;"><span class="math inline">q_X(x)</span></td>
+<td style="text-align: left;">Probability density of at a particular value <span class="math inline">x</span>, as specified by <span class="math inline">q_X</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>sample</code></td>
+<td style="text-align: left;"><span class="math inline">x\sim q_X</span></td>
+<td style="text-align: left;">A value for a random variable, drawn from the underlying <code>distribution</code> <span class="math inline">q_X</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>observation</code></td>
+<td style="text-align: left;"><span class="math inline">x\sim p_X</span></td>
+<td style="text-align: left;">An observed value for a random variable. We typically don’t know and cannot directly access <span class="math inline">p_X</span>, but want to approximate it with <span class="math inline">q_X</span></td>
+</tr>
+</tbody>
+</table>
 </div>
-</div>
+<p><strong>Note:</strong> I’ll treat <code>sample</code>, <code>distribution</code> and <code>density</code> specifically to referring quantities related to <span class="math inline">q_X</span> as shown in the table. The plain-text sample, distribution, density etc. will refer to the general concepts.</p>
+<section id="section" class="level4">
+<h4 class="anchored" data-anchor-id="section"></h4>
+<ul>
+<li>We are given <code>observations</code>, <span class="math inline">x \sim p_X(x)</span>.</li>
+<li>We assume an underlying <code>distribution</code> <span class="math inline">q_X</span>.</li>
+<li>We interpret <code>density</code> <span class="math inline">q_X(x)</span> as how <em>likely</em> an <code>observation</code> is under the <code>distribution</code>.</li>
+<li>So we refer to <span class="math inline">q_X(x)</span> as the likelihood.</li>
+<li>Following this, the expression <span class="math inline">\log q_X(x)</span> is called log-likelihood.</li>
+</ul>
+</section>
+<section id="section-1" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="section-1"></h4>
+<ul>
+<li>Further, if <code>density</code> <span class="math inline">q_X(x)</span> is small, we say the <code>observation</code> is <em>unlikely</em>.</li>
+<li>The more unlikely the <code>observation</code>, the more <em>surprising</em> it is.</li>
+<li>The smaller the value of <span class="math inline">q_X(x)</span>, the larger is the value of <span class="math inline">-\log q_X(x)</span>.</li>
+<li>Large values of negative log-likelihood thus convey surprise.</li>
+<li>Formally, the negative log-likelihood is called <em>information</em>.</li>
+<li>Notion of surprise requires context of an underlying <code>distribution</code>!</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Why use the <span class="math inline">\log</span> operation to define information? A cryptic, partial answer: independence of distributions <span class="math inline">\implies</span> addition of information, and this serves as partial motivation.</p>
+</div></div></section>
+<section id="section-2" class="level4">
+<h4 class="anchored" data-anchor-id="section-2"></h4>
+<ul>
+<li>Let’s play a similar game with <code>samples</code>, <span class="math inline">x \sim q_X</span></li>
+<li>Many <code>samples</code> have larger values of <span class="math inline">q_X(x)</span></li>
+<li>Some <code>samples</code> will have small values of <span class="math inline">q_X(x)</span></li>
+<li>So analogous to <code>observations</code>, some <code>samples</code> can be viewed as <em>surprising</em>.</li>
+</ul>
+</section>
+<section id="section-3" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="section-3"></h4>
+<ul>
+<li>As a baseline summary statistic, we calculate the expected surprise over <code>samples</code></li>
+<li>Expected surprise is simply the avg. negative log-likelihood, as above.</li>
+<li>Expected surprise with <code>samples</code>: <span class="math inline">E_{x \sim q_X}({-\log q_X(x)})</span></li>
+<li>Expected surprise with <code>observations</code>: <span class="math inline">E_{x \sim p_X}({-\log q_X(x)})</span></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Expectation is usually an operator applied to random variable, but here we treat it as a function of values taken by the random variable. This is a commonly adopted convention that I’ll follow here.</p>
+</div></div></section>
+<section id="section-4" class="level4">
+<h4 class="anchored" data-anchor-id="section-4"></h4>
+<ul>
+<li>Expected surprise with <code>samples</code> is called <code>entropy</code> of <span class="math inline">q_X</span></li>
+<li>Expected surprise with <code>observation</code> is called <code>cross-entropy</code> of <span class="math inline">q_X</span> w.r.t. <span class="math inline">p_X</span></li>
+<li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to find <span class="math inline">q_X</span>.</li>
+<li>This is equivalent to maximizing the likelihood of <code>observations</code> under <span class="math inline">q_X</span>!</li>
+</ul>
+</section>
+<section id="section-5" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="section-5"></h4>
+<table class="table-striped table-hover table">
+<caption>Quantities related to information</caption>
+<colgroup>
+<col style="width: 61%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Quantity</th>
+<th style="text-align: right;">Refers to</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">H(q) = E_{x \sim q}({-\log q(x)})</span></td>
+<td style="text-align: right;">Entropy of <span class="math inline">q</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">H(p) = E_{x \sim p}({-\log p(x)})</span></td>
+<td style="text-align: right;">Entropy of <span class="math inline">p</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">H(p, q) = E_{x \sim p}({-\log q(x)})</span></td>
+<td style="text-align: right;">Cross entropy (<span class="math inline">q</span> w.r.t. <span class="math inline">p</span>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">D_\textrm{KL}(p | q) = E_{x \sim p}({-\log q(x)} -(-\log p(x)))</span></td>
+<td style="text-align: right;">KL Divergence of <span class="math inline">q</span> w.r.t. <span class="math inline">p</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">D_\textrm{KL}(p | q) = H(p,q) - H(p)</span></td>
+<td style="text-align: right;">Relative entropy interpretation</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">D_\textrm{KL}(p | q) = H(p,q) - H(p) \geq 0</span></td>
+<td style="text-align: right;">Gibbs inequality</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Gibb’s inequality is a consequence of Jensen’s inequality</li>
+<li>It shows that <code>cross-entropy</code> is always greater than or equal to <code>entropy</code></li>
+<li>The <code>cross-entropy</code> is minimized when <span class="math inline">q_X = p_X</span></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><strong>Jensen’s inequality</strong> <br> For convex <span class="math inline">\phi</span>: <span class="math inline">E[\phi(X)]~\geq~\phi(E[X])</span></p>
+</div></div></section>
+<section id="section-6" class="level4">
+<h4 class="anchored" data-anchor-id="section-6"></h4>
+<ul>
+<li>A recap:</li>
+<li>We can’t access <span class="math inline">p_X</span> directly, only <code>observations</code> from it.</li>
+<li>We’re proposing the <code>distribution</code> <span class="math inline">q_X</span> as an approximation to <span class="math inline">p_X</span>.</li>
+<li>Maximum likelihood, minimum cross-entropy, and minimum KL divergence are closely related concepts for finding <span class="math inline">q_X</span>.</li>
+</ul>
+</section>
+<section id="section-7" class="level4">
+<h4 class="anchored" data-anchor-id="section-7"></h4>
+<ul>
+<li>Some intuitions for entropy:</li>
+<li>The lower the entropy, the less surprising are samples.</li>
+<li>A sharply peaked distribution will lead to samples from a small region.</li>
+<li>Moreover, each of those samples will have high likelihood (by definition).</li>
+<li>So a sharply peaked distribution has low entropy</li>
+<li>Loosely, a more structured distribution <span class="math inline">\implies</span> lower entropy</li>
+<li>Conversely, a more disordered distribution <span class="math inline">\implies</span> higher entropy</li>
+</ul>
 
 
 </section>
