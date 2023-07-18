@@ -147,7 +147,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">July 17, 2023</p>
+        <p class="date-modified">July 18, 2023</p>
       </div>
     </div>
       
@@ -158,7 +158,16 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#likelihood-and-information" id="toc-likelihood-and-information" class="nav-link active" data-scroll-target="#likelihood-and-information">Likelihood and information</a></li>
+  <li><a href="#entropy" id="toc-entropy" class="nav-link" data-scroll-target="#entropy">Entropy</a></li>
+  <li><a href="#kl-divergence-and-gibbs-inequality" id="toc-kl-divergence-and-gibbs-inequality" class="nav-link" data-scroll-target="#kl-divergence-and-gibbs-inequality">KL Divergence and Gibbs inequality</a></li>
+  <li><a href="#a-recap-and-some-intuitions" id="toc-a-recap-and-some-intuitions" class="nav-link" data-scroll-target="#a-recap-and-some-intuitions">A recap and some intuitions</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
@@ -213,63 +222,70 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </div>
-<p><strong>Note:</strong> I’ll treat <code>sample</code>, <code>distribution</code> and <code>density</code> specifically to referring quantities related to <span class="math inline">q_X</span> as shown in the table. The plain-text sample, distribution, density etc. will refer to the general concepts.</p>
-<section id="section" class="level4">
-<h4 class="anchored" data-anchor-id="section"></h4>
+<p><strong>Note:</strong></p>
+<ol type="1">
+<li><p>I’ll treat <code>sample</code>, <code>distribution</code> and <code>density</code> specifically to referring quantities related to <span class="math inline">q_X</span> as shown in the table. The plain-text sample, distribution, density etc. will refer to the general concepts.</p></li>
+<li><p>We’ll also drop the subscript <span class="math inline">X</span> from the distributions and use <span class="math inline">p = p_X</span> and <span class="math inline">q = q_X</span> since there are no further dependencies to consider (e.g.&nbsp;no conditional distributions).</p></li>
+</ol>
+<section id="likelihood-and-information" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="likelihood-and-information">Likelihood and information</h3>
+<p>
+</p>
 <ul>
-<li>We are given <code>observations</code>, <span class="math inline">x \sim p_X(x)</span>.</li>
-<li>We assume an underlying <code>distribution</code> <span class="math inline">q_X</span>.</li>
-<li>We interpret <code>density</code> <span class="math inline">q_X(x)</span> as how <em>likely</em> an <code>observation</code> is under the <code>distribution</code>.</li>
-<li>So we refer to <span class="math inline">q_X(x)</span> as the likelihood.</li>
-<li>Following this, the expression <span class="math inline">\log q_X(x)</span> is called log-likelihood.</li>
+<li>We are given <code>observations</code>, <span class="math inline">x \sim p(x)</span>.</li>
+<li>We assume an underlying <code>distribution</code> <span class="math inline">q</span>.</li>
+<li>We interpret <code>density</code> <span class="math inline">q(x)</span> as how <em>likely</em> an <code>observation</code> is under the <code>distribution</code>.</li>
+<li>So we refer to <span class="math inline">q(x)</span> as the likelihood.</li>
+<li>Following this, the expression <span class="math inline">\log q(x)</span> is called log-likelihood.</li>
 </ul>
-</section>
-<section id="section-1" class="level4 page-columns page-full">
-<h4 class="anchored" data-anchor-id="section-1"></h4>
+<p>
+</p>
 <ul>
-<li>Further, if <code>density</code> <span class="math inline">q_X(x)</span> is small, we say the <code>observation</code> is <em>unlikely</em>.</li>
+<li>Further, if <code>density</code> <span class="math inline">q(x)</span> is small, we say the <code>observation</code> is <em>unlikely</em>.</li>
 <li>The more unlikely the <code>observation</code>, the more <em>surprising</em> it is.</li>
-<li>The smaller the value of <span class="math inline">q_X(x)</span>, the larger is the value of <span class="math inline">-\log q_X(x)</span>.</li>
+<li>The smaller the value of <span class="math inline">q(x)</span>, the larger is the value of <span class="math inline">-\log q(x)</span>.</li>
 <li>Large values of negative log-likelihood thus convey surprise.</li>
 <li>Formally, the negative log-likelihood is called <em>information</em>.</li>
-<li>Notion of surprise requires context of an underlying <code>distribution</code>!</li>
+<li>Notion of surprise requires context of an underlying distribution!</li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>Why use the <span class="math inline">\log</span> operation to define information? A cryptic, partial answer: independence of distributions <span class="math inline">\implies</span> addition of information, and this serves as partial motivation.</p>
-</div></div></section>
-<section id="section-2" class="level4">
-<h4 class="anchored" data-anchor-id="section-2"></h4>
+<p>Why use the <span class="math inline">\log</span> operation to define information? A cryptic, partial answer: independence of distributions <span class="math inline">\implies</span> addition of information.</p>
+</div></div><p>
+</p>
 <ul>
-<li>Let’s play a similar game with <code>samples</code>, <span class="math inline">x \sim q_X</span></li>
-<li>Many <code>samples</code> have larger values of <span class="math inline">q_X(x)</span></li>
-<li>Some <code>samples</code> will have small values of <span class="math inline">q_X(x)</span></li>
+<li>Let’s play a similar game with <code>samples</code>, <span class="math inline">x \sim q</span></li>
+<li>Many <code>samples</code> have larger values of <span class="math inline">q(x)</span></li>
+<li>Some <code>samples</code> will have small values of <span class="math inline">q(x)</span></li>
 <li>So analogous to <code>observations</code>, some <code>samples</code> can be viewed as <em>surprising</em>.</li>
 </ul>
 </section>
-<section id="section-3" class="level4 page-columns page-full">
-<h4 class="anchored" data-anchor-id="section-3"></h4>
+<section id="entropy" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="entropy">Entropy</h3>
+<p>
+</p>
 <ul>
-<li>As a baseline summary statistic, we calculate the expected surprise over <code>samples</code></li>
+<li>As a summary statistic, we calculate the expected surprise over <code>samples</code></li>
 <li>Expected surprise is simply the avg. negative log-likelihood, as above.</li>
-<li>Expected surprise with <code>samples</code>: <span class="math inline">E_{x \sim q_X}({-\log q_X(x)})</span></li>
-<li>Expected surprise with <code>observations</code>: <span class="math inline">E_{x \sim p_X}({-\log q_X(x)})</span></li>
+<li>Expected surprise with <code>samples</code>: <span class="math inline">E_{x \sim q}({-\log q(x)})</span></li>
+<li>Expected surprise with <code>observations</code>: <span class="math inline">E_{x \sim p}({-\log q(x)})</span></li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>Expectation is usually an operator applied to random variable, but here we treat it as a function of values taken by the random variable. This is a commonly adopted convention that I’ll follow here.</p>
-</div></div></section>
-<section id="section-4" class="level4">
-<h4 class="anchored" data-anchor-id="section-4"></h4>
+<p>Expectation is usually an operator applied to random variable, indicated as <span class="math inline">E[X]</span>. Here we treat it as a function of values. This is a commonly adopted convention that I’ll follow here.</p>
+</div></div><p>
+</p>
 <ul>
-<li>Expected surprise with <code>samples</code> is called <code>entropy</code> of <span class="math inline">q_X</span></li>
-<li>Expected surprise with <code>observation</code> is called <code>cross-entropy</code> of <span class="math inline">q_X</span> w.r.t. <span class="math inline">p_X</span></li>
-<li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to find <span class="math inline">q_X</span>.</li>
-<li>This is equivalent to maximizing the likelihood of <code>observations</code> under <span class="math inline">q_X</span>!</li>
+<li>Expected surprise with <code>samples</code> is called <code>entropy</code> of <span class="math inline">q</span></li>
+<li>Expected surprise with <code>observation</code> is called <code>cross-entropy</code> of <span class="math inline">q</span> w.r.t. <span class="math inline">p</span></li>
+<li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to find <span class="math inline">q</span>.</li>
+<li>This is equivalent to maximizing the likelihood of <code>observations</code> under <span class="math inline">q</span>!</li>
 </ul>
 </section>
-<section id="section-5" class="level4 page-columns page-full">
-<h4 class="anchored" data-anchor-id="section-5"></h4>
+<section id="kl-divergence-and-gibbs-inequality" class="level3">
+<h3 class="anchored" data-anchor-id="kl-divergence-and-gibbs-inequality">KL Divergence and Gibbs inequality</h3>
+<p>
+</p>
 <table class="table-striped table-hover table">
 <caption>Quantities related to information</caption>
 <colgroup>
@@ -309,28 +325,61 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+<p>
+</p>
 <ul>
-<li>Gibb’s inequality is a consequence of Jensen’s inequality</li>
-<li>It shows that <code>cross-entropy</code> is always greater than or equal to <code>entropy</code></li>
-<li>The <code>cross-entropy</code> is minimized when <span class="math inline">q_X = p_X</span></li>
+<li>Gibb’s inequality is a consequence of Jensen’s inequality (see proof below).</li>
+<li>It shows that <code>cross-entropy</code> is always greater than or equal to <code>entropy</code>.</li>
+<li>The <code>cross-entropy</code> is minimized when <span class="math inline">q_X = p_X</span>.</li>
+<li>KL divergence is zero when <span class="math inline">q_X = p_X</span>.</li>
+<li><span class="math inline">D_\textrm{KL}(p | q)</span> is often presented as <span class="math inline">E_{x \sim p}(\log \frac{p(x)}{q(x)})</span> where the connection to entropy is harder to see.</li>
 </ul>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><strong>Jensen’s inequality</strong> <br> For convex <span class="math inline">\phi</span>: <span class="math inline">E[\phi(X)]~\geq~\phi(E[X])</span></p>
-</div></div></section>
-<section id="section-6" class="level4">
-<h4 class="anchored" data-anchor-id="section-6"></h4>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Gibb’s inequality proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<span class="math display">\begin{aligned}
+D_\textrm{KL}(p | q) &amp;= E_{x \sim p}({-\log q(x)} -(-\log p(x))) \\
+&amp;= E_{x \sim p}(-\log \frac{q(x)}{p(x)}) \\
+\end{aligned}</span>
 <ul>
-<li>A recap:</li>
-<li>We can’t access <span class="math inline">p_X</span> directly, only <code>observations</code> from it.</li>
-<li>We’re proposing the <code>distribution</code> <span class="math inline">q_X</span> as an approximation to <span class="math inline">p_X</span>.</li>
-<li>Maximum likelihood, minimum cross-entropy, and minimum KL divergence are closely related concepts for finding <span class="math inline">q_X</span>.</li>
+<li>Jensen’s inequality: For a convex function <span class="math inline">\phi</span>: <span class="math inline">E_{x~p}(\phi(x))~\geq~\phi(E_{x \sim p}(x)</span>.</li>
+<li><span class="math inline">-\log</span> is a convex function.
+<span class="math display">\begin{aligned}
+E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p(x)}) \\
+&amp;\geq -\log \int p(x) \frac{q(x)}{p(x)} dx \\
+&amp;\geq -\log \int q(x) dx \\
+&amp;\geq -\log (1) \\
+&amp;\geq 0 \\
+\implies D_\textrm{KL}(p | q) &amp;\geq 0
+\end{aligned}</span></li>
 </ul>
+<p>For the discrete case, the integral is replaced by a sum.</p>
+</div>
+</div>
+</div>
+<p>
+</p>
 </section>
-<section id="section-7" class="level4">
-<h4 class="anchored" data-anchor-id="section-7"></h4>
+<section id="a-recap-and-some-intuitions" class="level3">
+<h3 class="anchored" data-anchor-id="a-recap-and-some-intuitions">A recap and some intuitions</h3>
 <ul>
-<li>Some intuitions for entropy:</li>
+<li>We can’t access <span class="math inline">p</span> directly, only <code>observations</code> from it.</li>
+<li>We’re proposing the <code>distribution</code> <span class="math inline">q</span> as an approximation to <span class="math inline">p</span>.</li>
+<li>Maximizing likelihood, minimizing cross-entropy, and minimizing KL divergence are closely related concepts to find a <span class="math inline">q</span> that approximates <span class="math inline">p</span>.</li>
+</ul>
+<p>
+</p>
+<ul>
+<li>Re. entropy:</li>
 <li>The lower the entropy, the less surprising are samples.</li>
 <li>A sharply peaked distribution will lead to samples from a small region.</li>
 <li>Moreover, each of those samples will have high likelihood (by definition).</li>

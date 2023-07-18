@@ -30,56 +30,66 @@ I'll assume continuous values for our random variables throughout. For the discr
 |`observation`| $x\sim p_X$ | An observed value for a random variable. We typically don't know and cannot directly access $p_X$, but want to approximate it with $q_X$|
 : Notation and definitions {#tbl-terminology tbl-colwidths="[25,15,55]"}{.striped .hover}
 
-**Note:** I'll treat `sample`, `distribution` and `density` specifically to referring quantities related to $q_X$ as shown in the table. The plain-text sample, distribution, density etc. will refer to the general concepts.
+**Note:** 
 
-####
+1. I'll treat `sample`, `distribution` and `density` specifically to referring quantities related to $q_X$ as shown in the table. The plain-text sample, distribution, density etc. will refer to the general concepts.
 
- - We are given `observations`, $x \sim p_X(x)$.
- - We assume an underlying `distribution` $q_X$. 
- - We interpret `density` $q_X(x)$ as how _likely_ an `observation` is under the `distribution`.
- - So we refer to $q_X(x)$ as the likelihood.
- - Following this, the expression $\log q_X(x)$ is called log-likelihood.
+2. We'll also drop the subscript $X$ from the distributions and use $p = p_X$ and $q = q_X$ since there are no further dependencies to consider (e.g. no conditional distributions).
 
-####
+### Likelihood and information
 
- - Further, if `density` $q_X(x)$ is small, we say the `observation` is _unlikely_.
+<p></p>
+
+ - We are given `observations`, $x \sim p(x)$.
+ - We assume an underlying `distribution` $q$. 
+ - We interpret `density` $q(x)$ as how _likely_ an `observation` is under the `distribution`.
+ - So we refer to $q(x)$ as the likelihood.
+ - Following this, the expression $\log q(x)$ is called log-likelihood.
+
+<p></p>
+
+ - Further, if `density` $q(x)$ is small, we say the `observation` is _unlikely_.
  - The more unlikely the `observation`, the more _surprising_ it is.
- - The smaller the value of $q_X(x)$, the larger is the value of $-\log q_X(x)$.
+ - The smaller the value of $q(x)$, the larger is the value of $-\log q(x)$.
  - Large values of negative log-likelihood thus convey surprise.
  - Formally, the negative log-likelihood is called _information_.
- - Notion of surprise requires context of an underlying `distribution`!
+ - Notion of surprise requires context of an underlying distribution!
 
 
 :::{.column-margin}
 Why use the $\log$ operation to define information?
-A cryptic, partial answer: independence of distributions $\implies$ addition of information, and this serves as partial motivation.
+A cryptic, partial answer: independence of distributions $\implies$ addition of information.
 :::
+<p></p>
 
-####
+ - Let's play a similar game with `samples`, $x \sim q$
+ - Many `samples` have larger values of $q(x)$
+ - Some `samples` will have small values of $q(x)$
+ - So analogous to `observations`, some `samples` can be viewed as _surprising_.
 
- - Let's play a similar game with `samples`, $x \sim q_X$
- - Many `samples` have larger values of $q_X(x)$
- - Some `samples` will have small values of $q_X(x)$
- - So analogous to `observations`, some `samples` can be viewed  as _surprising_.
+### Entropy
 
-####
- - As a baseline summary statistic, we calculate the expected surprise over `samples`
+<p></p>
+
+ - As a summary statistic, we calculate the expected surprise over `samples`
  - Expected surprise is simply the avg. negative log-likelihood, as above.
- - Expected surprise with `samples`: $E_{x \sim q_X}({-\log q_X(x)})$
- - Expected surprise with `observations`: $E_{x \sim p_X}({-\log q_X(x)})$
+ - Expected surprise with `samples`: $E_{x \sim q}({-\log q(x)})$
+ - Expected surprise with `observations`: $E_{x \sim p}({-\log q(x)})$
 
 :::{.column-margin}
-Expectation is usually an operator applied to random variable, but here we treat it as a function of values taken by the random variable. This is a commonly adopted convention that I'll follow here.
+Expectation is usually an operator applied to random variable, indicated as $E[X]$. Here we treat it as a function of values. This is a commonly adopted convention that I'll follow here.
 :::
 
-#### 
+<p></p>
 
- - Expected surprise with `samples` is called `entropy` of $q_X$
- - Expected surprise with `observation` is called `cross-entropy` of $q_X$ w.r.t. $p_X$
- - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to find $q_X$.
- - This is equivalent to maximizing the likelihood of `observations` under $q_X$!
+ - Expected surprise with `samples` is called `entropy` of $q$
+ - Expected surprise with `observation` is called `cross-entropy` of $q$ w.r.t. $p$
+ - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to find $q$.
+ - This is equivalent to maximizing the likelihood of `observations` under $q$!
 
-####
+### KL Divergence and Gibbs inequality
+
+<p></p>
 
 | Quantity | Refers to |
 | :------- | ----: |
@@ -91,25 +101,48 @@ Expectation is usually an operator applied to random variable, but here we treat
 |$D_\textrm{KL}(p | q) = H(p,q) - H(p) \geq 0$ | Gibbs inequality |
 : Quantities related to information  {.striped .hover}
 
- - Gibb's inequality is a consequence of Jensen's inequality
- - It shows that `cross-entropy` is always greater than or equal to `entropy`
- - The `cross-entropy` is minimized when $q_X = p_X$
+<p></p>
 
-:::{.column-margin}
-**Jensen's inequality** <br> 
-For convex $\phi$: $E[\phi(X)]~\geq~\phi(E[X])$
+ - Gibb's inequality is a consequence of Jensen's inequality (see proof below).
+ - It shows that `cross-entropy` is always greater than or equal to `entropy`.
+ - The `cross-entropy` is minimized when $q_X = p_X$.
+ - KL divergence is zero when $q_X = p_X$.
+ - $D_\textrm{KL}(p | q)$ is often presented as $E_{x \sim p}(\log \frac{p(x)}{q(x)})$ where the connection to entropy is harder to see.
+
+::: {.callout-note appearance="simple" collapse=false icon=false}
+
+## Gibb's inequality proof
+
+\begin{aligned}
+D_\textrm{KL}(p | q) &= E_{x \sim p}({-\log q(x)} -(-\log p(x))) \\
+&= E_{x \sim p}(-\log \frac{q(x)}{p(x)}) \\
+\end{aligned}
+ - Jensen's inequality: For a convex function $\phi$: $E_{x~p}(\phi(x))~\geq~\phi(E_{x \sim p}(x)$.
+ - $-\log$ is a convex function.
+\begin{aligned}
+E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&\geq -\log E_{x \sim p}(\frac{q(x)}{p(x)}) \\
+&\geq -\log \int p(x) \frac{q(x)}{p(x)} dx \\
+&\geq -\log \int q(x) dx \\
+&\geq -\log (1) \\
+&\geq 0 \\
+\implies D_\textrm{KL}(p | q) &\geq 0
+\end{aligned}
+
+For the discrete case, the integral is replaced by a sum.
+
 :::
 
-####
+<p></p>
 
- - A recap:
- - We can't access $p_X$ directly, only `observations` from it.
- - We're proposing the `distribution` $q_X$ as an approximation to $p_X$.
- - Maximum likelihood, minimum cross-entropy, and minimum KL divergence are closely related concepts for finding $q_X$.
+### A recap and some intuitions
 
-####
+ - We can't access $p$ directly, only `observations` from it.
+ - We're proposing the `distribution` $q$ as an approximation to $p$.
+ - Maximizing likelihood, minimizing cross-entropy, and minimizing KL divergence are closely related concepts to find a $q$ that approximates $p$.
 
- - Some intuitions for entropy:
+<p></p>
+
+ - Re. entropy:
  - The lower the entropy, the less surprising are samples.
  - A sharply peaked distribution will lead to samples from a small region.
  - Moreover, each of those samples will have high likelihood (by definition).
