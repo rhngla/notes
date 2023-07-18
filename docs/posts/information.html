@@ -272,10 +272,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>Expectation is usually an operator applied to random variable, indicated as <span class="math inline">E[X]</span>. Here we treat it as a function of values. This is a commonly adopted convention that I’ll follow here.</p>
-</div></div><p>
-</p>
-<ul>
+<p>Expectation is usually an operator applied to a function of a random variable, indicated as <span class="math inline">E[f(X)]</span>. The distribution over which the expectation is calculated is often implicit.</p>
+<p><br></p>
+<p>Here we treat expectation as a function of values specified in the argument, drawn from a distribution specified in the subscript, <span class="math inline">E_{x \sim p}(f(x))</span>. This is a commonly adopted convention that I’ll follow here.</p>
+</div></div><ul>
 <li>Expected surprise with <code>samples</code> is called <code>entropy</code> of <span class="math inline">q</span></li>
 <li>Expected surprise with <code>observation</code> is called <code>cross-entropy</code> of <span class="math inline">q</span> w.r.t. <span class="math inline">p</span></li>
 <li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to find <span class="math inline">q</span>.</li>
@@ -378,15 +378,7 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 </ul>
 <p>
 </p>
-<ul>
-<li>Re. entropy:</li>
-<li>The lower the entropy, the less surprising are samples.</li>
-<li>A sharply peaked distribution will lead to samples from a small region.</li>
-<li>Moreover, each of those samples will have high likelihood (by definition).</li>
-<li>So a sharply peaked distribution has low entropy</li>
-<li>Loosely, a more structured distribution <span class="math inline">\implies</span> lower entropy</li>
-<li>Conversely, a more disordered distribution <span class="math inline">\implies</span> higher entropy</li>
-</ul>
+<p>Re. entropy: s - The lower the entropy, the less surprising are samples. - A sharply peaked distribution will lead to samples from a small region. - Moreover, each of those samples will have high likelihood (by definition). - So a sharply peaked distribution has low entropy - Loosely, a more structured distribution <span class="math inline">\implies</span> lower entropy - Conversely, a more disordered distribution <span class="math inline">\implies</span> higher entropy</p>
 
 
 </section>

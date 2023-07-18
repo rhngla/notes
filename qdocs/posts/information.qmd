@@ -12,6 +12,7 @@ highlight-style: pygments
 html-math-method: katex
 bibliography: "../refs.bib"
 code-fold: true
+page-navigation: false
 ---
 
 
@@ -77,10 +78,14 @@ A cryptic, partial answer: independence of distributions $\implies$ addition of 
  - Expected surprise with `observations`: $E_{x \sim p}({-\log q(x)})$
 
 :::{.column-margin}
-Expectation is usually an operator applied to random variable, indicated as $E[X]$. Here we treat it as a function of values. This is a commonly adopted convention that I'll follow here.
+Expectation is usually an operator applied to a function of a random variable, indicated as $E[f(X)]$. The distribution over which the expectation is calculated is often implicit. 
+
+<br>
+
+Here we treat expectation as a function of values specified in the argument, drawn from a distribution specified in the subscript, $E_{x \sim p}(f(x))$. This is a commonly adopted convention that I'll follow here.
 :::
 
-<p></p>
+
 
  - Expected surprise with `samples` is called `entropy` of $q$
  - Expected surprise with `observation` is called `cross-entropy` of $q$ w.r.t. $p$
@@ -142,7 +147,8 @@ For the discrete case, the integral is replaced by a sum.
 
 <p></p>
 
- - Re. entropy:
+Re. entropy:
+s
  - The lower the entropy, the less surprising are samples.
  - A sharply peaked distribution will lead to samples from a small region.
  - Moreover, each of those samples will have high likelihood (by definition).
