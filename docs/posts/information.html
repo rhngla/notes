@@ -415,19 +415,22 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 </p>
 <p>Re. entropy:</p>
 <ul>
-<li>The lower the entropy, the less surprising are samples.</li>
-<li>A sharply peaked distribution will lead to samples from a small region.</li>
-<li>Moreover, each of those samples will have high likelihood (by definition).</li>
+<li>The lower the entropy, the less surprising are samples on average.</li>
+<li>Sampling from a sharply peaked distribution will be confined mostly to a small region.</li>
+<li>Such samples will have high likelihood (by definition).</li>
 <li>So a sharply peaked distribution has low entropy</li>
-<li>Loosely, a more structured distribution <span class="math inline">\implies</span> lower entropy</li>
-<li>Conversely, a more disordered distribution <span class="math inline">\implies</span> higher entropy</li>
+<li>In statistical mechanics, structure in a system is related to ‘peaky’ distributions</li>
+<li>A smore tructured system means the related distribution has lower entropy</li>
+<li>Conversely, a more disordered system means the related distribution has higher entropy</li>
 </ul>
 <p>
 </p>
 <p>A numerical example with Gaussians:</p>
 <ul>
 <li>We consider <span class="math inline">p = \mathcal{N}(0, 1)</span></li>
-<li><span class="math inline">q</span> is also gaussian, but with different <span class="math inline">\mu</span> and <span class="math inline">\sigma</span></li>
+<li><span class="math inline">q</span> is also gaussian, but parameters <span class="math inline">\mu</span> or <span class="math inline">\sigma</span> are varied.</li>
+<li>Here we don’t explore algorithms to find <span class="math inline">q</span></li>
+<li>The goal is simply to compare entropy-based quantities, which serve as motivation for such algorithms.</li>
 </ul>
 <p>
 </p>

@@ -149,18 +149,21 @@ For the discrete case, the integral is replaced by a sum.
 
 Re. entropy:
 
- - The lower the entropy, the less surprising are samples.
- - A sharply peaked distribution will lead to samples from a small region.
- - Moreover, each of those samples will have high likelihood (by definition).
+ - The lower the entropy, the less surprising are samples on average.
+ - Sampling from a sharply peaked distribution will be confined mostly to a small region.
+ - Such samples will have high likelihood (by definition).
  - So a sharply peaked distribution has low entropy
- - Loosely, a more structured distribution $\implies$ lower entropy
- - Conversely, a more disordered distribution $\implies$ higher entropy
+ - In statistical mechanics, structure in a system is related to 'peaky' distributions
+ - A smore tructured system means the related distribution has lower entropy
+ - Conversely, a more disordered system means the related distribution has higher entropy
 
 <p></p>
 A numerical example with Gaussians:
 
  - We consider $p = \mathcal{N}(0, 1)$
- - $q$ is also gaussian, but with different $\mu$ and $\sigma$
+ - $q$ is also gaussian, but parameters $\mu$ or $\sigma$ are varied.
+ - Here we don't explore algorithms to find $q$
+ - The goal is simply  to compare entropy-based quantities, which serve as motivation for such algorithms.
 
 <p></p>
 
