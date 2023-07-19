@@ -167,7 +167,7 @@ A numerical example with Gaussians:
  - In the left plot, we fix $\sigma = 1$ and vary $\mu$ for $q$.
  - Entropy is related to shape of distributions.
  - $\sigma$ determines the shape of the Gaussian.
- - Therefore, $H(q) remains unchanged$.
+ - Therefore, $H(q)$ remains unchanged.
  - The minimum occurs at $\mu = 0$, i.e. where $q$ matches $p$.
  - The difference between $H(p,q)$ and $D_\textrm{KL}(p | q)$ at the minimum is $H(p)$.
 
