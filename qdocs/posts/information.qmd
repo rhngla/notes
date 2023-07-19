@@ -8,7 +8,7 @@ categories: ["fundamentals", "math", "machine learning"]
 toc: true
 number-sections: true
 number-depth: 2
-highlight-style: pygments
+highlight-style: github
 html-math-method: katex
 bibliography: "../refs.bib"
 code-fold: true
