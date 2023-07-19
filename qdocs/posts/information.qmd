@@ -244,6 +244,7 @@ ax[1].set(xlabel=r'$\sigma$', ylabel='Entropy [nats]',
           title=r'$p=\mathcal{N}(0,1), q=\mathcal{N}(0,\sigma)$')
 ax[1].grid()
 ax[1].legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.tight_layout()
 plt.show()
 ```
 
