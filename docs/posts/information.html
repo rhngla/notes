@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">July 18, 2023</p>
+        <p class="date-modified">July 19, 2023</p>
       </div>
     </div>
       
@@ -459,21 +459,21 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>custom_params <span class="op">=</span> {<span class="st">"axes.spines.right"</span>: <span class="va">False</span>, <span class="st">"axes.spines.top"</span>: <span class="va">False</span>}</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>sns.set_theme(style<span class="op">=</span><span class="st">"ticks"</span>, font_scale<span class="op">=</span><span class="fl">0.8</span>, rc<span class="op">=</span>custom_params)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>mu_p, std_p <span class="op">=</span> <span class="fl">0.0</span>, <span class="fl">1.0</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> torch.distributions.Normal(loc<span class="op">=</span>mu_p, scale<span class="op">=</span>std_p)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>x_obs <span class="op">=</span> p.sample((<span class="dv">10000</span>,))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>Hp_theory <span class="op">=</span> p.entropy()</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>Hp_emp <span class="op">=</span> <span class="op">-</span>p.log_prob(x_obs).mean()</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># init</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Dpq <span class="op">=</span> []</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Hpq <span class="op">=</span> []</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>Hq <span class="op">=</span> []</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>q_mu <span class="op">=</span> np.arange(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.4</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>q_sd <span class="op">=</span> <span class="fl">1.0</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># p as a fixed Gaussian</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>mu_p, std_p <span class="op">=</span> <span class="fl">0.0</span>, <span class="fl">1.0</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> torch.distributions.Normal(loc<span class="op">=</span>mu_p, scale<span class="op">=</span>std_p)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>x_obs <span class="op">=</span> p.sample((<span class="dv">10000</span>,))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># H(p) calculations:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Hp_theory <span class="op">=</span> p.entropy()</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>Hp_emp <span class="op">=</span> <span class="op">-</span>p.log_prob(x_obs).mean()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># q as Gaussians with varying mu</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>Dpq <span class="op">=</span> []</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Hpq <span class="op">=</span> []</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>Hq <span class="op">=</span> []</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>q_mu <span class="op">=</span> np.arange(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.4</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>q_sd <span class="op">=</span> <span class="fl">1.0</span></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> mu <span class="kw">in</span> q_mu:</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> torch.distributions.Normal(loc<span class="op">=</span>mu, scale<span class="op">=</span>q_sd)</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    Dpq.append(torch.distributions.kl_divergence(p, q))</span>
@@ -485,38 +485,33 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(q_mu, Hq, <span class="st">'.r'</span>, label<span class="op">=</span><span class="vs">r'$H(q)$'</span>)</span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(q_mu, Dpq, <span class="st">'-g'</span>, label<span class="op">=</span><span class="vs">r'$D_</span><span class="sc">{KL}</span><span class="vs">(p,q)$'</span>)</span>
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(q_mu, Hpq, <span class="st">'-k'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="vs">r'$H(p,q)$'</span>)</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].<span class="bu">set</span>(xlabel<span class="op">=</span><span class="vs">r'$\mu$'</span>, </span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>          ylabel<span class="op">=</span><span class="st">'Entropy [nats]'</span>,</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>          title<span class="op">=</span><span class="vs">r'$p=\mathcal</span><span class="sc">{N}</span><span class="vs">(0,1), q=\mathcal</span><span class="sc">{N}</span><span class="vs">(\mu, 1)$'</span>)</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].grid()</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># init</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>Dpq <span class="op">=</span> []</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Hpq <span class="op">=</span> []</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>Hq <span class="op">=</span> []</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>q_sd <span class="op">=</span> np.arange(<span class="fl">0.5</span>, <span class="dv">2</span>, <span class="fl">0.05</span>)</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>q_mu <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sd <span class="kw">in</span> q_sd:</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> torch.distributions.Normal(loc<span class="op">=</span>q_mu, scale<span class="op">=</span>sd)</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    Dpq.append(torch.distributions.kl_divergence(p, q))</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    Hpq.append(<span class="op">-</span>q.log_prob(x_obs).mean())</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    Hq.append(q.entropy())</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd[[<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>]], [Hp_emp, Hp_emp], <span class="st">'-b'</span>, label<span class="op">=</span><span class="vs">r'$H(p)$'</span>)</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd, Hq, <span class="st">'.r'</span>, label<span class="op">=</span><span class="vs">r'$H(q)$'</span>)</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd, Dpq, <span class="st">'-g'</span>, label<span class="op">=</span><span class="vs">r'$D_</span><span class="sc">{KL}</span><span class="vs">(p,q)$'</span>)</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd, Hpq, <span class="st">'-k'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="vs">r'$H(p,q)$'</span>)</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].<span class="bu">set</span>(xlabel<span class="op">=</span><span class="vs">r'$\sigma$'</span>, ylabel<span class="op">=</span><span class="st">'Entropy [nats]'</span>,</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>          title<span class="op">=</span><span class="vs">r'$p=\mathcal</span><span class="sc">{N}</span><span class="vs">(0,1), q=\mathcal</span><span class="sc">{N}</span><span class="vs">(0,\sigma)$'</span>)</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].grid()</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].legend(loc<span class="op">=</span><span class="st">'center left'</span>, bbox_to_anchor<span class="op">=</span>(<span class="dv">1</span>, <span class="fl">0.5</span>))</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].<span class="bu">set</span>(xlabel<span class="op">=</span><span class="vs">r'$\mu$'</span>, </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>          ylabel<span class="op">=</span><span class="st">'Entropy [nats]'</span>,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>          title<span class="op">=</span><span class="vs">r'$p=\mathcal</span><span class="sc">{N}</span><span class="vs">(0,1), q=\mathcal</span><span class="sc">{N}</span><span class="vs">(\mu, 1)$'</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].grid()</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># q as Gaussians with varying sigma</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>Dpq <span class="op">=</span> []</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>Hpq <span class="op">=</span> []</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>Hq <span class="op">=</span> []</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>q_sd <span class="op">=</span> np.arange(<span class="fl">0.5</span>, <span class="dv">2</span>, <span class="fl">0.05</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>q_mu <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sd <span class="kw">in</span> q_sd:</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> torch.distributions.Normal(loc<span class="op">=</span>q_mu, scale<span class="op">=</span>sd)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    Dpq.append(torch.distributions.kl_divergence(p, q))</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    Hpq.append(<span class="op">-</span>q.log_prob(x_obs).mean())</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    Hq.append(q.entropy())</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd[[<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>]], [Hp_emp, Hp_emp], <span class="st">'-b'</span>, label<span class="op">=</span><span class="vs">r'$H(p)$'</span>)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd, Hq, <span class="st">'.r'</span>, label<span class="op">=</span><span class="vs">r'$H(q)$'</span>)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd, Dpq, <span class="st">'-g'</span>, label<span class="op">=</span><span class="vs">r'$D_</span><span class="sc">{KL}</span><span class="vs">(p,q)$'</span>)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(q_sd, Hpq, <span class="st">'-k'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="vs">r'$H(p,q)$'</span>)</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].<span class="bu">set</span>(xlabel<span class="op">=</span><span class="vs">r'$\sigma$'</span>, </span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>          ylabel<span class="op">=</span><span class="st">'Entropy [nats]'</span>,</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>          title<span class="op">=</span><span class="vs">r'$p=\mathcal</span><span class="sc">{N}</span><span class="vs">(0,1), q=\mathcal</span><span class="sc">{N}</span><span class="vs">(0,\sigma)$'</span>)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].grid()</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].legend(loc<span class="op">=</span><span class="st">'center left'</span>, bbox_to_anchor<span class="op">=</span>(<span class="dv">1</span>, <span class="fl">0.5</span>))</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <p><img src="information_files/figure-html/cell-2-output-1.png" width="566" height="181"></p>
@@ -525,7 +520,7 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 </section>
 <section id="acknowledgments" class="level3">
 <h3 class="anchored" data-anchor-id="acknowledgments">Acknowledgments</h3>
-<p><a href="https://scholar.google.com/citations?user=WxTzovMAAAAJ">Shreyas Potnis</a> for helpful comments and suggestions.</p>
+<p><a href="https://scholar.google.com/citations?user=WxTzovMAAAAJ">Shreyas Potnis</a> and <a href="https://scholar.google.com/citations?hl=en&amp;user=ViilpdV5QxsC">Priyanka Kulkarni</a> for helpful comments and suggestions.</p>
 
 
 </section>
