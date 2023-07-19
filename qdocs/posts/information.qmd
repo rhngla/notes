@@ -92,6 +92,35 @@ Here we treat expectation as a function of values specified in the argument, dra
  - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to find $q$.
  - This is equivalent to maximizing the likelihood of `observations` under $q$!
 
+::: {.callout-note appearance="simple" collapse=false icon=false}
+
+## Monte Carlo estimate of Expectations
+
+ - Monte Carlo integration allows us to approximate integrals over regions.
+ - In particular, for regions that are valid probability distributions:
+
+\begin{aligned}
+\int f(x) p(x) dx \approx \frac{1}{N} \sum_{i=1}^N f(x_i) \\
+\end{aligned}
+
+ - Expectations over probability distributions can therefore be expressed as sums over samples!
+ - The larger $N$ is, the better the approximation is.
+ - We often assume that $p$ is simple-enough distribution (e.g. low dimensionality) so that a relatively small number of samples is sufficient to approximate such integrals well.
+
+ <p></p>
+ 
+ - Consider cross entropy, where the integral is over the distribution $p$.
+ - We don't have access to $p$ directly, only `observations`, that we assume to be independently drawn from the same distribution $p$.
+ - Using $i$ to indicate distinct observations, $x_i \sim p$, we can approximate cross-entropy as a sum over `observations`:
+
+
+\begin{aligned}
+E_{x \sim p}({-\log q(x)}) &= \int p(x) (-\log q(x)) dx \\
+&\approx \frac{1}{N} \sum_{i=1}^N f(x_i)
+\end{aligned}
+
+:::
+
 ### KL Divergence and Gibbs inequality
 
 <p></p>

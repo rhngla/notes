@@ -316,6 +316,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to find <span class="math inline">q</span>.</li>
 <li>This is equivalent to maximizing the likelihood of <code>observations</code> under <span class="math inline">q</span>!</li>
 </ul>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Monte Carlo estimate of Expectations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Monte Carlo integration allows us to approximate integrals over regions.</li>
+<li>In particular, for regions that are valid probability distributions:</li>
+</ul>
+<span class="math display">\begin{aligned}
+\int f(x) p(x) dx \approx \frac{1}{N} \sum_{i=1}^N f(x_i) \\
+\end{aligned}</span>
+<ul>
+<li>Expectations over probability distributions can therefore be expressed as sums over samples!</li>
+<li>The larger <span class="math inline">N</span> is, the better the approximation is.</li>
+<li>We often assume that <span class="math inline">p</span> is simple-enough distribution (e.g.&nbsp;low dimensionality) so that a relatively small number of samples is sufficient to approximate such integrals well.</li>
+</ul>
+<p>
+</p>
+<ul>
+<li>Consider cross entropy, where the integral is over the distribution <span class="math inline">p</span>.</li>
+<li>We don’t have access to <span class="math inline">p</span> directly, only <code>observations</code>, that we assume to be independently drawn from the same distribution <span class="math inline">p</span>.</li>
+<li>Using <span class="math inline">i</span> to indicate distinct observations, <span class="math inline">x_i \sim p</span>, we can approximate cross-entropy as a sum over <code>observations</code>:</li>
+</ul>
+<span class="math display">\begin{aligned}
+E_{x \sim p}({-\log q(x)}) &amp;= \int p(x) (-\log q(x)) dx \\
+&amp;\approx \frac{1}{N} \sum_{i=1}^N f(x_i)
+\end{aligned}</span>
+</div>
+</div>
+</div>
 </section>
 <section id="kl-divergence-and-gibbs-inequality" class="level3">
 <h3 class="anchored" data-anchor-id="kl-divergence-and-gibbs-inequality">KL Divergence and Gibbs inequality</h3>
@@ -370,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><span class="math inline">D_\textrm{KL}(p | q)</span> is often presented as <span class="math inline">E_{x \sim p}(\log \frac{p(x)}{q(x)})</span> where the connection to entropy is harder to see.</li>
 </ul>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -379,7 +417,7 @@ Gibb’s inequality proof
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div id="callout-2" class="callout-2-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <span class="math display">\begin{aligned}
 D_\textrm{KL}(p | q) &amp;= E_{x \sim p}({-\log q(x)} -(-\log p(x))) \\
