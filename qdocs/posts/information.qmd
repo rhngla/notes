@@ -110,8 +110,8 @@ Here we treat expectation as a function of values specified in the argument, dra
 
  - Gibb's inequality is a consequence of Jensen's inequality (see proof below).
  - It shows that `cross-entropy` is always greater than or equal to `entropy`.
- - The `cross-entropy` is minimized when $q_X = p_X$.
- - KL divergence is zero when $q_X = p_X$.
+ - The `cross-entropy` is minimized when $q = p$.
+ - KL divergence is zero when $q = p$.
  - $D_\textrm{KL}(p | q)$ is often presented as $E_{x \sim p}(\log \frac{p(x)}{q(x)})$ where the connection to entropy is harder to see.
 
 ::: {.callout-note appearance="simple" collapse=false icon=false}
