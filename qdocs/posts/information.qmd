@@ -217,7 +217,7 @@ ax[0].plot(q_mu, Hpq, '-k', alpha=0.5, label=r'$H(p,q)$')
 
 ax[0].set(xlabel=r'$\mu$', 
           ylabel='Entropy [nats]',
-          title=r'$p=\mathcal{N}(0,1), q=\mathcal{N}(\mu, 0)$')
+          title=r'$p=\mathcal{N}(0,1), q=\mathcal{N}(\mu, 1)$')
 ax[0].grid()
 
 # init
@@ -246,3 +246,7 @@ ax[1].grid()
 ax[1].legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.show()
 ```
+
+### Acknowledgments
+
+[Shreyas Potnis](https://scholar.google.com/citations?user=WxTzovMAAAAJ) for helpful comments and suggestions.
