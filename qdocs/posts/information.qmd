@@ -292,4 +292,4 @@ plt.show()
 
 ### Acknowledgments
 
-[Shreyas Potnis](https://scholar.google.com/citations?user=WxTzovMAAAAJ) and [Priyanka Kulkarni](https://scholar.google.com/citations?hl=en&user=ViilpdV5QxsC) for helpful comments and suggestions.
+[Łukasz Kuśmierz](https://scholar.google.com/citations?user=U6B_HNYAAAAJ&hl=en&oi=ao), [Priyanka Kulkarni](https://scholar.google.com/citations?hl=en&user=ViilpdV5QxsC) and [Shreyas Potnis](https://scholar.google.com/citations?user=WxTzovMAAAAJ) for helpful comments and suggestions.
