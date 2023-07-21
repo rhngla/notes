@@ -42,31 +42,41 @@ I'll assume continuous values for our random variables throughout. For the discr
 <p></p>
 
  - We are given `observations`, $x \sim p(x)$.
- - We assume an underlying `distribution` $q$. 
+ - We assume an underlying `distribution` $q$ that can be tuned via parameters $\theta$ $^\dagger$. 
  - We interpret `density` $q(x)$ as how _likely_ an `observation` is under the `distribution`.
  - So we refer to $q(x)$ as the likelihood.
- - Following this, the expression $\log q(x)$ is called log-likelihood.
+ - Following this, the quantity $-\log{q(x)}$ is called negative log-likelihood.
+
+:::{.column-margin}
+${^\dagger}$ The $\theta$ dependence can be explicitly denoted in the `distribution` as $q_{X|\theta}$, or the `density` (and therefore likelihood) as $q(x|\theta)$. Likelihood can thus be viewed as a function of $\theta$.
+
+<br>
+
+In the Bayesian view, $\theta$ itself may be considered as a particular value of a random variable $\Theta$, and this may be indicated in the distribution as $q_{X|\Theta}$.
+:::
+
 
 <p></p>
 
  - Further, if `density` $q(x)$ is small, we say the `observation` is _unlikely_.
  - The more unlikely the `observation`, the more _surprising_ it is.
- - The smaller the value of $q(x)$, the larger is the value of $-\log q(x)$.
+ - The smaller the value of $q(x)$, the larger is the value of $-\log{q(x)}$.
  - Large values of negative log-likelihood thus convey surprise.
- - Formally, the negative log-likelihood is called _information_.
- - Notion of surprise requires context of an underlying distribution!
+ - If we had access to $p$, we could similarly calculate surprise in `observations` under $p$.
+ - The quantity $-\log{p(x)}$ is known as information.
+
+<p></p>
+
+ - The quantities $-\log{q(x)}$ and $-\log{p(x)}$ look identical, yet have different names
+ - $-\log{p(x)}$ tells us something about the information content of an observation.
+ - $-\log{q(x)}$ conveys something about our approximation $q$ (and therefore $\theta$).
+ - This is why it's helpful to retain the terminology, and interpret it as such.
 
 
 :::{.column-margin}
 Why use the $\log$ operation to define information?
-A cryptic, partial answer: independence of distributions $\implies$ addition of information.
+A cryptic, partial answer: independence of distributions $\implies$ addition of information (and of log-likelihoods).
 :::
-<p></p>
-
- - Let's play a similar game with `samples`, $x \sim q$
- - Many `samples` have larger values of $q(x)$
- - Some `samples` will have small values of $q(x)$
- - So analogous to `observations`, some `samples` can be viewed as _surprising_.
 
 ### Entropy
 
@@ -89,29 +99,33 @@ Here we treat expectation as a function of values specified in the argument, dra
 
  - Expected surprise with `samples` is called `entropy` of $q$
  - Expected surprise with `observation` is called `cross-entropy` of $q$ w.r.t. $p$
- - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to find $q$.
+ - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to tune $q$.
  - This is equivalent to maximizing the likelihood of `observations` under $q$!
 
 ::: {.callout-note appearance="simple" collapse=false icon=false}
 
 ## Monte Carlo estimate of Expectations
 
- - Monte Carlo integration allows us to approximate integrals over regions.
- - In particular, for regions that are valid probability distributions:
+ - Monte Carlo integration enables approximation of integrals over regions as sums over samples drawn from those regions.
+ - In particular, for regions that make up a valid probability distribution $p$:
 
 \begin{aligned}
 \int f(x) p(x) dx \approx \frac{1}{N} \sum_{i=1}^N f(x_i) \\
 \end{aligned}
 
- - Expectations over probability distributions can therefore be expressed as sums over samples!
+ - We can thus express expectation over a probability distribution as a sum over samples!
+ - This requires that samples are drawn i.i.d.$^{\dagger\dagger}$ according to the distribution $p$.
  - The larger $N$ is, the better the approximation is.
- - We often assume that $p$ is simple-enough distribution (e.g. low dimensionality) so that a relatively small number of samples is sufficient to approximate such integrals well.
+ - We often formulate problems so that $p$ is some simple, low-dimensional distribution so that a relatively small number of samples can approximate such integrals well.
+ - The subject efficient sampling from $p$ of various classes (e.g. no explicit functional form, high dimensional etc.) is a subject of active research.
 
  <p></p>
- 
+Example:
+
  - Consider cross entropy, where the integral is over the distribution $p$.
- - We don't have access to $p$ directly, only `observations`, that we assume to be independently drawn from the same distribution $p$.
- - Using $i$ to indicate distinct observations, $x_i \sim p$, we can approximate cross-entropy as a sum over `observations`:
+ - In this case, we don't have access to $p$ directly, only `observations`.
+ - Nevertheless, we'll assume `observations` are i.i.d. according to $p$.
+ - Using $i$ to index such observations $x_i \sim p$, we have an _estimator_ of the cross-entropy as a sum over `observations`:
 
 
 \begin{aligned}
@@ -119,6 +133,7 @@ E_{x \sim p}({-\log q(x)}) &= \int p(x) (-\log q(x)) dx \\
 &\approx \frac{1}{N} \sum_{i=1}^N f(x_i)
 \end{aligned}
 
+$^{\dagger\dagger}$ i.i.d: independent and identically distributed.
 :::
 
 ### KL Divergence and Gibbs inequality
@@ -151,7 +166,7 @@ E_{x \sim p}({-\log q(x)}) &= \int p(x) (-\log q(x)) dx \\
 D_\textrm{KL}(p | q) &= E_{x \sim p}({-\log q(x)} -(-\log p(x))) \\
 &= E_{x \sim p}(-\log \frac{q(x)}{p(x)}) \\
 \end{aligned}
- - Jensen's inequality: For a convex function $\phi$: $E_{x~p}(\phi(x))~\geq~\phi(E_{x \sim p}(x)$.
+ - Jensen's inequality: For a convex function $\phi$: $E_{x \sim p}(\phi(x))~\geq~\phi(E_{x \sim p}(x))$.
  - $-\log$ is a convex function.
 \begin{aligned}
 E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&\geq -\log E_{x \sim p}(\frac{q(x)}{p(x)}) \\

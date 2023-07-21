@@ -33,6 +33,15 @@ editor:
     render-on-save: true
 --- -->
 
+ - We want a generative model for the data
+ - In other words, we want a model we want to sample from, and the samples should look like the data
+ - We of course have samples of _some_ data
+
+
+
+
+
+
 There is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 
 
 1. Deterministic approximations
@@ -43,6 +52,7 @@ There is a class of inference problems for which we use approximate methods. App
 Some resources I used to compile this post:
 
  - [Jaan Altosaar's blog](https://jaan.io/what-is-variational-autoencoder-vae-tutorial/)
+ - [Eric Jang's blog](https://blog.evjang.com/2016/08/variational-bayes.html)
  - [Yuge Shi's blog](https://yugeten.github.io/posts/2020/06/elbo/)
  - [Adam Kosiorek's blog](http://akosiorek.github.io/what_is_wrong_with_vaes/)
  - [Matthew Bernstein's blog](https://mbernste.github.io/posts/vae/)
