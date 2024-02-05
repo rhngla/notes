@@ -71,7 +71,7 @@ We typically deal with the real field $\mathbb{R}$ or complex field $\mathbb{C}$
 
 ## Vector space {#sec-vectorspace}
 
-A vector space over a field $F$ is a set $V$ together with operations of addition and scalar multiplication) such that for all vectors $x,y,z \in V$ and all scalars $\alpha, \beta \in \mathbb{F}$ the following hold:
+A vector space over a field $F$ is a set $V$ together with operations of addition and scalar multiplication such that for all vectors $x,y,z \in V$ and all scalars $\alpha, \beta \in \mathbb{F}$ the following hold:
 
 $$
 \begin{aligned}
@@ -98,7 +98,8 @@ w(x+y) &\leq w(x) + w(y)
 \end{aligned}
 $${#eq-norm}
 
- - Norms induce a distance metric on the vector space, $d (x, y) = w (x − y)$, and such a normed vector space is therefore also a metric space.
+ - Here $\lvert\alpha\rvert$ denotes the absolute value of the scalar $\alpha$.
+ - Norms induce a distance metric on the vector space, $d (x, y) = w (x − y)$, and vector space equipped with a norm (i.e. normed vector space) is therefore also a metric space.
  - Not all metric spaces are normed vector spaces. That is, there exist metric spaces that are not normed vector spaces.
  - A metric can define an _induced norm_ $w$ over a vector space (via $w(x) = d(x,0)$) if it satisfies the following:
 $$
@@ -110,7 +111,7 @@ $${#eq-inducednorm}
 
 ## Inner product space {#sec-innerproductspace}
 
-An inner product space is a vector space $V$ over the field $F$ together with an inner product. An inner product is a map $\langle \cdot ,\cdot \rangle :V \times V \to F$, that satisfies the properties for all vectors $x,y,z\in V$ and all scalars $a,b \in F$. 
+An inner product space is a vector space $V$ over the field $F$ equipped with an inner product. An inner product is a map $\langle \cdot ,\cdot \rangle :V \times V \to F$, that satisfies the properties for all vectors $x,y,z\in V$ and all scalars $a,b \in F$. 
 $$
 \begin{aligned}
 \langle x,y\rangle &={\overline {\langle y,x\rangle }} \\
@@ -153,131 +154,7 @@ Riemannian manifolds allow for _local curvature_. This local curvature is allowe
 
 However, as we move along manifold, we'd like to modify the co-ordinate system itself to account for the local curvature. Because we are working with a smoothly varying curvature, we can do this using smooth transformations of the co-ordinate system - for which we use tools from calculus.
 
-::: {.callout-important collapse="false"}
-Sections below are under construction! 
-:::
-
-### Coordinate transformations
-
- - Discuss Jacobians
- - Coordinate transformations in $\mathbb{R}^n$
- - Invertible transformations (connection to normalizing flows)
-
-### Notation
-A Riemannian manifold is a tuple $(M,g)$ where $M$ is a set of points and $g$ refers to inner products on vector spaces that we define at each point $p \in M$. Vectors that are tangent to the point $p$ make up the tangent space denoted by $T_{p} M$. 
-
-Let point $p$ and a local co-ordinate system denoted as $(x^1,...,x^n)$
-
-The set where we define each object as a differential operator $\mathbf{A} = (A^1\frac{\partial}{\partial x^1},...,A^n\frac{\partial}{\partial x^n})$, s.t. $A^i \in \mathbb{R}$. Such a set satisfies definition of a vector space. Moreover, each object is tangent to the manifold because of the partial derivatives. Thus, we now have a way to specify objects belonging to the tangent space $T_{p} M$.
-
-Consider the change of co-ordinates from $(x^1,...,x^n)$ to $(y^1,...,y^n)$, where $y^i = f^i(x^1,...,x^n)$. The Jacobian matrix is defined as $J_{ij} = \frac{\partial y^i}{\partial x^j}$.
-
-
-::: {.column-margin}
-
-The differential operators actually define a  _vector field_; each vector field is a vector space on itself. 
-:::
-
-We denote the inner product at $p \in M$ as the map: $g_{p}: T_{p} M \times T_{p} M \rightarrow \mathbb{R}$.
-
-For two vectors $\mathbf{A}$ and $\mathbf{B}$ in $T_{p} M$, $\langle \mathbf{A}, \mathbf{B} \rangle _{g_{p}}$, the inner product 
-
-Through the distance metric induced by the  canonical norm, it is easy to work out that Euclidean space is a special case of a Reimannian Manifold where g_{p} is an identity matrix.
-
-### Local
-Recall that an inner product induces a norm, and the norm induces a distance metric. Since the inner product is locally defined at each point, we can think of the distance metric as being defined at each point. Using this local notion of distance, we can calculate distances between any two points on the manifold through integration. This we have a set of points $M$, where we can calculate distances between any two points
-
-Note the similarity to definition of a metric space, @sec-metricspace.
-
-Note that the metric tensor is an inner product on the tangent space $T_{p}M$. Moreover, the tangent space is a vector space. Recall that any inner product induces a norm, which in turm induces a distance metric. Thus, there is notion of a distance metric for each point on the manifold (and the reason why $g_p$ is called a metric tensor).
-
-> Note: For the Euclidean manifold, the metric tensor is the identity matrix. 
-
-Categorizing geometric transforms:
-
-- Diffeomorphic: Preserves angles, distances, and shape
-- Isometric: Preserves angles and distances
-- Conformal: Preserves angles
-
-# Dimensionality reduction
-
- - Autoencoders have been used for nonlinear dimensionality reduction, manifold learning, and clustering @tschannen2018recent. 
- - They have been adapted to learn geometry preserving representations, e.g. @yonghyeon2021regularized, @peterfreund2020local. 
-
-Measuring distortion:
- - @mcqueen2016nearly 
- - Structure of the data matters
- - Local similarity
- - KNN-set-based measures (assuming Euclidian metric locally)
- - ARI, NMI, PSI (point set index, @rezaei2016set) for global similarity
-
-## Curse of high dimensionality {#sec-highdim-curse}
-
-Intuition for properties of data in 2d / 3d space don't carry over to high dimensional spaces.
-
-1. Most of the volume is at the surface of the hypersphere in high D
-2. This is a consequence of the phenomena of "concentration of measure"
-
-Further reading: @aggarwal2001surprising, Chapter 1 of @lee2007nonlinear.
-
-## Manifold assumption
-
-> Many methods attempt to use point samples in high dimensional space to parametrize a low dimensional manifold.
-
-Paraphrasing a nice introduction in @ganea2019non, we assume that data lies on a manifold of much smaller dimension (latent) than the ambient dimension (measured). This enables learning and generalization to unseen data points. We further assume that it is a metric space $(Y, d_Y)$ and has a smooth differentiable structure that allows learning via optimization. 
-
-Thus we are interested in Riemannian manifolds of intrinsic dimension $d \leq n$. The hope is we can achieve this by learning an a mapping function $f : X \rightarrow Y$ from the input high dimensional data space to the low-dimensional representation space.
-
-## Dimensionality reduction
-
-These set of [notes by Drew Wilimitis](https://drewwilimitis.github.io/Manifold-Learning/) also contain python implementation of common methods. 
-
-Various computational methods have been designed to uncover a lower dimension manifold that preserve some notion of distances and structure of data observed in high dimension.
-
-- MDS: preserve pairwise distances (using some common metric, e.g. Euclidean)
-- Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops. Assumes a metric to define nearest neighbor)
-- Diffusion maps: consider notion of reachability of distant points by constructing a diffusion process [@coifman2005geometric; @de2008introduction]
-- Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods
-
- 
-Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. e.g. [transformer architectures](https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html).
-
-TODO:
- - Similarities and distances discussion in @ganea2019non
- - Proof in @dasgupta2003elementary for the Johnson Lindenstrauss lemma.
- - [Nearest component analysis](https://www.cs.toronto.edu/~hinton/absps/nca.pdf)
- - [Unifying dimensionality reduction, graph partitioning, and data set parameterization](https://ieeexplore.ieee.org/abstract/document/1661543)
- - [Sparse random projections](https://icml.cc/2011/papers/551_icmlpaper.pdf)
- - Include references from [this twitter thread](https://twitter.com/lpachter/status/1431325969411821572?s=21&t=5TsIwpYk5rwp--JHbq_RwA)
-
-
-#### Using Jaccard similarity
-
-Consider representations of point $p$ embedded in two metric spaces $(X, d_{X}) and in $(Y, d_{Y})$. We denote the k-nearest neighbors of $p$ in the two metric spaces as $K_{X}(p)$ and $K_{Y}(p)$. The Jaccard similarity between the neighborhood sets is defined as:
-$$
-J_{XY}(p) = \frac{|K_{X}(p) \cap K_{Y}(p)|}{|K_{X}(p) \cup K_{Y}(p)|}
-$$
-
-
-# Cell types and manifolds
- - We assume that cellular identity and diversity that we would like to interpret can be captured by the position of cells on a low-dimensional manifold.
- - Further, we assume that the (high dimensional) feature set we want to measure (e.g. genome-wide mRNA abundance) is explained well by some stochastic generative process.
- - Such a generative process takes co-ordinates along a low dimensional manifold as input, and produces the feature values one attempts to measure experimentally.
- - The measurement procedure introduces undesirable noise in these feature values. 
- - Our hope is that we have: 
-    i. a well-understood noise model with its own parameters to explain variability in the observed values
-    ii. a way to learn the manifold from the structure of the data (cells x genes matrix)
-    iii. a metric on the manifold that enables analyses of cellular homogeneity and diversity
-
-Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in @skinnider2019evaluating and @cooley2019novel.
-
-@wolf2019paga apply diffusion maps for scRNA-seq analysis.
-
-# Further reading
-
-- Equivalence of metrics?
-- Bregman divergence?
-- @suarez2021tutorial survey techniques for distance metric learning towards improving classifier performance. 
+(To be continued ...)
 
 ### References
 

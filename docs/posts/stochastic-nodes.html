@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.333">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -76,7 +76,8 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -164,7 +165,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">July 13, 2023</p>
+        <p class="date-modified">July 3, 2023</p>
       </div>
     </div>
       
@@ -192,19 +193,19 @@ div.csl-indent {
 
 
 
-<p>Calculating gradients through nodes in a computational graph that involve sampling from a distribution (for which we want to learn parameters) is non-trivial. Intuitively, this is because the samples of the distribution don’t maintain a dependency with the distribution parameters. This prevents application of the chain rule used for backpropagation to obtain gradients w.r.t the distribution parameters.</p>
-<p>There are two main strategies to get around this, one involving <em>score function</em> estimators, and another involving reparametrization. See <span class="citation" data-cites="schulman2015gradient">Schulman et al. (<a href="#ref-schulman2015gradient" role="doc-biblioref">2015</a>)</span> for a more formal treatment.</p>
-<p>Roughly, the score function estimator-based approach is more general but more noisy. It leads to a surrogate loss function specified at the stochastic node, which permits gradient updates to the parameters of the distribution.</p>
-<p>The reparametrization “trick” (when possible) allows reformulating the distribution such that distribution parameters become part of a deterministic function applied to samples obtained from a fixed distribution.</p>
+<p>Calculating gradients through nodes in a computational graph that involve sampling from a distribution (for which we want to learn parameters) is not straightforward. Intuitively, this is because samples of the distribution don’t maintain a dependency with the distribution parameters. This prevents application of the chain rule used for backpropagation to obtain gradients w.r.t the distribution parameters.</p>
+<p>There are two main strategies to get around this, one involving <em>score function</em> estimators, and another involving reparametrization. See <span class="citation" data-cites="schulman2015gradient">(<a href="#ref-schulman2015gradient" role="doc-biblioref">Schulman et al. 2015</a>)</span> for a formal treatment.</p>
+<p>The score function estimator-based approach is more general but also more noisy. The approach suggests using surrogate loss functions, which ultimately permit gradient updates to distribution parameters.</p>
+<p>The reparametrization trick (when possible) involves reformulating the distribution such that distribution parameters become part of a deterministic function applied to samples that are obtained from a fixed distribution.</p>
 <section id="the-set-up" class="level3">
 <h3 class="anchored" data-anchor-id="the-set-up">The set up</h3>
-<p>Consider a stochastic node, where we sample values <span class="math inline">x</span> of a random variable <span class="math inline">X</span> from a distribution <span class="math inline">p_{X|\phi}</span> and <span class="math inline">\phi</span> are distribution parameters. Note that <span class="math inline">\phi</span> which themselves be specified by an upstream neural network.</p>
-<p>Let’s also assume a deterministic and differentiable function <span class="math inline">f_{\theta}</span> with parameters <span class="math inline">\theta</span> applied to samples <span class="math inline">x</span>, and we are interested in parameters <span class="math inline">\theta</span> and <span class="math inline">\phi</span> that optimize an objective that consists of an average over the samples drawn from <span class="math inline">p_{X|\phi}</span> as follows:</p>
+<p>Consider a stochastic node, where we sample values <span class="math inline">x</span> of a random variable <span class="math inline">X</span> from a distribution with parameters <span class="math inline">\phi</span>. A transformation <span class="math inline">f</span> with parameters <span class="math inline">\theta</span> (e.g.&nbsp;neural network) is applied to the samples to construct the loss function we want to optimize.</p>
 <p><span id="eq-objective"><span class="math display">
 \begin{aligned}
 \mathcal{L}(\theta, \phi) &amp;= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \int{f_{\theta}(x)p_{\phi}(x)dx}
 \end{aligned}
 \tag{1}</span></span></p>
+<p>To learn parameters <span class="math inline">\theta</span> and <span class="math inline">\phi</span>, we’ll require access to updates obtained through the gradients of the loss function w.r.t these parameters.</p>
 </section>
 <section id="updates-to-theta" class="level3">
 <h3 class="anchored" data-anchor-id="updates-to-theta">Updates to <span class="math inline">\theta</span></h3>
@@ -215,7 +216,7 @@ div.csl-indent {
 &amp;=  \mathbb{E}_{x \sim p_{X|\phi}}[\nabla_{\theta}f_{\theta}(x)]
 \end{aligned}
 \tag{2}</span></span></p>
-<p>We see that the gradient in <a href="#eq-gradtheta">Eq.&nbsp;2</a> can be cast as an expectation over samples from the distribution <span class="math inline">p_{X|\phi}</span>. So we can simply draw samples from the distribution and estimate the gradient, because <span class="math inline">\nabla_{\theta}f_{\theta}</span> is well-defined. In the extreme case, the estimate (albeit a noisy one) is obtained simply from a single sample <span class="math inline">x</span>. So far so good.</p>
+<p>We see that the gradient in <a href="#eq-gradtheta">Eq.&nbsp;2</a> can be cast as an expectation over samples from the distribution <span class="math inline">p_{X|\phi}</span>. So we can simply draw samples from the distribution and estimate the gradient, because <span class="math inline">\nabla_{\theta}f_{\theta}</span> is well-defined. In the extreme case, the estimate (albeit a noisy one) is obtained simply from a single sample <span class="math inline">x</span>. So far so good!</p>
 </section>
 <section id="updates-to-phi" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="updates-to-phi">Updates to <span class="math inline">\phi</span></h3>
@@ -225,15 +226,18 @@ div.csl-indent {
 &amp;= \int{f_{\theta}(x) \nabla_{\phi} p_{\phi}(x)dx}
 \end{aligned}
 \tag{3}</span></span></p>
-<p>It may be tempting think of <a href="#eq-gradphi">Eq.&nbsp;3</a> as <span class="math inline">\mathbb{E}_{x \sim \nabla_{\phi} p_{X|\phi}}[f_{\theta}(x)]</span> in an analogous manner - this would be wrong, because <span class="math inline">\nabla_{\phi} p_{\phi}(x)</span> not a valid probability density function.</p>
+<p>It may be tempting think of <a href="#eq-gradphi">Eq.&nbsp;3</a> as <span class="math inline">\mathbb{E}_{x \sim \nabla_{\phi} p_{X|\phi}}[f_{\theta}(x)]</span> in an analogous manner. This would be wrong, because <span class="math inline">\nabla_{\phi} p_{\phi}(x)</span> not a valid probability density function!</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>A valid probability density function should be non-negative everywhere, and integrate to unity over its domain.</p>
+<p>⚠️ A valid probability density function should be non-negative everywhere, and integrate to unity over its domain.</p>
 </div></div><p>Instead we’ll use an identity that is often referred to as the log-derivative trick to rewrite <a href="#eq-gradphi">Eq.&nbsp;3</a> as follows:</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>Log-derivative trick: <span class="math display">
-\nabla_{x}h(x) = h(x)\nabla_x{\log(x)}
+<p>Log-derivative trick is an application of the chain rule for derivatives: <span class="math display">
+\begin{aligned}
+\nabla_{x}({\log{h(x)}}) &amp;= \frac{1}{h(x)}\nabla_{x}({h(x)}) \\
+\implies \nabla_{x}({h(x)}) &amp;= h(x)\nabla_x{(\log{h(x)})}
+\end{aligned}
 </span></p>
 </div></div><p><span id="eq-score"><span class="math display">
 \begin{aligned}
@@ -241,15 +245,27 @@ div.csl-indent {
 \implies \nabla_{\phi}\mathcal{L} &amp;=\mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x) \nabla_{\phi}{\log{p_{\phi}(x)}}]
 \end{aligned}
 \tag{4}</span></span></p>
-<p><a href="#eq-score">Eq.&nbsp;4</a> shows that the gradient is once again over samples from the distribution <span class="math inline">p_{X|\phi}</span>. As before, in the extreme case this may be estimated with a single sample.</p>
+<p><a href="#eq-score">Eq.&nbsp;4</a> shows that the gradient is now over samples from the distribution <span class="math inline">p_{X|\phi}</span>. As before, in the extreme case this may be estimated with a single sample.</p>
 <p>If we view <span class="math inline">p_{\phi}(x)</span> as a likelihood function, then <span class="math inline">\nabla_{\phi}{\log{p_{\phi}(x)}}</span> is referred to as the <em>score function</em>. The estimate of the gradient includes the score function, and so it is referred to as a <em>score function estimator</em>.</p>
-<p>This estimator suggests <span class="math inline">\mathcal{L}_{\textrm{surrogate}}=~\mathbb{E}_{x \sim p_{X|\phi}}{[f_{\theta}(x)\log{p_{\phi}(x)}]}</span> as a surrogate loss function where <span class="math inline">f_{\theta}(x)</span> is treated as a constant (because it does not depend on <span class="math inline">\phi</span>).</p>
-<p>It is worth thinking about the extreme case, when <span class="math inline">f_{\theta}(x)</span> itself is a constant independent of <span class="math inline">x</span>. This would suggest that the parameter <span class="math inline">\phi</span> does not influence the loss, and so we would expect the gradient for <span class="math inline">\phi</span> to be zero in expectation.</p>
-<p>This is indeed the case,</p>
+<p><a href="#eq-score">Eq.&nbsp;4</a> also suggests <span class="math inline">\mathcal{L}_{\textrm{surrogate}}=~\mathbb{E}_{x \sim p_{X|\phi}}{[f_{\theta}(x)\log{p_{\phi}(x)}]}</span> as a surrogate loss function for the stochastic node to obtain the correct update for <span class="math inline">\phi</span> when relying on auto-differentiation libraries.</p>
+<p>As a side note, let’s think of the case where <span class="math inline">f_{\theta}(x)</span> maps to a constant value <span class="math inline">c</span>. Then it means parameter <span class="math inline">\phi</span> does not influence the loss. No matter the sample drawn, the loss does not change. We can check that the gradient w.r.t. <span class="math inline">\phi</span> is zero in expectation <a href="#eq-score-expectation">Equation&nbsp;5</a> for a score function estimator:</p>
+<p><span id="eq-score-expectation"><span class="math display">
+\begin{aligned}
+\nabla_{\phi}\mathcal{L} &amp;= \int{c  \nabla_{\phi} (\log{p_{\phi}(x)}) p_{\phi}(x) dx} \\
+&amp;= c \int{\nabla_{\phi} p_{\phi}(x) dx} = c \nabla_{\phi} \int{p_{\phi}(x) dx} = 0\\
+\end{aligned}
+\tag{5}</span></span></p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>The bias and variance over different samples of the data are an important characterization of estimators. The score function is of relevance here, e.g.&nbsp;see these <a href="https://cseweb.ucsd.edu/~elkan/291winter2005/lect09.pdf">Lecture notes</a> and discussion about the Cramér-Rao bound.</p>
 </div></div><p>Another way to estimate the gradient through stochastic nodes is to use the <em>reparametrization trick</em>. This is possible when the distribution <span class="math inline">p_{X|\phi}</span> can be composed with a deterministic function <span class="math inline">g_\psi</span> applied to samples <span class="math inline">z</span> drawn from a fixed distribution <span class="math inline">p_{Z}</span>.</p>
+<p><span id="eq-reparam"><span class="math display">
+\begin{aligned}
+\mathcal{L} &amp;= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \mathbb{E}_{z \sim p_{Z}}[f_{\theta}{(g_{\psi}(z)}]
+\end{aligned}
+\tag{6}</span></span></p>
+<p>Here the parameters to learn are <span class="math inline">\theta</span> and <span class="math inline">\psi</span>, which both correspond to deterministic functions. The gradients can now be calculated through the chain rule, similar to <a href="#eq-gradtheta">Eq.&nbsp;2</a>.</p>
+<p>We thus have a way to learn parameters of probability distributions using auto-differentiation frameworks, making it possible to learn non-deterministic models.</p>
 </section>
 <section id="references" class="level3">
 <h3 class="anchored" data-anchor-id="references">References</h3>

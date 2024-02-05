@@ -15,14 +15,24 @@ code-fold: true
 
 #### Kernel regression
 
-The Watson-Nadaraya estimator offers an intuitive approach to intuitively understand kernel regression. Let's say the training data consists of $(x,y)$ pairs. When a query $x_q$ is provided, one calculates distance of $x_q$ from all the $x$'s in the training data. In the simplest version, you just return the $y$ value corresponding to the closest $x$ in the training data.
+$$
+\gdef\data{\textrm{data}}
+$$
+
+The Watson-Nadaraya estimator offers an intuitive approach to intuitively understand kernel regression. Let's say the training data consists of $(x,y)$ pairs. When a query $x_q$ is provided, one calculates distance of $x_q$ from all the $x$ values in the training data. In the simplest version, we can just return the $y$ value for the closest $x$ in the training data.
 
  - This requires a notion of distance (or similarity) between $x$'s.
  - One can expect this to work pretty well if the sampling density is high.
 
-If the $y$'s are noisy, one might think to take a weighted sum of $y$'s corresponding to the $x$'s that are close $x_q$. The weighting scheme is a choice, and could be based on the distance between $x$ and $x_q$. 
+If the $y$'s are noisy, one might think to take a weighted sum of $y$'s corresponding to the $x$'s that are close $x_q$. The weighting scheme is a choice, and could be based on the distance between $x$ and $x_q$ - with points $x$'s closer to $x_q$ contributing more to the sum. 
 
-Choosing a way to calculate distance, and a weighting scheme that uses it is the core idea behind kernel regression. In choosing these, we can introduce hyperparameters that control the distance and weighting scheme. The notion of distance, similarity, inner-products are closely related, and it'll be compare their formal definitions, and even memorize them to keep them handy.
+There are different distance metrics one may consider for this. 
+
+Choosing a way to calculate distance, and a weighting scheme that uses it is the core idea behind kernel regression. 
+
+
+
+In choosing these, we can introduce hyperparameters that control the distance and weighting scheme. The notion of distance, similarity, inner-products are closely related, and it'll be compare their formal definitions, and even memorize them to keep them handy.
 
 ---
 

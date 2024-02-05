@@ -1,0 +1,30 @@
+---
+title: "False discovery in scRNA seq analyses"
+author: "Rohan Gala"
+date: "2023-07-03"
+date-modified: last-modified
+categories: ["machine learning"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: pygments
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+theme: lux
+---
+
+ - The problem of pseudoreplication in neuroscientific studies: is it affecting your analysis?
+ - A practical solution to pseudoreplication bias in single-cell studie
+ - Confronting false discoveries in single-cell differential expressio
+ - A balanced measure shows superior performance of pseudobulk methods
+in single-cell RNA-sequencing analysis
+ - Revisiting an Alzheimer’s disease snRNA-Seq
+dataset
+ - Identifying systematic variation at the single-cell level by leveraging low-
+resolution population-level data
+
+### References
+
+::: {#refs}
+:::

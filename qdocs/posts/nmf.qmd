@@ -1,0 +1,65 @@
+---
+title: "Non-negative matrix factorization"
+author: "Rohan Gala"
+date: "2023-08-11"
+date-modified: last-modified
+categories: ["math", "machine learning"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: github
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+page-navigation: false
+---
+
+Resources:
+ - [Roy Tibshirani's lecture notes](https://www.stat.cmu.edu/~ryantibs/convexopt/)
+ - [Scikit-learn NMF implementation](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html)
+ - [NMF variants](https://www.mpi-inf.mpg.de/fileadmin/inf/d5/teaching/ss15_dmm/lectures/2015-06-02-nmf_variations_and_applications.pdf)
+
+Statement:
+ - [CCRMA NMF tutorial](https://ccrma.stanford.edu/~njb/teaching/sstutorial/part2.pdf)
+
+The first goal is to write a bare bones implementation for NMF, using the multiplicative algorithm. 
+
+The next step is to permit imposition of L1 and L2 penalties. 
+
+We'll also explore how to impose smoothness penalties on the factors.
+
+We can try to speed up such an implementation using torch.
+
+
+If there are perfectly anticorrelated but positive signals, can they be modeled as a nmf with a single component?
+
+$$
+\newcommand{\Rpos}{\mathbb{R}_{\geq 0}}
+$$
+
+Consider $Y \in \Rpos^{2 \times T}$, factorized as $A \in \Rpos^{2 \times 1}$ and $X \in \Rpos^{1 \times T}$. 
+
+
+
+$$
+\begin{align}
+y_{1,t} &= b + c_1\hat{y}_{t} \\
+y_{2,t} &= b - c_2\hat{y}_{t} \\
+\end{align}
+$$
+
+Let the following be true: 
+$$
+\begin{align}
+a_1 x_t &= b + c_1\hat{y}_{t} \\
+a_2 x_t &= b - c_2\hat{y}_{t} \\
+\end{align}
+$$
+
+Then:
+$$
+\begin{align}
+a_1 x_t &= b + c_1\hat{y}_{t} \\
+a_2 x_t &= b - c_2\hat{y}_{t} \\
+\end{align}
+$$

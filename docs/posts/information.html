@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.333">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,7 +91,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -181,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">July 21, 2023</p>
+        <p class="date-modified">August 1, 2023</p>
       </div>
     </div>
       
@@ -242,7 +243,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td style="text-align: left;"><code>density</code></td>
 <td style="text-align: left;"><span class="math inline">q_X(x)</span></td>
-<td style="text-align: left;">Probability density of at a particular value <span class="math inline">x</span>, as specified by <span class="math inline">q_X</span></td>
+<td style="text-align: left;">Probability density at a particular value <span class="math inline">x</span>, as specified by <span class="math inline">q_X</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><code>sample</code></td>
@@ -259,8 +260,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><strong>Note:</strong></p>
 <ol type="1">
-<li><p>I’ll treat <code>sample</code>, <code>distribution</code> and <code>density</code> specifically to referring quantities related to <span class="math inline">q_X</span> as shown in the table. The plain-text sample, distribution, density etc. will refer to the general concepts.</p></li>
-<li><p>We’ll also drop the subscript <span class="math inline">X</span> from the distributions and use <span class="math inline">p = p_X</span> and <span class="math inline">q = q_X</span> since there are no further dependencies to consider (e.g.&nbsp;no conditional distributions).</p></li>
+<li><p><code>sample</code>, <code>distribution</code> and <code>density</code> specifically refer to quantities related to <span class="math inline">q_X</span> as shown in the table. The plain-text sample, distribution, density etc. refer to the general concepts.</p></li>
+<li><p>We’ll drop the subscript <span class="math inline">X</span> from the distributions and use <span class="math inline">p = p_X</span> and <span class="math inline">q = q_X</span> to simplify notation.</p></li>
 </ol>
 <section id="likelihood-and-information" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="likelihood-and-information">Likelihood and information</h3>
@@ -291,7 +292,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>
 </p>
 <ul>
-<li>The quantities <span class="math inline">-\log{q(x)}</span> and <span class="math inline">-\log{p(x)}</span> look identical, yet have different names</li>
+<li>The quantities <span class="math inline">-\log{q(x)}</span> and <span class="math inline">-\log{p(x)}</span> look identical, yet have different names.</li>
 <li><span class="math inline">-\log{p(x)}</span> tells us something about the information content of an observation.</li>
 <li><span class="math inline">-\log{q(x)}</span> conveys something about our approximation <span class="math inline">q</span> (and therefore <span class="math inline">\theta</span>).</li>
 <li>This is why it’s helpful to retain the terminology, and interpret it as such.</li>
@@ -305,10 +306,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>
 </p>
 <ul>
-<li>As a summary statistic, we calculate the expected surprise over <code>samples</code></li>
+<li>As a summary statistic, we calculate the expected surprise over <code>samples</code>.</li>
 <li>Expected surprise is simply the avg. negative log-likelihood, as above.</li>
-<li>Expected surprise with <code>samples</code>: <span class="math inline">E_{x \sim q}({-\log q(x)})</span></li>
-<li>Expected surprise with <code>observations</code>: <span class="math inline">E_{x \sim p}({-\log q(x)})</span></li>
+<li>Expected surprise with <code>samples</code>: <span class="math inline">E_{x \sim q}({-\log q(x)})</span>.</li>
+<li>Expected surprise with <code>observations</code>: <span class="math inline">E_{x \sim p}({-\log q(x)})</span>.</li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -316,8 +317,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><br></p>
 <p>Here we treat expectation as a function of values specified in the argument, drawn from a distribution specified in the subscript, <span class="math inline">E_{x \sim p}(f(x))</span>. This is a commonly adopted convention that I’ll follow here.</p>
 </div></div><ul>
-<li>Expected surprise with <code>samples</code> is called <code>entropy</code> of <span class="math inline">q</span></li>
-<li>Expected surprise with <code>observation</code> is called <code>cross-entropy</code> of <span class="math inline">q</span> w.r.t. <span class="math inline">p</span></li>
+<li>Expected surprise with <code>samples</code> is called <code>entropy</code> of <span class="math inline">q</span>.</li>
+<li>Expected surprise with <code>observation</code> is called <code>cross-entropy</code> of <span class="math inline">q</span> w.r.t. <span class="math inline">p</span>.</li>
 <li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to tune <span class="math inline">q</span>.</li>
 <li>This is equivalent to maximizing the likelihood of <code>observations</code> under <span class="math inline">q</span>!</li>
 </ul>
@@ -463,13 +464,13 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 </p>
 <p>Re. entropy:</p>
 <ul>
-<li>The lower the entropy, the less surprising are samples on average.</li>
+<li>The lower the entropy, the less surprising samples are on average.</li>
 <li>Sampling from a sharply peaked distribution will be confined mostly to a small region.</li>
 <li>Such samples will have high likelihood (by definition).</li>
-<li>So a sharply peaked distribution has low entropy</li>
-<li>In statistical mechanics, structure in a system is related to ‘peaky’ distributions</li>
-<li>A smore tructured system means the related distribution has lower entropy</li>
-<li>Conversely, a more disordered system means the related distribution has higher entropy</li>
+<li>So a sharply peaked distribution has low entropy.</li>
+<li>In statistical mechanics, structure in a system is related to ‘peaky’ distributions.</li>
+<li>A more structured system means the related distribution has lower entropy.</li>
+<li>Conversely, a more disordered system means the related distribution has higher entropy.</li>
 </ul>
 <p>
 </p>
@@ -477,8 +478,8 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <ul>
 <li>We consider <span class="math inline">p = \mathcal{N}(0, 1)</span></li>
 <li><span class="math inline">q</span> is also gaussian, but parameters <span class="math inline">\mu</span> or <span class="math inline">\sigma</span> are varied.</li>
-<li>Here we don’t explore algorithms to find <span class="math inline">q</span></li>
-<li>The goal is simply to compare entropy-based quantities, which serve as motivation for such algorithms.</li>
+<li>Here we don’t explore algorithms to find <span class="math inline">q</span>.</li>
+<li>The goal is simply to compare entropy-based quantities, which serve as a basis for such algorithms.</li>
 </ul>
 <p>
 </p>
@@ -531,7 +532,7 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    Hpq.append(<span class="op">-</span>q.log_prob(x_obs).mean())</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    Hq.append(q.entropy())</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>f, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">2</span>))</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>f, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(q_mu[[<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>]], [Hp_emp, Hp_emp], <span class="st">'-b'</span>, label<span class="op">=</span><span class="vs">r'$H(p)$'</span>)</span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(q_mu, Hq, <span class="st">'.r'</span>, label<span class="op">=</span><span class="vs">r'$H(q)$'</span>)</span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(q_mu, Dpq, <span class="st">'-g'</span>, label<span class="op">=</span><span class="vs">r'$D_</span><span class="sc">{KL}</span><span class="vs">(p,q)$'</span>)</span>
@@ -565,13 +566,13 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<p><img src="information_files/figure-html/cell-2-output-1.png" width="566" height="181"></p>
+<p><img src="information_files/figure-html/cell-2-output-1.png" width="566" height="277"></p>
 </div>
 </div>
 </section>
 <section id="acknowledgments" class="level3">
 <h3 class="anchored" data-anchor-id="acknowledgments">Acknowledgments</h3>
-<p><a href="https://scholar.google.com/citations?user=U6B_HNYAAAAJ&amp;hl=en&amp;oi=ao">Łukasz Kuśmierz</a>, <a href="https://scholar.google.com/citations?hl=en&amp;user=ViilpdV5QxsC">Priyanka Kulkarni</a> and <a href="https://scholar.google.com/citations?user=WxTzovMAAAAJ">Shreyas Potnis</a> for helpful comments and suggestions.</p>
+<p><a href="https://annamgrim.com/">Anna Grim</a>, <a href="https://scholar.google.com/citations?user=U6B_HNYAAAAJ&amp;hl=en&amp;oi=ao">Łukasz Kuśmierz</a>, <a href="https://scholar.google.com/citations?hl=en&amp;user=ViilpdV5QxsC">Priyanka Kulkarni</a> and <a href="https://scholar.google.com/citations?user=WxTzovMAAAAJ">Shreyas Potnis</a> for helpful comments and suggestions.</p>
 
 
 </section>

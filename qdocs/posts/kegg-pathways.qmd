@@ -1,0 +1,138 @@
+---
+title: "Genes and pathways"
+author: "Rohan Gala"
+date: "2023-07-30"
+date-modified: last-modified
+categories: ["bioinformatics"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: github
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+page-navigation: false
+---
+
+There are 20,000+ genes in the mouse genome. scRNA-seq can measure genome-wide RNA transcription patterns on a per-cell basis. Computational methods for these high-dimensional datasets may showcase utility through vignettes inspecting gene sets implicated in some biological function. Here I'll explore how one might go about selecting such gene sets.
+
+I'd first like to point out and acknowledge that annotations in any database are incomplete. Genes can exhibit pleiotropy, can participate in multiple processes, their role may be specific to a particular tissue or cell type, and cellular functions are often not well-defined or well-demarcated. The discussion around _polycomputing_ in [@bongard2023there] illustrates this broader point at different levels for living systems. Nevertheless, domain experts studying biological systems continue to compile valuable insights into genes relevant to those systems from their particular perspective. Tapping into such knowledge can be useful for exploratory analyses.
+
+There are large-scale systematic databases curated by the community to aggregate and share information about genes uncovered through academic literature. Such databases now have software services, e.g. [g:profiler](https://biit.cs.ut.ee/gprofiler/gost) to facilitate lookups and perform routine calculations.
+
+1. [GO](http://geneontology.org/docs/ontology-documentation/) is a large-scale, community driven effort to curate relationships between gene products. @balakrishnan2013guide provide an overview of the procedure to add/ update annotations.
+
+2. [KEGG](https://www.kegg.jp/kegg/) is a database that contains a large number of curated and inferred metabolic, regulatory, and signal transduction pathways across multiple species.
+
+Both of these are well-maintained as of 2023, and are widely used in the community.
+
+::: {.column-margin}
+[@reimand2019pathway] provide an accessible overview of routine pathway and gene set enrichment analyses and tools.
+:::
+
+#### Task description
+
+In @marghi2023joint, we were interested in gene sets that might play a role in determining _state_ rather than core _identity_ for adult cortical neurons in the mouse brain. We chose to define _state_ through genes implicated in processes relevant for all neurons.
+
+#### Housekeeping genes
+
+A similar notion of _state_ may be captured by what the community broadly refers to as _housekeeping genes_. The precise criteria are heuristically defined, and validated (in part) through post-hoc [GO enrichment analyses](http://geneontology.org/docs/go-enrichment-analysis/). @joshi2022housekeeping obtain such housekeeping gene sets of housekeeping genes and provide a list of GO terms enriched among gene sets that the authors think are housekeeping genes. However there are 1,000's of genes in such sets, which is too large for our purposes.
+
+We then chose to zoom in on certain processes and pathways that one can reasonably think of as important for all cells, regardless of their functional type.
+
+The Wnt signaling pathway [-@liu2022wnt] is one such pathway that is relevant for all neurons. Annotations on [GO](https://www.ebi.ac.uk/QuickGO/term/GO:0016055) and [KEGG](https://www.kegg.jp/entry/mmu04310) for this pathway relate it to various genes, other classes of molecules as well as other pathways.
+
+Genes involved in processes of energy production, protein synthesis/degradation, circadian rhythms etc. might be also be interesting in this regard. 
+
+We'll restrict ourselves to only the KEGG database. We have a short set of genes provided by experts this task. KEGG lists ~[350 pathways](https://www.genome.jp/kegg-bin/show_organism?menu_type=pathway_maps&org=mmu) under _Mus musculus_ as of July 2023. 
+
+Since here we are only interested in gene sets, we'll view pathways as sets of genes. Pathways themselves can be linked to other pathways.
+
+#### Approach 1
+
+1. Get an expert-curated set of genes, $\mathcal{G_{\textrm{expert}}}$.
+2. Find pathways $\mathcal{P}_{g}$ that each gene $\mathcal{g} \in \mathcal{G_{\textrm{expert}}}$ participates in.
+3. Select a collection of such pathways with reasonable criteria.
+4. Example criteria:
+    - Select top $k$ pathways among $\cup{\mathcal{P}_{g}}$ that have the most genes in common.
+    - Select minimal set (of pathways) covers all genes in $\mathcal{G}$.
+5. The set of genes to consider may then be chosen as the union of genes involved in the selected pathways.
+
+::: {.callout-note appearance="simple" collapse=false icon=false title="Set cover problem"}
+
+ - We have a set ${A} = \{a_1, a_2, a_3, ..., a_n\}$ 
+ - We are given a collection of sets ${S_1},..., {S_m} \subseteq {A}$, such that $\cup_{i} {S_i} = {A}$.
+ - Including a subset ${S_i}$ is associated with a cost $w_i$. 
+ - Find a collection of subsets ${C}$ such that $\cup_{{S_i} \in {C}} {S_i} = {A}$ and $\sum_{{S_i} \in {C}} w_i$ is minimized.
+
+See also [Karp's 21 NP complete problems](https://en.wikipedia.org/wiki/Karp%27s_21_NP-complete_problems)
+:::
+
+#### Approach 2
+
+1. Choose a broad collection of pathways, $\mathcal{P}$.
+2. Each pathway $p \in \mathcal{P}$ consists of a set of genes $\mathcal{G}_{p}$.
+3. Select collection of genes with some criteria:
+4. For example:
+    - Select top $k$ genes among $\cup{\mathcal{G}_{p}}$ that have appear in the most number of pathways.
+    - Select minimal set (of genes) that covers all pathways in $\mathcal{P}$.
+
+
+#### Approach 3
+
+1. We can simply choose a particular pathway and use genes related to that pathway.
+
+| KEGG id | KEGG description | Broad category |
+|:--------:|:----------------------------------| --------------:|
+`mmu04710` | Circadian rhythm                           | Rhythms              |
+`mmu04713` | Circadian entrainment                      | Rhythms              |
+`mmu00010` | Glycolysis / Gluconeogenesis               | Energy               |
+`mmu00620` | Pyruvate metabolism                        | Energy               |
+`mmu00190` | Oxidative phosphorylation                  | Energy               |
+`mmu03008` | Ribosome biogenesis in eukaryotes          | Protein synthesis    |
+`mmu03010` | Ribosome                                   | Protein synthesis    |
+`mmu04310` | Wnt signaling pathway                      | Signaling            |
+`mmu04152` | AMPK signaling pathway                     | Signaling            |
+`mmu04350` | TGF-beta signaling pathway                 | Signaling            |
+`mmu04010` | MAPK signaling pathway                     | Signaling            |
+`mmu04014` | Ras signaling pathway                      | Signaling            |
+`mmu04020` | Calcium signaling pathway                  | Signaling            |
+`mmu04024` | cAMP signaling pathway                     | Signaling            |
+`mmu03018` | RNA degradation                            | Degradation          |
+`mmu04120` | Ubiquitin mediated proteolysis	            | Degradation          |
+`mmu04140` | Autophagy - animal                         | Degradation          |
+`mmu04142` | Lysosome                                   | Degradation          |
+`mmu04721` | Synaptic vesicle cycle                     | Vessicle maintenance |
+`mmu04130` | SNARE interactions in vesicular transport  | Vessicle maintenance |
+
+
+::: {.callout-note appearance="simple" collapse=false icon=false title="REST API and KEGG"}
+
+**What is a REST API**
+
+ - Broadly, a [REST-API](https://www.ibm.com/topics/rest-apis) allows a `client` to construct a `url` that will trigger `server` side database lookups or computations and return output over the internet using `http`. 
+  - This interaction is stateless - meaning all the information needed to perform the lookup or calculation should be self contained in the `url`. 
+  - A generic API to work with genes and pathways will then define a control vocabulary to refer to them, and also provide a fixed set of standard operations.
+
+**Consequences for `client`**
+
+  - Each query is independent of the others, and can be performed in parallel - depending on limitations imposed by the `server`.
+  - If the `client` needs to process the results that depend on results of multiple queries that are launched in parallel, we'll have to handle the asynchronously returned results (or look for a wrapper around the API that handles this for us)
+  - A simple `client` side design may also decide to perform the queries once, and store the results locally for future use.
+
+**KEGG API and Python tools**
+
+ - `requests` can make web requests and obtain results from a server, and `aiohttp` enables parallel + asynchronous processing of results over http.
+ - KEGG offers a [REST-style API](https://www.kegg.jp/kegg/docs/keggapi.html) to access its data. 
+ - `bioservices` is a library to access various bioinformatics resources with a python interface. `kegg_pull` is a recent python wrapper around the KEGG API that handles multiple requests better, and `KEGGutils` is a package that supports parsing data from KEGG into `networkx` graphs.
+:::
+
+
+An example consider the Wnt signaling pathway [-@liu2022wnt]. Annotations on [GO](https://www.ebi.ac.uk/QuickGO/term/GO:0016055) and [KEGG](https://www.kegg.jp/entry/mmu04310) for this pathway relate it to various genes, other classes of molecules as well as other pathways.
+
+Another class of genes of interest in the context of scRNA-seq are housekeeping genes. These are genes that are expressed in all cells, and are often used as reference genes for normalization.
+
+
+### Acknowledgments
+
+[Polina Kosillo](https://scholar.google.com/citations?user=za1dI8YAAAAJ&hl=en&oi=ao) for helpful discussions on the topic.

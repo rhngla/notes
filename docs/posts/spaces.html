@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.333">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -76,7 +76,8 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -165,7 +166,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">June 22, 2023</p>
+        <p class="date-modified">February 4, 2024</p>
       </div>
     </div>
       
@@ -192,21 +193,8 @@ div.csl-indent {
   </ul></li>
   <li><a href="#reimannian-manifold" id="toc-reimannian-manifold" class="nav-link" data-scroll-target="#reimannian-manifold"><span class="header-section-number">1.6</span> Reimannian Manifold</a>
   <ul class="collapse">
-  <li><a href="#coordinate-transformations" id="toc-coordinate-transformations" class="nav-link" data-scroll-target="#coordinate-transformations">Coordinate transformations</a></li>
-  <li><a href="#notation" id="toc-notation" class="nav-link" data-scroll-target="#notation">Notation</a></li>
-  <li><a href="#local" id="toc-local" class="nav-link" data-scroll-target="#local">Local</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#dimensionality-reduction" id="toc-dimensionality-reduction" class="nav-link" data-scroll-target="#dimensionality-reduction"><span class="header-section-number">2</span> Dimensionality reduction</a>
-  <ul class="collapse">
-  <li><a href="#sec-highdim-curse" id="toc-sec-highdim-curse" class="nav-link" data-scroll-target="#sec-highdim-curse"><span class="header-section-number">2.1</span> Curse of high dimensionality</a></li>
-  <li><a href="#manifold-assumption" id="toc-manifold-assumption" class="nav-link" data-scroll-target="#manifold-assumption"><span class="header-section-number">2.2</span> Manifold assumption</a></li>
-  <li><a href="#dimensionality-reduction-1" id="toc-dimensionality-reduction-1" class="nav-link" data-scroll-target="#dimensionality-reduction-1"><span class="header-section-number">2.3</span> Dimensionality reduction</a></li>
-  </ul></li>
-  <li><a href="#cell-types-and-manifolds" id="toc-cell-types-and-manifolds" class="nav-link" data-scroll-target="#cell-types-and-manifolds"><span class="header-section-number">3</span> Cell types and manifolds</a></li>
-  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading"><span class="header-section-number">4</span> Further reading</a>
-  <ul class="collapse">
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -264,7 +252,7 @@ x \cdot (y + z) &amp;= (x \cdot y) + (x \cdot z) \\
 </section>
 <section id="sec-vectorspace" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="sec-vectorspace"><span class="header-section-number">1.3</span> Vector space</h2>
-<p>A vector space over a field <span class="math inline">F</span> is a set <span class="math inline">V</span> together with operations of addition and scalar multiplication) such that for all vectors <span class="math inline">x,y,z \in V</span> and all scalars <span class="math inline">\alpha, \beta \in \mathbb{F}</span> the following hold:</p>
+<p>A vector space over a field <span class="math inline">F</span> is a set <span class="math inline">V</span> together with operations of addition and scalar multiplication such that for all vectors <span class="math inline">x,y,z \in V</span> and all scalars <span class="math inline">\alpha, \beta \in \mathbb{F}</span> the following hold:</p>
 <p><span id="eq-vectorspace"><span class="math display">
 \begin{aligned}
 x + y &amp;= y + x \\
@@ -289,7 +277,8 @@ w(x+y) &amp;\leq w(x) + w(y)
 \end{aligned}
 \tag{4}</span></span></p>
 <ul>
-<li>Norms induce a distance metric on the vector space, <span class="math inline">d (x, y) = w (x − y)</span>, and such a normed vector space is therefore also a metric space.</li>
+<li>Here <span class="math inline">\lvert\alpha\rvert</span> denotes the absolute value of the scalar <span class="math inline">\alpha</span>.</li>
+<li>Norms induce a distance metric on the vector space, <span class="math inline">d (x, y) = w (x − y)</span>, and vector space equipped with a norm (i.e.&nbsp;normed vector space) is therefore also a metric space.</li>
 <li>Not all metric spaces are normed vector spaces. That is, there exist metric spaces that are not normed vector spaces.</li>
 <li>A metric can define an <em>induced norm</em> <span class="math inline">w</span> over a vector space (via <span class="math inline">w(x) = d(x,0)</span>) if it satisfies the following: <span id="eq-inducednorm"><span class="math display">
 \begin{aligned}
@@ -301,7 +290,7 @@ d(\alpha u,\alpha v) &amp;= \lvert\alpha\rvert d(u,v)
 </section>
 <section id="sec-innerproductspace" class="level2 page-columns page-full" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="sec-innerproductspace"><span class="header-section-number">1.5</span> Inner product space</h2>
-<p>An inner product space is a vector space <span class="math inline">V</span> over the field <span class="math inline">F</span> together with an inner product. An inner product is a map <span class="math inline">\langle \cdot ,\cdot \rangle :V \times V \to F</span>, that satisfies the properties for all vectors <span class="math inline">x,y,z\in V</span> and all scalars <span class="math inline">a,b \in F</span>. <span id="eq-innerproduct"><span class="math display">
+<p>An inner product space is a vector space <span class="math inline">V</span> over the field <span class="math inline">F</span> equipped with an inner product. An inner product is a map <span class="math inline">\langle \cdot ,\cdot \rangle :V \times V \to F</span>, that satisfies the properties for all vectors <span class="math inline">x,y,z\in V</span> and all scalars <span class="math inline">a,b \in F</span>. <span id="eq-innerproduct"><span class="math display">
 \begin{aligned}
 \langle x,y\rangle &amp;={\overline {\langle y,x\rangle }} \\
 \langle ax+by,z\rangle &amp;=a \langle x,z\rangle +b\langle y,z\rangle \\
@@ -331,187 +320,22 @@ d(\alpha u,\alpha v) &amp;= \lvert\alpha\rvert d(u,v)
 <p>We often assume we are working with a Euclidean metric space <span class="math inline">(\mathbb{R}^n, d_{\textrm{euclidean}})</span> without explicitly stating definitions. However, considering these definitions make it easier to understand the more general case of a Riemannian manifold.</p>
 </section>
 </section>
-<section id="reimannian-manifold" class="level2 page-columns page-full" data-number="1.6">
+<section id="reimannian-manifold" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="reimannian-manifold"><span class="header-section-number">1.6</span> Reimannian Manifold</h2>
 <p>Textbooks on differential geometry, e.g. <span class="citation" data-cites="andrews2020dg">Andrews (<a href="#ref-andrews2020dg" role="doc-biblioref">2020</a>)</span> would provide a more formal entry point and description for Manifolds. I’d like to point out connections here to Euclidean geometry to build some intuition first. In geometry taught in school, Euclidean geometry is introduced through its <a href="https://en.wikipedia.org/wiki/Euclidean_geometry">axioms</a>. In particular, relaxing the fifth postulate (also referred at as the <a href="https://en.wikipedia.org/wiki/Parallel_postulate">parallel postulate</a>) leads to ideas of spherical and hyperbolic geometry, which can also be viewed as special cases of Reimannian manifolds that have constant, <em>global curvature</em>.</p>
 <p>Riemannian manifolds allow for <em>local curvature</em>. This local curvature is allowed to vary smoothly from one position to the next along the manifold. The local region around each position can be treated as a Euclidean space (we’ll introduce the notion of tangent space for this). We can choose a coordinate system locally to account for the local curvature, and then keep using intuitions for Euclidean spaces there.</p>
 <p>However, as we move along manifold, we’d like to modify the co-ordinate system itself to account for the local curvature. Because we are working with a smoothly varying curvature, we can do this using smooth transformations of the co-ordinate system - for which we use tools from calculus.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Sections below are under construction!</p>
-</div>
-</div>
-</div>
-<section id="coordinate-transformations" class="level3">
-<h3 class="anchored" data-anchor-id="coordinate-transformations">Coordinate transformations</h3>
-<ul>
-<li>Discuss Jacobians</li>
-<li>Coordinate transformations in <span class="math inline">\mathbb{R}^n</span></li>
-<li>Invertible transformations (connection to normalizing flows)</li>
-</ul>
-</section>
-<section id="notation" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="notation">Notation</h3>
-<p>A Riemannian manifold is a tuple <span class="math inline">(M,g)</span> where <span class="math inline">M</span> is a set of points and <span class="math inline">g</span> refers to inner products on vector spaces that we define at each point <span class="math inline">p \in M</span>. Vectors that are tangent to the point <span class="math inline">p</span> make up the tangent space denoted by <span class="math inline">T_{p} M</span>.</p>
-<p>Let point <span class="math inline">p</span> and a local co-ordinate system denoted as <span class="math inline">(x^1,...,x^n)</span></p>
-<p>The set where we define each object as a differential operator <span class="math inline">\mathbf{A} = (A^1\frac{\partial}{\partial x^1},...,A^n\frac{\partial}{\partial x^n})</span>, s.t. <span class="math inline">A^i \in \mathbb{R}</span>. Such a set satisfies definition of a vector space. Moreover, each object is tangent to the manifold because of the partial derivatives. Thus, we now have a way to specify objects belonging to the tangent space <span class="math inline">T_{p} M</span>.</p>
-<p>Consider the change of co-ordinates from <span class="math inline">(x^1,...,x^n)</span> to <span class="math inline">(y^1,...,y^n)</span>, where <span class="math inline">y^i = f^i(x^1,...,x^n)</span>. The Jacobian matrix is defined as <span class="math inline">J_{ij} = \frac{\partial y^i}{\partial x^j}</span>.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>The differential operators actually define a <em>vector field</em>; each vector field is a vector space on itself.</p>
-</div></div><p>We denote the inner product at <span class="math inline">p \in M</span> as the map: <span class="math inline">g_{p}: T_{p} M \times T_{p} M \rightarrow \mathbb{R}</span>.</p>
-<p>For two vectors <span class="math inline">\mathbf{A}</span> and <span class="math inline">\mathbf{B}</span> in <span class="math inline">T_{p} M</span>, <span class="math inline">\langle \mathbf{A}, \mathbf{B} \rangle _{g_{p}}</span>, the inner product</p>
-<p>Through the distance metric induced by the canonical norm, it is easy to work out that Euclidean space is a special case of a Reimannian Manifold where g_{p} is an identity matrix.</p>
-</section>
-<section id="local" class="level3">
-<h3 class="anchored" data-anchor-id="local">Local</h3>
-<p>Recall that an inner product induces a norm, and the norm induces a distance metric. Since the inner product is locally defined at each point, we can think of the distance metric as being defined at each point. Using this local notion of distance, we can calculate distances between any two points on the manifold through integration. This we have a set of points <span class="math inline">M</span>, where we can calculate distances between any two points</p>
-<p>Note the similarity to definition of a metric space, <a href="#sec-metricspace">Section&nbsp;1.1</a>.</p>
-<p>Note that the metric tensor is an inner product on the tangent space <span class="math inline">T_{p}M</span>. Moreover, the tangent space is a vector space. Recall that any inner product induces a norm, which in turm induces a distance metric. Thus, there is notion of a distance metric for each point on the manifold (and the reason why <span class="math inline">g_p</span> is called a metric tensor).</p>
-<blockquote class="blockquote">
-<p>Note: For the Euclidean manifold, the metric tensor is the identity matrix.</p>
-</blockquote>
-<p>Categorizing geometric transforms:</p>
-<ul>
-<li>Diffeomorphic: Preserves angles, distances, and shape</li>
-<li>Isometric: Preserves angles and distances</li>
-<li>Conformal: Preserves angles</li>
-</ul>
-</section>
-</section>
-</section>
-<section id="dimensionality-reduction" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Dimensionality reduction</h1>
-<ul>
-<li>Autoencoders have been used for nonlinear dimensionality reduction, manifold learning, and clustering <span class="citation" data-cites="tschannen2018recent">Tschannen, Bachem, and Lucic (<a href="#ref-tschannen2018recent" role="doc-biblioref">2018</a>)</span>.</li>
-<li>They have been adapted to learn geometry preserving representations, e.g. <span class="citation" data-cites="yonghyeon2021regularized">Yonghyeon et al. (<a href="#ref-yonghyeon2021regularized" role="doc-biblioref">2021</a>)</span>, <span class="citation" data-cites="peterfreund2020local">Peterfreund et al. (<a href="#ref-peterfreund2020local" role="doc-biblioref">2020</a>)</span>.</li>
-</ul>
-<p>Measuring distortion: - <span class="citation" data-cites="mcqueen2016nearly">McQueen, Meila, and Joncas (<a href="#ref-mcqueen2016nearly" role="doc-biblioref">2016</a>)</span> - Structure of the data matters - Local similarity - KNN-set-based measures (assuming Euclidian metric locally) - ARI, NMI, PSI (point set index, <span class="citation" data-cites="rezaei2016set">Rezaei and Fränti (<a href="#ref-rezaei2016set" role="doc-biblioref">2016</a>)</span>) for global similarity</p>
-<section id="sec-highdim-curse" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="sec-highdim-curse"><span class="header-section-number">2.1</span> Curse of high dimensionality</h2>
-<p>Intuition for properties of data in 2d / 3d space don’t carry over to high dimensional spaces.</p>
-<ol type="1">
-<li>Most of the volume is at the surface of the hypersphere in high D</li>
-<li>This is a consequence of the phenomena of “concentration of measure”</li>
-</ol>
-<p>Further reading: <span class="citation" data-cites="aggarwal2001surprising">Aggarwal, Hinneburg, and Keim (<a href="#ref-aggarwal2001surprising" role="doc-biblioref">2001</a>)</span>, Chapter 1 of <span class="citation" data-cites="lee2007nonlinear">Lee and Verleysen (<a href="#ref-lee2007nonlinear" role="doc-biblioref">2007</a>)</span>.</p>
-</section>
-<section id="manifold-assumption" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="manifold-assumption"><span class="header-section-number">2.2</span> Manifold assumption</h2>
-<blockquote class="blockquote">
-<p>Many methods attempt to use point samples in high dimensional space to parametrize a low dimensional manifold.</p>
-</blockquote>
-<p>Paraphrasing a nice introduction in <span class="citation" data-cites="ganea2019non">Ganea (<a href="#ref-ganea2019non" role="doc-biblioref">2019</a>)</span>, we assume that data lies on a manifold of much smaller dimension (latent) than the ambient dimension (measured). This enables learning and generalization to unseen data points. We further assume that it is a metric space <span class="math inline">(Y, d_Y)</span> and has a smooth differentiable structure that allows learning via optimization.</p>
-<p>Thus we are interested in Riemannian manifolds of intrinsic dimension <span class="math inline">d \leq n</span>. The hope is we can achieve this by learning an a mapping function <span class="math inline">f : X \rightarrow Y</span> from the input high dimensional data space to the low-dimensional representation space.</p>
-</section>
-<section id="dimensionality-reduction-1" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="dimensionality-reduction-1"><span class="header-section-number">2.3</span> Dimensionality reduction</h2>
-<p>These set of <a href="https://drewwilimitis.github.io/Manifold-Learning/">notes by Drew Wilimitis</a> also contain python implementation of common methods.</p>
-<p>Various computational methods have been designed to uncover a lower dimension manifold that preserve some notion of distances and structure of data observed in high dimension.</p>
-<ul>
-<li>MDS: preserve pairwise distances (using some common metric, e.g.&nbsp;Euclidean)</li>
-<li>Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops. Assumes a metric to define nearest neighbor)</li>
-<li>Diffusion maps: consider notion of reachability of distant points by constructing a diffusion process <span class="citation" data-cites="coifman2005geometric de2008introduction">(<a href="#ref-coifman2005geometric" role="doc-biblioref">Coifman et al. 2005</a>; <a href="#ref-de2008introduction" role="doc-biblioref">De la Porte et al. 2008</a>)</span></li>
-<li>Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods</li>
-</ul>
-<p>Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. e.g.&nbsp;<a href="https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html">transformer architectures</a>.</p>
-<p>TODO: - Similarities and distances discussion in <span class="citation" data-cites="ganea2019non">Ganea (<a href="#ref-ganea2019non" role="doc-biblioref">2019</a>)</span> - Proof in <span class="citation" data-cites="dasgupta2003elementary">Dasgupta and Gupta (<a href="#ref-dasgupta2003elementary" role="doc-biblioref">2003</a>)</span> for the Johnson Lindenstrauss lemma. - <a href="https://www.cs.toronto.edu/~hinton/absps/nca.pdf">Nearest component analysis</a> - <a href="https://ieeexplore.ieee.org/abstract/document/1661543">Unifying dimensionality reduction, graph partitioning, and data set parameterization</a> - <a href="https://icml.cc/2011/papers/551_icmlpaper.pdf">Sparse random projections</a> - Include references from <a href="https://twitter.com/lpachter/status/1431325969411821572?s=21&amp;t=5TsIwpYk5rwp--JHbq_RwA">this twitter thread</a></p>
-<section id="using-jaccard-similarity" class="level4">
-<h4 class="anchored" data-anchor-id="using-jaccard-similarity">Using Jaccard similarity</h4>
-<p>Consider representations of point <span class="math inline">p</span> embedded in two metric spaces $(X, d_{X}) and in <span class="math inline">(Y, d_{Y})</span>. We denote the k-nearest neighbors of <span class="math inline">p</span> in the two metric spaces as <span class="math inline">K_{X}(p)</span> and <span class="math inline">K_{Y}(p)</span>. The Jaccard similarity between the neighborhood sets is defined as: <span class="math display">
-J_{XY}(p) = \frac{|K_{X}(p) \cap K_{Y}(p)|}{|K_{X}(p) \cup K_{Y}(p)|}
-</span></p>
-</section>
-</section>
-</section>
-<section id="cell-types-and-manifolds" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Cell types and manifolds</h1>
-<ul>
-<li>We assume that cellular identity and diversity that we would like to interpret can be captured by the position of cells on a low-dimensional manifold.</li>
-<li>Further, we assume that the (high dimensional) feature set we want to measure (e.g.&nbsp;genome-wide mRNA abundance) is explained well by some stochastic generative process.</li>
-<li>Such a generative process takes co-ordinates along a low dimensional manifold as input, and produces the feature values one attempts to measure experimentally.</li>
-<li>The measurement procedure introduces undesirable noise in these feature values.</li>
-<li>Our hope is that we have:
-<ol type="i">
-<li>a well-understood noise model with its own parameters to explain variability in the observed values</li>
-<li>a way to learn the manifold from the structure of the data (cells x genes matrix)</li>
-<li>a metric on the manifold that enables analyses of cellular homogeneity and diversity</li>
-</ol></li>
-</ul>
-<p>Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in <span class="citation" data-cites="skinnider2019evaluating">Skinnider, Squair, and Foster (<a href="#ref-skinnider2019evaluating" role="doc-biblioref">2019</a>)</span> and <span class="citation" data-cites="cooley2019novel">Cooley et al. (<a href="#ref-cooley2019novel" role="doc-biblioref">2019</a>)</span>.</p>
-<p><span class="citation" data-cites="wolf2019paga">Wolf et al. (<a href="#ref-wolf2019paga" role="doc-biblioref">2019</a>)</span> apply diffusion maps for scRNA-seq analysis.</p>
-</section>
-<section id="further-reading" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Further reading</h1>
-<ul>
-<li>Equivalence of metrics?</li>
-<li>Bregman divergence?</li>
-<li><span class="citation" data-cites="suarez2021tutorial">Suárez, Garcı́a, and Herrera (<a href="#ref-suarez2021tutorial" role="doc-biblioref">2021</a>)</span> survey techniques for distance metric learning towards improving classifier performance.</li>
-</ul>
+<p>(To be continued …)</p>
 <section id="references" class="level3">
 <h3 class="anchored" data-anchor-id="references">References</h3>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-aggarwal2001surprising" class="csl-entry" role="listitem">
-Aggarwal, Charu C, Alexander Hinneburg, and Daniel A Keim. 2001. <span>“On the Surprising Behavior of Distance Metrics in High Dimensional Space.”</span> In <em>Database Theory—ICDT 2001: 8th International Conference London, UK, January 4–6, 2001 Proceedings 8</em>, 420–34. Springer.
-</div>
 <div id="ref-andrews2020dg" class="csl-entry" role="listitem">
 Andrews, Ben. 2020. <span>“Lectures on Differential Geometry.”</span> Australian National University. <a href="https://maths-people.anu.edu.au/~andrews/DG/">https://maths-people.anu.edu.au/~andrews/DG/</a>.
 </div>
-<div id="ref-coifman2005geometric" class="csl-entry" role="listitem">
-Coifman, Ronald R, Stephane Lafon, Ann B Lee, Mauro Maggioni, Boaz Nadler, Frederick Warner, and Steven W Zucker. 2005. <span>“Geometric Diffusions as a Tool for Harmonic Analysis and Structure Definition of Data: Diffusion Maps.”</span> <em>Proceedings of the National Academy of Sciences</em> 102 (21): 7426–31.
-</div>
-<div id="ref-cooley2019novel" class="csl-entry" role="listitem">
-Cooley, Shamus M, Timothy Hamilton, Samuel D Aragones, J Christian J Ray, and Eric J Deeds. 2019. <span>“A Novel Metric Reveals Previously Unrecognized Distortion in Dimensionality Reduction of scRNA-Seq Data.”</span> <em>BioRxiv</em>, 689851.
-</div>
-<div id="ref-dasgupta2003elementary" class="csl-entry" role="listitem">
-Dasgupta, Sanjoy, and Anupam Gupta. 2003. <span>“An Elementary Proof of a Theorem of Johnson and Lindenstrauss.”</span> <em>Random Structures &amp; Algorithms</em> 22 (1): 60–65.
-</div>
-<div id="ref-de2008introduction" class="csl-entry" role="listitem">
-De la Porte, J, BM Herbst, W Hereman, and SJ Van Der Walt. 2008. <span>“An Introduction to Diffusion Maps.”</span> In <em>Proceedings of the 19th Symposium of the Pattern Recognition Association of South Africa (PRASA 2008), Cape Town, South Africa</em>, 15–25.
-</div>
-<div id="ref-ganea2019non" class="csl-entry" role="listitem">
-Ganea, Octavian-Eugen. 2019. <span>“Non-Euclidean Neural Representation Learning of Words, Entities and Hierarchies.”</span> PhD thesis, ETH Zurich.
-</div>
-<div id="ref-lee2007nonlinear" class="csl-entry" role="listitem">
-Lee, John A, and Michel Verleysen. 2007. <em>Nonlinear Dimensionality Reduction</em>. Vol. 1. Springer.
-</div>
-<div id="ref-mcqueen2016nearly" class="csl-entry" role="listitem">
-McQueen, James, Marina Meila, and Dominique Joncas. 2016. <span>“Nearly Isometric Embedding by Relaxation.”</span> <em>Advances in Neural Information Processing Systems</em> 29.
-</div>
-<div id="ref-peterfreund2020local" class="csl-entry" role="listitem">
-Peterfreund, Erez, Ofir Lindenbaum, Felix Dietrich, Tom Bertalan, Matan Gavish, Ioannis G Kevrekidis, and Ronald R Coifman. 2020. <span>“Local Conformal Autoencoder for Standardized Data Coordinates.”</span> <em>Proceedings of the National Academy of Sciences</em> 117 (49): 30918–27.
-</div>
-<div id="ref-rezaei2016set" class="csl-entry" role="listitem">
-Rezaei, Mohammad, and Pasi Fränti. 2016. <span>“Set Matching Measures for External Cluster Validity.”</span> <em>IEEE Transactions on Knowledge and Data Engineering</em> 28 (8): 2173–86.
-</div>
-<div id="ref-skinnider2019evaluating" class="csl-entry" role="listitem">
-Skinnider, Michael A, Jordan W Squair, and Leonard J Foster. 2019. <span>“Evaluating Measures of Association for Single-Cell Transcriptomics.”</span> <em>Nature Methods</em> 16 (5): 381–86.
-</div>
-<div id="ref-suarez2021tutorial" class="csl-entry" role="listitem">
-Suárez, Juan Luis, Salvador Garcı́a, and Francisco Herrera. 2021. <span>“A Tutorial on Distance Metric Learning: Mathematical Foundations, Algorithms, Experimental Analysis, Prospects and Challenges.”</span> <em>Neurocomputing</em> 425: 300–322.
-</div>
-<div id="ref-tschannen2018recent" class="csl-entry" role="listitem">
-Tschannen, Michael, Olivier Bachem, and Mario Lucic. 2018. <span>“Recent Advances in Autoencoder-Based Representation Learning.”</span> <em>arXiv Preprint arXiv:1812.05069</em>.
-</div>
-<div id="ref-wolf2019paga" class="csl-entry" role="listitem">
-Wolf, F Alexander, Fiona K Hamey, Mireya Plass, Jordi Solana, Joakim S Dahlin, Berthold Göttgens, Nikolaus Rajewsky, Lukas Simon, and Fabian J Theis. 2019. <span>“PAGA: Graph Abstraction Reconciles Clustering with Trajectory Inference Through a Topology Preserving Map of Single Cells.”</span> <em>Genome Biology</em> 20 (1): 1–9.
-</div>
-<div id="ref-yonghyeon2021regularized" class="csl-entry" role="listitem">
-Yonghyeon, LEE, Sangwoong Yoon, MinJun Son, and Frank C Park. 2021. <span>“Regularized Autoencoders for Isometric Representation Learning.”</span> In <em>International Conference on Learning Representations</em>.
-</div>
 </div>
 
 
+</section>
 </section>
 </section>
 

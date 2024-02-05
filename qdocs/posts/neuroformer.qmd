@@ -1,0 +1,87 @@
+---
+title: "Paper review: Neuroformer"
+author: "Rohan Gala"
+date: "2023-12-28"
+date-modified: last-modified
+categories: ["machine learning", "neuroscience"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: pygments
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+format:
+  html:
+    theme: cosmo
+    css: ../styles.css
+---
+
+ - [`preprint`](https://ar5iv.labs.arxiv.org/html/2311.00136)
+ - [`code`](https://github.com/a-antoniades/Neuroformer)
+
+### Introduction
+
+Neuroscience experiments often consist of:
+
+1. Input in the form of a sensory stimulus in relation to a task
+2. Read-outs from a subset of neurons in the brain
+3. Read-out of animal behavior at the task
+
+These can all be treated as time series data. In a recent preprint, @antoniades2023neuroformer introduce a multimodal transformer-based architecture to analyze such datasets.
+
+In CLIP, Radford et al. 2021 use pre-trained modality specific encoders (for text and images) and aligned their representations using a contrastive loss over paired training examples.
+
+The demonstrate zero-shot performance over images from datasets not used for training, and over class labels not used during training with the CLIP loss. 
+
+
+> Subsequently, a cross-modal transformer fuses the current neural response Ic with all other features. We then decode our fused representation using a causally-masked transformer decoder. All training is self-supervised and requires no data labelling.
+
+
+
+
+
+|Quantity                         | Symbol      | Dimensions      |
+|---                              |---          |---              |
+|Embedding dimensionality         | `E`         | -               |
+|Time window for current activity | `Tc`        | -               |
+|Time window for past activity    | `Tp`        | -               |
+|total time context               | `T = Tp + Tc` | -             |
+|Batch size                       | `B`         | -               |
+|Current activity                 | -           |`(Tc, E)`        |
+|Past activity                    | -           |`(Tp, E)`        |
+|Neuron activity embedding        |$I_{c}$      |`(B, Tc, E)`     |
+|Behavior features                |$A_{c}$      |`(B, Tc, E)`     |
+|Video features                   |$F_{p,c}$    |`(B, T, H, W, E)`|
+
+ - Each unique neuron is assigned an ID
+ - The entire time series is windows of
+
+## Datasets
+
+
+ - Computational experiments were performed using 2-p Ca++ imaging datasets. 
+ - Datasets were preprocessed to obtain spikes with standard pipelines. 
+
+| Dataset    | n(neurons)| n(tokens)          | Task                 |
+|:-----      |:-----     |:-----              |:-------------------- |
+| v1-alm     | 386       | 8 × 10<sup>4</sup> | V1-ALM neurons respond to drifting grating stimuli & naturalistic movie       |
+| visnav-1   | 2022      | 8 × 10<sup>5</sup> | lateral visual cortex neurons informative about visual input + movement speed |
+| visnav-2   | 1905      | 10<sup>6</sup>     | L2/3 medial area neurons informative about visual input + movement speed      |
+
+## Model details
+ 
+
+### Discussion
+
+The brain is already the black box that is doing the translation from inputs to behavior.Introducing a separate black box model that uses the observed information to predict behavior may be useful for the following situations:
+
+1. An upper bound on performance that can be expected from models
+2. A model that feeds into closed-loop systems
+
+
+
+### References
+
+::: {#refs}
+:::

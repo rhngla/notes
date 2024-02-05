@@ -2,7 +2,7 @@
 title: "Gradients through stochastic nodes"
 author: "Rohan Gala"
 date: "2023-07-03"
-date-modified: last-modified
+date-modified: "2023-07-03"
 categories: ["machine learning"]
 toc: true
 number-sections: true
@@ -11,27 +11,29 @@ highlight-style: pygments
 html-math-method: katex
 bibliography: "../refs.bib"
 code-fold: true
+theme: lux
 ---
 
-Calculating gradients through nodes in a computational graph that involve sampling from a distribution (for which we want to learn parameters) is non-trivial. Intuitively, this is because the samples of the distribution don't maintain a dependency with the distribution parameters. This prevents application of the chain rule used for backpropagation to obtain gradients w.r.t the distribution parameters.
+Calculating gradients through nodes in a computational graph that involve sampling from a distribution (for which we want to learn parameters) is not straightforward. Intuitively, this is because samples of the distribution don't maintain a dependency with the distribution parameters. This prevents application of the chain rule used for backpropagation to obtain gradients w.r.t the distribution parameters.
 
-There are two main strategies to get around this, one involving _score function_ estimators, and another involving reparametrization. See @schulman2015gradient for a more formal treatment.
+There are two main strategies to get around this, one involving _score function_ estimators, and another involving reparametrization. See [@schulman2015gradient] for a formal treatment.
 
-Roughly, the score function estimator-based approach is more general but more noisy. It leads to a surrogate loss function specified at the stochastic node, which permits gradient updates to the parameters of the distribution.
+The score function estimator-based approach is more general but also more noisy. The approach suggests using surrogate loss functions, which ultimately permit gradient updates to distribution parameters.
 
-The reparametrization "trick" (when possible) allows reformulating the distribution such that distribution parameters become part of a deterministic function applied to samples obtained from a fixed distribution. 
+The reparametrization trick (when possible) involves reformulating the distribution such that distribution parameters become part of a deterministic function applied to samples that are obtained from a fixed distribution.
 
 ### The set up
 
-Consider a stochastic node, where we sample values $x$ of a random variable $X$ from a distribution $p_{X|\phi}$ and $\phi$ are distribution parameters. Note that $\phi$ which themselves be specified by an upstream neural network.
-
-Let's also assume a deterministic and differentiable function $f_{\theta}$ with parameters $\theta$ applied to samples $x$, and we are interested in parameters $\theta$ and $\phi$ that optimize an objective that consists of an average over the samples drawn from $p_{X|\phi}$ as follows:
+Consider a stochastic node, where we sample values $x$ of a random variable $X$ from a distribution with parameters $\phi$. A transformation $f$ with parameters $\theta$ (e.g.  neural network) is applied to the samples to construct the loss function we want to optimize. 
 
 $$
 \begin{aligned}
 \mathcal{L}(\theta, \phi) &= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \int{f_{\theta}(x)p_{\phi}(x)dx}
 \end{aligned}
 $$ {#eq-objective}
+
+To learn parameters $\theta$ and $\phi$, we'll require access to updates obtained through the gradients of the loss function w.r.t these parameters.
+
 
 ### Updates to $\theta$
 
@@ -44,7 +46,7 @@ $$
 \end{aligned}
 $$ {#eq-gradtheta}
 
-We see that the gradient in [Eq. @eq-gradtheta] can be cast as an expectation over samples from the distribution $p_{X|\phi}$. So we can simply draw samples from the distribution and estimate the gradient, because $\nabla_{\theta}f_{\theta}$ is well-defined. In the extreme case, the estimate (albeit a noisy one) is obtained simply from a single sample $x$. So far so good.
+We see that the gradient in [Eq. @eq-gradtheta] can be cast as an expectation over samples from the distribution $p_{X|\phi}$. So we can simply draw samples from the distribution and estimate the gradient, because $\nabla_{\theta}f_{\theta}$ is well-defined. In the extreme case, the estimate (albeit a noisy one) is obtained simply from a single sample $x$. So far so good!
 
 ### Updates to $\phi$ 
 
@@ -55,18 +57,21 @@ $$
 \end{aligned}
 $$ {#eq-gradphi}
 
-It may be tempting think of [Eq. @eq-gradphi] as $\mathbb{E}_{x \sim \nabla_{\phi} p_{X|\phi}}[f_{\theta}(x)]$ in an analogous manner - this would be wrong, because $\nabla_{\phi} p_{\phi}(x)$ not a valid probability density function.
+It may be tempting think of [Eq. @eq-gradphi] as $\mathbb{E}_{x \sim \nabla_{\phi} p_{X|\phi}}[f_{\theta}(x)]$ in an analogous manner. This would be wrong, because $\nabla_{\phi} p_{\phi}(x)$ not a valid probability density function!
 
 :::{.column-margin}
-A valid probability density function should be non-negative everywhere, and integrate to unity over its domain.
+⚠️ A valid probability density function should be non-negative everywhere, and integrate to unity over its domain.
 :::
 
 Instead we'll use an identity that is often referred to as the log-derivative trick to rewrite [Eq. @eq-gradphi] as follows:
 
 :::{.column-margin}
-Log-derivative trick:
+Log-derivative trick is an application of the chain rule for derivatives:
 $$
-\nabla_{x}h(x) = h(x)\nabla_x{\log(x)}
+\begin{aligned}
+\nabla_{x}({\log{h(x)}}) &= \frac{1}{h(x)}\nabla_{x}({h(x)}) \\
+\implies \nabla_{x}({h(x)}) &= h(x)\nabla_x{(\log{h(x)})}
+\end{aligned}
 $$
 :::
 
@@ -77,21 +82,37 @@ $$
 \end{aligned}
 $$ {#eq-score}
 
-[Eq. @eq-score] shows that the gradient is once again over samples from the distribution $p_{X|\phi}$. As before, in the extreme case this may be estimated with a single sample.
+[Eq. @eq-score] shows that the gradient is now over samples from the distribution $p_{X|\phi}$. As before, in the extreme case this may be estimated with a single sample.
 
 If we view $p_{\phi}(x)$ as a likelihood function, then $\nabla_{\phi}{\log{p_{\phi}(x)}}$ is referred to as the _score function_. The estimate of the gradient includes the score function, and so it is referred to as a _score function estimator_.
 
-This estimator suggests $\mathcal{L}_{\textrm{surrogate}}=~\mathbb{E}_{x \sim p_{X|\phi}}{[f_{\theta}(x)\log{p_{\phi}(x)}]}$ as a surrogate loss function where $f_{\theta}(x)$ is treated as a constant (because it does not depend on $\phi$).
+[Eq. @eq-score] also suggests $\mathcal{L}_{\textrm{surrogate}}=~\mathbb{E}_{x \sim p_{X|\phi}}{[f_{\theta}(x)\log{p_{\phi}(x)}]}$ as a surrogate loss function for the stochastic node to obtain the correct update for $\phi$ when relying on auto-differentiation libraries. 
 
-It is worth thinking about the extreme case, when $f_{\theta}(x)$ itself is a constant independent of $x$. This would suggest that the parameter $\phi$ does not influence the loss, and so we would expect the gradient for $\phi$ to be zero in expectation.
+As a side note, let's think of the case where $f_{\theta}(x)$ maps to a constant value $c$. Then it means parameter $\phi$ does not influence the loss. No matter the sample drawn, the loss does not change. We can check that the gradient w.r.t. $\phi$ is zero in expectation @eq-score-expectation for a score function estimator: 
 
-This is indeed the case, 
+$$
+\begin{aligned}
+\nabla_{\phi}\mathcal{L} &= \int{c  \nabla_{\phi} (\log{p_{\phi}(x)}) p_{\phi}(x) dx} \\
+&= c \int{\nabla_{\phi} p_{\phi}(x) dx} = c \nabla_{\phi} \int{p_{\phi}(x) dx} = 0\\
+\end{aligned}
+$$ {#eq-score-expectation}
+
 
 :::{.column-margin}
 The bias and variance over different samples of the data are an important characterization of estimators. The score function is of relevance here, e.g. see these [Lecture notes](https://cseweb.ucsd.edu/~elkan/291winter2005/lect09.pdf) and discussion about the Cramér-Rao bound.
 :::
 
 Another way to estimate the gradient through stochastic nodes is to use the _reparametrization trick_. This is possible when the distribution $p_{X|\phi}$ can be composed with a deterministic function $g_\psi$ applied to samples $z$ drawn from a fixed distribution $p_{Z}$. 
+
+$$
+\begin{aligned}
+\mathcal{L} &= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \mathbb{E}_{z \sim p_{Z}}[f_{\theta}{(g_{\psi}(z)}]
+\end{aligned}
+$$ {#eq-reparam}
+
+Here the parameters to learn are $\theta$ and $\psi$, which both correspond to deterministic functions. The gradients can now be calculated through the chain rule, similar to [Eq. @eq-gradtheta]. 
+
+We thus have a way to learn parameters of probability distributions using auto-differentiation frameworks, making it possible to learn non-deterministic models.
 
 ### References
 

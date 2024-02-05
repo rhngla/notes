@@ -1,8 +1,8 @@
 ---
-title: "Transformers and foundational models for X"
+title: "Transformers"
 author: "Rohan Gala"
 date: "2023-06-20"
-date-modified: last-modified
+date-modified: "2024-01-10"
 categories: ["machine learning"]
 #image: "image.jpg"
 toc: true
@@ -14,16 +14,14 @@ bibliography: "../refs.bib"
 code-fold: true
 ---
 
-Here I keep track of sources that have helped me understand this topic better.
-
-In my view, the main concepts to be familiar with are:
+Here I keep track of sources that have helped me understand this topic better. I think the main concepts to be familiar with are:
 
  - [Generative modeling for sequences](#generative-sequence-modeling)
  - [Attention mechanism, and transformer architecture](#attention-mechanism-and-transformer-architecture)
  - [Multi-task learning](#multi-task-learning)
 
 ::: {.column-margin}
-@raschka2023llm outlines some key papers and developments in the context of large language models.  
+@raschka2023llm outlines some key papers and developments in the context of large language models.
 :::
 
 ::: {.column-margin}
@@ -36,17 +34,17 @@ In my view, the main concepts to be familiar with are:
 
 ### Generative sequence modeling
 
-Language has a natural sequential structure. The generative modeling task is to learn a probability distribution over sequences of words. 
+Language has a natural sequential structure. The generative modeling task is to learn a probability distribution over word sequences. 
 
-Let different words be specific values of $n$ random variables. Then the distribution we'd like to learn from data is $p(s_1, s_2, ..., s_n)$. The sequential ordering motivates a particular factorization of this joint distribution:
+Let $s_i$ denote the random variable for the $i$-th word in the sequence. Each random variable can take on values from the entire vocabulary. Then the distribution (a.k.a. generative model) we'd like to learn from data is $p(s_1, s_2, ..., s_n)$. The sequential ordering motivates a particular factorization of this joint distribution:
 
 $$p(s_1, s_2, ..., s_n) = p(s_1) p(s_2 | s_1) p(s_3 | s_1, s_2) ... p(s_n | s_1, s_2, ..., s_{n-1})$$
 
-It's important to understand that the notion of 'words' is arbitrary for such modeling. Even for language, one can break up words at the character or even byte level. This idea is important for notions of multi-task learning and foundational models.
+Note that for language modeling, the vocabulary typically consists of character substrings, or even related byte level representations. As the vocabulary becomes more fine-grained, the distributions that must be learnt become more expressive. The sequence length to cover the same semantic meaning becomes larger, and the amount of data required to learn the distributions increases.
 
-When generating new sequences, we are recursively sampling particular conditional distributions, e.g. $p(s_i | s_1, ... s_{i-1})$ to ultimately look like we are sampling from $p(s_i, ... s_n | s_{i-k}, ..., s_{i-1})$.
+When generating new sequences, one can sample successively from the conditional distributions, e.g. $p(s_{i+1} | s_1, ... s_{i})$ to construct a length $k$ sequence from given a length $i$ sequence. 
 
-This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll revisit this view in the section on multi-task learning. 
+Given a sequence of length $i$, constructing a length $k$ sequence can be viewed as sampling from $p(s_{i+1}, ... s_{i+k} | s_{1}, ..., s_{i})$. This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll revisit this view in the section on multi-task learning. 
 
 ::: {.column-margin}
 @phuong2022formal describe transformer-based-algorithms without implementation details, instead focusing on descriptions with consistent and formal notation. With the maze of transformer variants that exist, this resource offers a coherent picture of the landscape.
@@ -54,10 +52,10 @@ This looks like $p(\textrm{outputs}|\textrm{inputs})$. We'll revisit this view i
 
 ### Attention mechanism and transformer architecture
 
-I mainly want to highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in @phuong2022formal.
+Here, I'll highlight how attention captures dependence of the output on particular entries of the input sequence. This bare-bones version of self-attention includes no bias terms, no scaling of the dot products etc., that are part of standard implementations and described well in @phuong2022formal.
 
 ::: {.column-margin}
-@smola2019attn motivates the attention mechanism with kernel regression.
+@smola2019attn motivates the attention mechanism with a kernel regression view.
 :::
 
 ::: {.column-margin}
@@ -77,9 +75,9 @@ $$
 
 $A$ is known as the attention matrix. Setting certain entries of the $A_{ij}$ to zero is referred to as masking, and it has the effect of preventing multiplicative interaction between the $i$-th and $j$-th inputs in constructing the $i$-th output.
 
-For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs of the sequence, i.e. $(x_1, ..., x_{i})$ (causality for temporal sequences). Since the product of lower triangular matrices remains lower triangular, stacking attention layers with this mask pattern retains such dependence throughout - which can be useful depending on the use case.  
+For language, setting the upper triangular entries (excluding the diagonal) to zero is a common choice. This mask pattern ensures that $y_i$ is only based on previous and current inputs of the sequence, i.e. $(x_1, ..., x_{i})$ (causality for temporal sequences). Since the product of lower triangular matrices remains lower triangular, stacking attention layers with this mask pattern retains such dependence throughout - which can be useful depending on the use case.
 
-I expect that choice of particular masking patterns and sparsity of the attention matrix (and of $K$, $Q$, $V$ matrices) are important questions for specific applications. 
+Choice of particular masking patterns and sparsity of the attention matrix (and of $K$, $Q$, $V$ matrices) are important questions for specific applications. 
 
 In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)}$, for some function $g_j$. This form renders it invariant to ordering i.e. permutations of the input sequence. 
 
@@ -87,9 +85,11 @@ In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)
 @zaheer2017deep have shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $$f(x_1, ... x_n) = h(\sum_i{g(x_i)})$$ is a universal approximator for any permutation invariant function.
 :::
 
-Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing. Language models also share weights between the embedding layer `(vocabulary_size x embedding_dimension)`. It remains to be seen if such tricks could be helpful for other applications.
+Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization, weight sharing across embedding laters etc. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing (see e.g. @zhang2022set), and to reduce memory footprint of large models.
 
-The transformer in @vaswani2017attention also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to provide context from a different source.
+The transformer in @vaswani2017attention also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to utilize context from a different source.
+
+See @weng2023transformer for a more comprehensive review of innovations in transformer-like models.
 
 ::: {.column-margin}
 I highly recommend the GPT implementation walkthrough by Karpathy [-@karpathy2023llm]. He's a skilled teacher and watching him live-code is instructive.
@@ -97,17 +97,15 @@ I highly recommend the GPT implementation walkthrough by Karpathy [-@karpathy202
 
 ### Multi-task learning
 
-In one version (e.g. GPT and variants), these transformer models are trained to simply predict the next word. That is, the model learns distributions $p(s_i | s_1, ..., s_{i-1})$ for all $i \in (1,...,n)$.
+In one class of transformers (e.g. GPT and variants), the model is trained to simply predict the next word. That is, the model learns distributions $p(s_i | s_1, ..., s_{i-1})$ for all $i \in (1,...,n)$.
 
 So far, a clear reason for why large language models seem magical is missing. Why bother increasing size of models, why invest so much in collecting the data and compute resources?
 
-I think @radford2019language, and later @brown2020language provide this missing reason. The main realization is that for language, the task itself is a sequence of tokens. Tasks can take the form of "translate to german" or "write python code for" etc. Here the sequence of words that specify the task are themselves part of the input sequence.
+I think @radford2019language, and later @brown2020language provide the motivation. The main realization is that for language, the task itself is a sequence of tokens. Tasks can take the form of "translate to german" or "write python code for" etc. Here the sequence of words that specify the task are themselves part of the input sequence. Moreover, the underlying input can be more parcellated and abstract, e.g. [byte pair encodings](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt).
 
-Moreover, the underlying input does not have to be "words", but instead can be more parcellated and abstract, e.g. [byte pair encodings](https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt).
+The implication is that while we learn $p(\textrm{output}|\textrm{input})$, we are also learning ${p(\textrm{output} | \textrm{input}, \textrm{task})}$, without requiring task-specific architecture or training.
 
-The implication is that while we learn $p(\textrm{output}|\textrm{input})$, we are also learning ${p(\textrm{output} | \textrm{input}, \textrm{task})}$, without needing task-specific architecture or training!
-
-In my view, this is a central requirement for a meaningful notion of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance is possible on a variety of tasks, even though the task is not explicitly specified while training.
+In my view, this is a central requirement for a meaningful notion of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance may be possible on a variety of tasks, even though the task is not explicitly specified while training.
 
 ### Foundational models
 
@@ -115,43 +113,13 @@ The term "foundational models" was popularized by @bommasani2021opportunities, a
 
 @bommasani2021opportunities describe the notion of emergence (generalization over tasks, and therefore related to zero-shot performance) and homogenization (learning something useful for a variety of downstream tasks, and therefore the pre-training is amenable to fine-tuning). These essentially echo the central observations of @radford2019language and @brown2020language.
 
-The idea of fine-tuning and using pre-trained model components on related datasets or tasks (e.g. transfer learning) has been a motivation behind efforts to curate such models in various domains, even before large language models became common e.g. [https://pytorch.org/hub/](https://pytorch.org/hub/). Unlike the multi-task learning in large language models, the scope of tasks for which pre-trained models may be useful in other domains is usually limited.
+The idea of fine-tuning and using pre-trained model components on related datasets or tasks (e.g. transfer learning) has been a motivation behind efforts to curate such models in various domains, even before large language models became common e.g. [https://pytorch.org/hub/](https://pytorch.org/hub/). Unlike the multi-task learning in large language models, the scope of tasks for which pre-trained models might be useful is much more constrained.
 
-### Towards scientific applications
+### Parting notes
 
-The output of language models can be directly parsed by humans. Let's say we ask a language model to write science fiction based on a fictional planet, for which we make up the rules of physics. The output from these models can be directly parsed, and evaluated for quality.
+The output of language models can be directly parsed and evaluated for quality by humans. This fact is exploited for public facing language models such as chatGPT. In this talk titled the _State of GPT_ [-@karpathy2023stategpt], Karpathy describes finetuning, reward modeling, and reinforcement learning using the reward model; all of these hinge on the fact that humans can understand and evaluate outputs of such language models.
 
-This fact is exploited for public facing language models such as chatGPT. In this talk titled the [State of GPT @karpathy2023stategpt], Karpathy describes finetuning, reward modeling, and reinforcement learning using the reward model; all of these hinge on the fact that humans can understand and evaluate outputs of such language models.
-
-This is usually not the case for scientific applications. Models trained on vast amounts of data can certainly make predictions, but when to trust and invest in such predictions (for scientific applications) is generally a very hard, unsolved problem for now in my opinion.
-
-### Transformers for single-cell resolution datasets
-
-The most developed, least noisy single-cell resolution _-omics_ datasets are from transcriptomics. For most analyses, the dataset is a table where rows are cells, columns are genes, and entries are the gene expression values. Additional metadata, e.g. disease state of the donor from which the cell was sampled, perturbations applied to the cell etc. may be part of the dataset.
-
-Typical tasks include determining identifiable cell types, specifying differentially expressed genes across conditions (aging, disease, perturbations), inferring developmental trajectories of particular cell types, identifying gene regulatory networks etc.
-
-The issue that plagues so many of these analyses are related modeling of noise in such measurements, curse of high-dimensionality, absence of established ground-truth, and lack of mathematically precise definition of tasks.
-
-::: {.column-margin}
-The team at [OpenProblems](https://openproblems.bio/events/) have continued to push for standardization and benchmarking through formal descriptions of tasks, e.g. @luecken2021sandbox. Still, the output of such efforts (both in terms of benchmarking datasets and state-of-the-art models) seems to have had limited influence on subsequent academic research.
-:::
-
-Transcriptomic data contain neither a natural sequential ordering, nor a large enough corpus of tasks to draw parallels with emergence and homogenization described above.
-
-Recent studies applying transformer-based models to single cell genomics consider similar pre-training tasks and model architectures. 
-
- - @le2021transformer
- - @yang2022scbert
- - @connell2022genellm
- - @shen2023generative
- - @ma2023single
- - @cui2022scformer, rebranded as @cui2023scgpt
- - @theodoris2023
- - @hao2023foundation
- - @gong2023xtrimogene
-
- (to be continued)
+Scientific applications will certainly find use for the attention mechanism and the transformer architecture. However, claims in papers from scientific domains that draw analogies with language modeling and co-opt jargon around foundational models deserve a more critical look.
 
 ### References
 

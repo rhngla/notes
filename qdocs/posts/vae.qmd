@@ -33,13 +33,64 @@ editor:
     render-on-save: true
 --- -->
 
- - We want a generative model for the data
+
+<p></p>
+
+ Quoting part of the introduciton in @blei2017variational. 
+
+ > A Bayesian model draws the latent variables from a prior density $p(z)$ and then relates them to the observations through the likelihood $p(x|z)$. Inference in a Bayesian model amounts to conditioning on data and computing the posterior $p(z | x)$. In complex Bayesian models, this computation often requires approximate inference.
+
+ >Rather than use sampling, the main idea behind variational inference is to use optimization. First, we posit a family of approximate densities $\mathcal{Q}$. This is a set of densities over the latent variables. Then, we try to find the member of that family that minimizes the Kullback-Leibler (KL) divergence to the exact posterior, $q∗(z) = \argmin {D_{\textrm{KL}}(q(z) | p(z | x))}$
+
+See Eqn 8 in https://www.jmlr.org/papers/volume14/hoffman13a/hoffman13a.pdf, and equivalence to the KL
+
+
+
+ - Problem set up:
+ - We have access to observations $x$, that come from some unknown distribution $p_X$.
+ - We assume there is a simpler distribution $p(z)$ that generates the data $x$ through a mapping specified by $p(x|z)$.
+ - $z$ is a latent variable
+
+<p></p>
+
+ - We want to infer the latent variable $z$ that generated $x$
+ given the data, what is the latent variable that generated it?
+ The goal is to approximate the posterior density $p(z|x)$ with a tunable distribution $q_{\phi}(z|x)$
+ - We assume that $Z$ is the random variable that generates data $X$
+ - Further, $Z$ is a latent variable (not observed directly)
+ - We have have access to or control prior density $p(z)$, the likelihood $p(x|z)$, and family of distributions $q_{\phi}(z|x)$
+
+<p></p>
+
+ - By Bayes rule, $p(z|x) = \frac{p(x|z)p(z)}{p(x)}$
+ - Further, $p(x) = \int {p(x|z)p(z) dz}$
+ - In general, this integral is intractable (how to proceed when it is actually tractable?)
+
+<p></p>
+
+ - For two distributions $p$ and $q$, the KL divergence can be viewed as a measure of how different $p$ and $q$ are.
+ - The definition of KL divergence is not symmetric
+ - We'll consider $D_\textrm{KL}(q(z|x)|p(z|x))$
+ - Remember, the goal is to tune a family of distributions $q_{\phi}(z|x)$ such that it is close to $p(z|x)$
+
+
+
+\begin{aligned}
+D(q_{\phi}(z|x)|p(z|x)) &= E_{q_{\phi}(z|x)} (-\log{p(z|x)}) - E_{q_{\phi}(z|x)} (-\log{q_{\phi}(z|x)}) \\
+                             &= E_{q_{\phi}(z|x)} (-\log{\frac{p(x|z)p(z)}{p(x)}}) - E_{q_{\phi}(z|x)} (-\log{q_{\phi}(z|x)}) \\
+                             &= E_{q_{\phi}(z|x)} (-\log {p(x|z)}) \color{#758EB7}{+ E_{q_{\phi}(z|x)} (-\log {p(z)})} \\ &\qquad {\color{#C06C84}- E_{q_{\phi}(z|x)} (-\log {p(x)})} {\color{#758EB7} - E_{q_{\phi}(z|x)} (-\log{q_{\phi}(z|x)})} \\
+\end{aligned}
+
+$$
+D(q_{\phi}(z|x)|p(z|x)) = - E_{q_{\phi}(z|x)} (\log {p(x|z)}) {\color{#758EB7} + D(q_{\phi}(z|x)|p(z))} {\color{#C06C84} + \log {p(x)}}
+$$
+
+How we parametrize $\phi$ expressive we make $q_{\phi}$
+
+
+
  - In other words, we want a model we want to sample from, and the samples should look like the data
  - We of course have samples of _some_ data
-
-
-
-
 
 
 There is a class of inference problems for which we use approximate methods. Approximate methods are grouped into 
@@ -57,15 +108,17 @@ Some resources I used to compile this post:
  - [Adam Kosiorek's blog](http://akosiorek.github.io/what_is_wrong_with_vaes/)
  - [Matthew Bernstein's blog](https://mbernste.github.io/posts/vae/)
  - @hoffman2016elbo
+ - [Black box variational inference](http://proceedings.mlr.press/v33/ranganath14)
 
 I'll use the following notational convention: 
 
- | Notation |       What we mean |
- |:--------:|:------------------:|
- | $p(x)$   | $p_{X}(X=x)$       |
- | $q(x)$   | $q_{X}(X=x)$       |
- | $p(x|z)$ | $p_{X|Z}(X=x|Z=z)$ |
- | $p(x,z)$ | $p_{X,Z}(X=x,Z=z)$ |
+ | Notation     |       What we mean     |
+ |:--------:    |:------------------:    |
+ | $p(x)$       | $p_{X}(X=x)$           |
+ | $q(x)$       | $q_{X}(X=x)$           |
+ | $p(x|z)$     | $p_{X|Z}(X=x|Z=z)$     |
+ | $p(x,z)$     | $p_{X,Z}(X=x,Z=z)$     |
+ | $E_{q(z|x)}$ | $E_{z \sim q_{Z|X=x}}$ |
 
 
 ::: {.callout-note}

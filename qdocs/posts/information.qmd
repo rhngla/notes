@@ -3,7 +3,7 @@
 title: "Information, entropy, and KL divergence"
 author: "Rohan Gala"
 date: "2023-07-13"
-date-modified: last-modified
+date-modified: "2023-08-01"
 categories: ["fundamentals", "math", "machine learning"]
 toc: true
 number-sections: true
@@ -26,16 +26,16 @@ I'll assume continuous values for our random variables throughout. For the discr
 | :---- | :-----    | :----- |
 |`random variable` | $X$  |Function that maps events to values |
 |`distribution` | $q_X$| A particular probability density function |
-|`density`| $q_X(x)$| Probability density of at a particular value $x$, as specified by $q_X$ |
+|`density`| $q_X(x)$| Probability density at a particular value $x$, as specified by $q_X$ |
 |`sample` | $x\sim q_X$ | A value for a random variable, drawn from the underlying `distribution` $q_X$|
 |`observation`| $x\sim p_X$ | An observed value for a random variable. We typically don't know and cannot directly access $p_X$, but want to approximate it with $q_X$|
 : Notation and definitions {#tbl-terminology tbl-colwidths="[25,15,55]"}{.striped .hover}
 
 **Note:** 
 
-1. I'll treat `sample`, `distribution` and `density` specifically to referring quantities related to $q_X$ as shown in the table. The plain-text sample, distribution, density etc. will refer to the general concepts.
+1. `sample`, `distribution` and `density` specifically refer to quantities related to $q_X$ as shown in the table. The plain-text sample, distribution, density etc. refer to the general concepts.
 
-2. We'll also drop the subscript $X$ from the distributions and use $p = p_X$ and $q = q_X$ since there are no further dependencies to consider (e.g. no conditional distributions).
+2. We'll drop the subscript $X$ from the distributions and use $p = p_X$ and $q = q_X$ to simplify notation. 
 
 ### Likelihood and information
 
@@ -67,7 +67,7 @@ In the Bayesian view, $\theta$ itself may be considered as a particular value of
 
 <p></p>
 
- - The quantities $-\log{q(x)}$ and $-\log{p(x)}$ look identical, yet have different names
+ - The quantities $-\log{q(x)}$ and $-\log{p(x)}$ look identical, yet have different names.
  - $-\log{p(x)}$ tells us something about the information content of an observation.
  - $-\log{q(x)}$ conveys something about our approximation $q$ (and therefore $\theta$).
  - This is why it's helpful to retain the terminology, and interpret it as such.
@@ -82,10 +82,10 @@ A cryptic, partial answer: independence of distributions $\implies$ addition of 
 
 <p></p>
 
- - As a summary statistic, we calculate the expected surprise over `samples`
+ - As a summary statistic, we calculate the expected surprise over `samples`.
  - Expected surprise is simply the avg. negative log-likelihood, as above.
- - Expected surprise with `samples`: $E_{x \sim q}({-\log q(x)})$
- - Expected surprise with `observations`: $E_{x \sim p}({-\log q(x)})$
+ - Expected surprise with `samples`: $E_{x \sim q}({-\log q(x)})$.
+ - Expected surprise with `observations`: $E_{x \sim p}({-\log q(x)})$.
 
 :::{.column-margin}
 Expectation is usually an operator applied to a function of a random variable, indicated as $E[f(X)]$. The distribution over which the expectation is calculated is often implicit. 
@@ -97,8 +97,8 @@ Here we treat expectation as a function of values specified in the argument, dra
 
 
 
- - Expected surprise with `samples` is called `entropy` of $q$
- - Expected surprise with `observation` is called `cross-entropy` of $q$ w.r.t. $p$
+ - Expected surprise with `samples` is called `entropy` of $q$.
+ - Expected surprise with `observation` is called `cross-entropy` of $q$ w.r.t. $p$.
  - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to tune $q$.
  - This is equivalent to maximizing the likelihood of `observations` under $q$!
 
@@ -193,21 +193,21 @@ For the discrete case, the integral is replaced by a sum.
 
 Re. entropy:
 
- - The lower the entropy, the less surprising are samples on average.
+ - The lower the entropy, the less surprising samples are on average.
  - Sampling from a sharply peaked distribution will be confined mostly to a small region.
  - Such samples will have high likelihood (by definition).
- - So a sharply peaked distribution has low entropy
- - In statistical mechanics, structure in a system is related to 'peaky' distributions
- - A smore tructured system means the related distribution has lower entropy
- - Conversely, a more disordered system means the related distribution has higher entropy
+ - So a sharply peaked distribution has low entropy.
+ - In statistical mechanics, structure in a system is related to 'peaky' distributions.
+ - A more structured system means the related distribution has lower entropy.
+ - Conversely, a more disordered system means the related distribution has higher entropy.
 
 <p></p>
 A numerical example with Gaussians:
 
  - We consider $p = \mathcal{N}(0, 1)$
  - $q$ is also gaussian, but parameters $\mu$ or $\sigma$ are varied.
- - Here we don't explore algorithms to find $q$
- - The goal is simply  to compare entropy-based quantities, which serve as motivation for such algorithms.
+ - Here we don't explore algorithms to find $q$.
+ - The goal is simply to compare entropy-based quantities, which serve as a basis for such algorithms.
 
 <p></p>
 
@@ -256,7 +256,7 @@ for mu in q_mu:
     Hpq.append(-q.log_prob(x_obs).mean())
     Hq.append(q.entropy())
 
-f, ax = plt.subplots(1, 2, figsize=(6, 2))
+f, ax = plt.subplots(1, 2, figsize=(6, 3))
 ax[0].plot(q_mu[[1, -1]], [Hp_emp, Hp_emp], '-b', label=r'$H(p)$')
 ax[0].plot(q_mu, Hq, '.r', label=r'$H(q)$')
 ax[0].plot(q_mu, Dpq, '-g', label=r'$D_{KL}(p,q)$')
@@ -292,4 +292,4 @@ plt.show()
 
 ### Acknowledgments
 
-[Łukasz Kuśmierz](https://scholar.google.com/citations?user=U6B_HNYAAAAJ&hl=en&oi=ao), [Priyanka Kulkarni](https://scholar.google.com/citations?hl=en&user=ViilpdV5QxsC) and [Shreyas Potnis](https://scholar.google.com/citations?user=WxTzovMAAAAJ) for helpful comments and suggestions.
+[Anna Grim](https://annamgrim.com/), [Łukasz Kuśmierz](https://scholar.google.com/citations?user=U6B_HNYAAAAJ&hl=en&oi=ao), [Priyanka Kulkarni](https://scholar.google.com/citations?hl=en&user=ViilpdV5QxsC) and [Shreyas Potnis](https://scholar.google.com/citations?user=WxTzovMAAAAJ) for helpful comments and suggestions.

@@ -1,0 +1,37 @@
+---
+title: "Gaussian Processes"
+author: "Rohan Gala"
+date: "2023-08-01"
+date-modified: last-modified
+categories: ["math", "machine learning"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: github
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+page-navigation: false
+---
+
+If all we are interested in is the prediction $P(Y|X)$, then the fully Bayesian approach would amount to integrating over all models specified through the posterior:
+
+$$
+\begin{align*}
+P(Y|X) &= \int P(Y, \theta| X, \mathcal{D})d\theta \\
+       &= \int P(Y|X, \theta, \mathcal{D}) P(\theta|X, \mathcal{D}) d\theta \\
+       &= \int P(Y|X, \theta, \mathcal{D}) P(\theta| \mathcal{D}) d\theta \\
+\end{align*}
+$$
+
+While this is typically intractable, Gaussian Processes allow one to do this. 
+
+Resources:
+ - @görtler2019a
+ - 
+
+<p></p>
+ - Gaussian distribution is closed under conditioning and marginalization
+ 
+
+

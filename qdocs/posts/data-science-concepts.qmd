@@ -1,0 +1,209 @@
+
+---
+title: "Data science concepts"
+author: "Rohan Gala"
+date: "2024-01-23"
+date-modified: "last-modified"
+categories: ["math", "machine learning"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: github
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+page-navigation: false
+format:
+  html:
+    css: styles.css
+---
+
+
+These are my unstructured notes from Kilian Weinberger's CS4780 course lectures. 
+
+Minkowski distance is $d(x,y) = \left(\sum_{i=1}^n |x_i - y_i|^p\right)^{1/p}$, where $i$ is over dimensions. 
+
+ - This is a valid metric only for $p \geq 1$.
+ - $p \rightarrow \infty$ corresponds to $\max$ over $i$
+ - $p \rightarrow -\infty$ corresponds to $\min$ over $i$ 
+
+-----
+
+Bayes optimal classifier: $h^*(x) = \underset{y \in \mathcal{Y}}{\textrm{argmax}} P(Y=y|X=x)$. If we had access to the true distribution $P(Y|X)$, then this is the best classifier we can have. We typically don't have access to this, so we use the training data to estimate $P(Y|X)$.
+
+-----
+
+If $X, Y$ are the label and feature vector random variables, then Baye's rule says:
+$$P(X,Y) = P(Y|X)P(X) = P(X|Y)P(Y)$$
+ 
+Estimating P(Y|X) from data is considered as discriminative modeling, while estimating P(X|Y) and P(Y) is considered as generative modeling (conditional on the label). A nice explanation is provided in this [blogpost](https://theaisummer.com/latent-variable-models/).
+
+-----
+
+If we had P(X,Y) in closed form the best we can do is Bayes optimal classifer $P(Y|X) = P(X,Y)/P(X)$. 
+
+-----
+
+In the following let training data $\mathcal{D}$ consisting of tuples $(X, Y)$ be drawn from the data distribution $\sim P(X,Y)$
+
+The maximum likelihood estimate (MLE) uses the training data to estimate $\theta$ that specifies the distribution:
+$$
+\theta_\textrm{MLE} = \underset{\theta}{\textrm{argmax}} \quad P_\theta(\mathcal{D}) 
+$$
+
+Plugging in the test value for $X$ provides the probabilities over the $Y$ values, and this would be our prediction. 
+
+-----
+
+The maximum a posteriori (MAP) approach thinks of $\theta$ as a random variable with a prior distribution $P(\theta)$, and then uses Baye's rule to compute the posterior distribution:
+
+$$
+\theta_\textrm{MAP} = \underset{\theta}{\textrm{argmax}} \quad P(\theta|\mathcal{D})
+$$
+
+Note that $P(\theta|\mathcal{D}) = \frac{P(\mathcal{D}|\theta)P(\theta)}{P(\mathcal{D})}$, and denominator $P(\mathcal{D}) = \int P(\mathcal{D},\theta) d\theta$ does not depend on $\theta$, so is not included in the MAP optimization.
+
+For the optimization we typically take logs. Then compared to MLE, MAP has an extra term $\log[P(\theta)]$ that is independent of data. This can be interpreted as a regularization or as as a measure of classifier complexity.
+
+-----
+
+If all we are interested in is the prediction $P(Y|X)$, then the fully Bayesian approach would amount to integrating over all models specified through the posterior:
+
+$$
+\begin{align*}
+P(Y|X) &= \int P(Y, \theta| X, \mathcal{D})d\theta \\
+       &= \int P(Y|X, \theta, \mathcal{D}) P(\theta|X, \mathcal{D}) d\theta \\
+       &= \int P(Y|X, \theta, \mathcal{D}) P(\theta| \mathcal{D}) d\theta \\
+\end{align*}
+$$
+
+We used the fact that $P(\theta|X, \mathcal{D}) = P(\theta|\mathcal{D})$ because \theta only depends on the training data through $\mathcal{D}$, and not on test data $X$. This is intractable in general, but possible in some special cases (Gaussian Processes). 
+
+-----
+
+
+::: {.callout-important collapse="false"}
+Sections below are under construction! 
+:::
+
+### Coordinate transformations
+
+ - Discuss Jacobians
+ - Coordinate transformations in $\mathbb{R}^n$
+ - Invertible transformations (connection to normalizing flows)
+
+### Notation
+A Riemannian manifold is a tuple $(M,g)$ where $M$ is a set of points and $g$ refers to inner products on vector spaces that we define at each point $p \in M$. Vectors that are tangent to the point $p$ make up the tangent space denoted by $T_{p} M$. 
+
+Let point $p$ and a local co-ordinate system denoted as $(x^1,...,x^n)$
+
+The set where we define each object as a differential operator $\mathbf{A} = (A^1\frac{\partial}{\partial x^1},...,A^n\frac{\partial}{\partial x^n})$, s.t. $A^i \in \mathbb{R}$. Such a set satisfies definition of a vector space. Moreover, each object is tangent to the manifold because of the partial derivatives. Thus, we now have a way to specify objects belonging to the tangent space $T_{p} M$.
+
+Consider the change of co-ordinates from $(x^1,...,x^n)$ to $(y^1,...,y^n)$, where $y^i = f^i(x^1,...,x^n)$. The Jacobian matrix is defined as $J_{ij} = \frac{\partial y^i}{\partial x^j}$.
+
+
+::: {.column-margin}
+
+The differential operators actually define a  _vector field_; each vector field is a vector space on itself. 
+:::
+
+We denote the inner product at $p \in M$ as the map: $g_{p}: T_{p} M \times T_{p} M \rightarrow \mathbb{R}$.
+
+For two vectors $\mathbf{A}$ and $\mathbf{B}$ in $T_{p} M$, $\langle \mathbf{A}, \mathbf{B} \rangle _{g_{p}}$, the inner product 
+
+Through the distance metric induced by the  canonical norm, it is easy to work out that Euclidean space is a special case of a Reimannian Manifold where g_{p} is an identity matrix.
+
+### Local
+Recall that an inner product induces a norm, and the norm induces a distance metric. Since the inner product is locally defined at each point, we can think of the distance metric as being defined at each point. Using this local notion of distance, we can calculate distances between any two points on the manifold through integration. This we have a set of points $M$, where we can calculate distances between any two points
+
+Note the similarity to definition of a metric space, @sec-metricspace.
+
+Note that the metric tensor is an inner product on the tangent space $T_{p}M$. Moreover, the tangent space is a vector space. Recall that any inner product induces a norm, which in turm induces a distance metric. Thus, there is notion of a distance metric for each point on the manifold (and the reason why $g_p$ is called a metric tensor).
+
+> Note: For the Euclidean manifold, the metric tensor is the identity matrix. 
+
+Categorizing geometric transforms:
+
+- Diffeomorphic: Preserves angles, distances, and shape
+- Isometric: Preserves angles and distances
+- Conformal: Preserves angles
+
+# Dimensionality reduction
+
+ - Autoencoders have been used for nonlinear dimensionality reduction, manifold learning, and clustering @tschannen2018recent. 
+ - They have been adapted to learn geometry preserving representations, e.g. @yonghyeon2021regularized, @peterfreund2020local. 
+
+Measuring distortion:
+ - @mcqueen2016nearly 
+ - Structure of the data matters
+ - Local similarity
+ - KNN-set-based measures (assuming Euclidian metric locally)
+ - ARI, NMI, PSI (point set index, @rezaei2016set) for global similarity
+
+## Curse of high dimensionality {#sec-highdim-curse}
+
+Intuition for properties of data in 2d / 3d space don't carry over to high dimensional spaces.
+
+1. Most of the volume is at the surface of the hypersphere in high D
+2. This is a consequence of the phenomena of "concentration of measure"
+
+Further reading: @aggarwal2001surprising, Chapter 1 of @lee2007nonlinear.
+
+## Manifold assumption
+
+> Many methods attempt to use point samples in high dimensional space to parametrize a low dimensional manifold.
+
+Paraphrasing a nice introduction in @ganea2019non, we assume that data lies on a manifold of much smaller dimension (latent) than the ambient dimension (measured). This enables learning and generalization to unseen data points. We further assume that it is a metric space $(Y, d_Y)$ and has a smooth differentiable structure that allows learning via optimization. 
+
+Thus we are interested in Riemannian manifolds of intrinsic dimension $d \leq n$. The hope is we can achieve this by learning an a mapping function $f : X \rightarrow Y$ from the input high dimensional data space to the low-dimensional representation space.
+
+## Dimensionality reduction
+
+These set of [notes by Drew Wilimitis](https://drewwilimitis.github.io/Manifold-Learning/) also contain python implementation of common methods. 
+
+Various computational methods have been designed to uncover a lower dimension manifold that preserve some notion of distances and structure of data observed in high dimension.
+
+- MDS: preserve pairwise distances (using some common metric, e.g. Euclidean)
+- Isomap: preserve pairwise geodesic distances (evaluated through nearest neighbor hops. Assumes a metric to define nearest neighbor)
+- Diffusion maps: consider notion of reachability of distant points by constructing a diffusion process [@coifman2005geometric; @de2008introduction]
+- Laplacian eigenmaps, T-sne, Umap etc. are other nonlinear methods
+
+ 
+Random projections, random sparse projections can be considered as baselines. Constructing such transforms has links to the Johnson Lindenstrauss lemma, and there is research on fast construction of useful random transforms. e.g. [transformer architectures](https://tevenlescao.github.io/blog/fastpages/jupyter/2020/06/18/JL-Lemma-+-Linformer.html).
+
+TODO:
+ - Similarities and distances discussion in @ganea2019non
+ - Proof in @dasgupta2003elementary for the Johnson Lindenstrauss lemma.
+ - [Nearest component analysis](https://www.cs.toronto.edu/~hinton/absps/nca.pdf)
+ - [Unifying dimensionality reduction, graph partitioning, and data set parameterization](https://ieeexplore.ieee.org/abstract/document/1661543)
+ - [Sparse random projections](https://icml.cc/2011/papers/551_icmlpaper.pdf)
+ - Include references from [this twitter thread](https://twitter.com/lpachter/status/1431325969411821572?s=21&t=5TsIwpYk5rwp--JHbq_RwA)
+
+
+#### Using Jaccard similarity
+
+Consider representations of point $p$ embedded in two metric spaces $(X, d_{X}) and in $(Y, d_{Y})$. We denote the k-nearest neighbors of $p$ in the two metric spaces as $K_{X}(p)$ and $K_{Y}(p)$. The Jaccard similarity between the neighborhood sets is defined as:
+$$
+J_{XY}(p) = \frac{|K_{X}(p) \cap K_{Y}(p)|}{|K_{X}(p) \cup K_{Y}(p)|}
+$$
+
+
+# Cell types and manifolds
+ - We assume that cellular identity and diversity that we would like to interpret can be captured by the position of cells on a low-dimensional manifold.
+ - Further, we assume that the (high dimensional) feature set we want to measure (e.g. genome-wide mRNA abundance) is explained well by some stochastic generative process.
+ - Such a generative process takes co-ordinates along a low dimensional manifold as input, and produces the feature values one attempts to measure experimentally.
+ - The measurement procedure introduces undesirable noise in these feature values. 
+ - Our hope is that we have: 
+    i. a well-understood noise model with its own parameters to explain variability in the observed values
+    ii. a way to learn the manifold from the structure of the data (cells x genes matrix)
+    iii. a metric on the manifold that enables analyses of cellular homogeneity and diversity
+
+Identifying appropriate metric for to measure similarity between cells is a fundamental challenge, and at the core of investigations such as the one in @skinnider2019evaluating and @cooley2019novel.
+
+@wolf2019paga apply diffusion maps for scRNA-seq analysis.
+
+# Further reading
+
+- Equivalence of metrics?
+- Bregman divergence?
+- @suarez2021tutorial survey techniques for distance metric learning towards improving classifier performance. 
