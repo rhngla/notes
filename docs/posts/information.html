@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -24,7 +24,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -81,7 +81,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -90,6 +96,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -113,16 +120,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">notes</span>
     </a>
@@ -134,18 +168,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="../about.qmd" rel="" target="">
- <span class="menu-text"></span></a>
+    <a class="nav-link" href="../about.qmd"> 
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/rhngla" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/rhngla"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -197,7 +231,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#likelihood-and-information" id="toc-likelihood-and-information" class="nav-link active" data-scroll-target="#likelihood-and-information">Likelihood and information</a></li>
+  <li><a href="#set-up" id="toc-set-up" class="nav-link active" data-scroll-target="#set-up">Set up</a></li>
+  <li><a href="#likelihood-and-information" id="toc-likelihood-and-information" class="nav-link" data-scroll-target="#likelihood-and-information">Likelihood and information</a></li>
   <li><a href="#entropy" id="toc-entropy" class="nav-link" data-scroll-target="#entropy">Entropy</a></li>
   <li><a href="#kl-divergence-and-gibbs-inequality" id="toc-kl-divergence-and-gibbs-inequality" class="nav-link" data-scroll-target="#kl-divergence-and-gibbs-inequality">KL Divergence and Gibbs inequality</a></li>
   <li><a href="#a-recap-and-some-intuitions" id="toc-a-recap-and-some-intuitions" class="nav-link" data-scroll-target="#a-recap-and-some-intuitions">A recap and some intuitions</a></li>
@@ -211,21 +246,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+
 <p>Information and entropy are important concepts in modern statistical learning. The origins of these closely related concepts can be traced back to physical systems. Classical thermodynamics and heat engines motivate a continuous perspective, and Shannon’s information theory for data encoding and decoding motivate a discrete perspective for these concepts.</p>
 <p>While these physical systems can help build intuition, leaning hard on analogies can make it confusing for the problem at hand. Here I present a self-contained introduction to these concepts without reference to physical systems.</p>
-<p>I’ll assume continuous values for our random variables throughout. For the discrete case, the only change is to think of <span class="math inline">p_X</span> as a probability mass function (rather than a density function), and the rest of the description on this page holds.</p>
-<div id="tbl-terminology-tbl-colwidths251555" class="anchored">
+<p>I’ll assume continuous values for our random variables throughout. For the discrete case, the only change is to think of <span class="math inline">p_X</span> and <span class="math inline">q_X</span> as a probability mass functions (rather than a density functions), and the rest of the description on this page holds.</p>
+<div id="tbl-terminology-tbl-colwidths251555" class="striped hover quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-terminology-tbl-colwidths251555-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Notation and definitions
+</figcaption>
+<div aria-describedby="tbl-terminology-tbl-colwidths251555-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-striped table-hover table">
-<caption>Table&nbsp;1: Notation and definitions</caption>
 <colgroup>
-<col style="width: 29%">
-<col style="width: 35%">
-<col style="width: 35%">
+<col style="width: 21%">
+<col style="width: 17%">
+<col style="width: 60%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Quantity</th>
-<th style="text-align: left;">Refers to</th>
+<th style="text-align: left;">Symbol</th>
 <th style="text-align: left;">Description</th>
 </tr>
 </thead>
@@ -236,54 +276,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: left;">Function that maps events to values</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><code>distribution</code></td>
+<td style="text-align: left;"><code>model</code></td>
 <td style="text-align: left;"><span class="math inline">q_X</span></td>
-<td style="text-align: left;">A particular probability density function</td>
+<td style="text-align: left;">A (controllable) probability density function</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><code>density</code></td>
 <td style="text-align: left;"><span class="math inline">q_X(x)</span></td>
-<td style="text-align: left;">Probability density at a particular value <span class="math inline">x</span>, as specified by <span class="math inline">q_X</span></td>
+<td style="text-align: left;">Probability density at a particular value <span class="math inline">x</span></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><code>sample</code></td>
+<td style="text-align: left;"><code>draw</code></td>
 <td style="text-align: left;"><span class="math inline">x\sim q_X</span></td>
-<td style="text-align: left;">A value for a random variable, drawn from the underlying <code>distribution</code> <span class="math inline">q_X</span></td>
+<td style="text-align: left;">A value for a random variable, drawn from the <code>model</code> <span class="math inline">q_X</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><code>observation</code></td>
 <td style="text-align: left;"><span class="math inline">x\sim p_X</span></td>
-<td style="text-align: left;">An observed value for a random variable. We typically don’t know and cannot directly access <span class="math inline">p_X</span>, but want to approximate it with <span class="math inline">q_X</span></td>
+<td style="text-align: left;">An observed value for a random variable from <span class="math inline">p_X</span></td>
 </tr>
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 <p><strong>Note:</strong></p>
 <ol type="1">
-<li><p><code>sample</code>, <code>distribution</code> and <code>density</code> specifically refer to quantities related to <span class="math inline">q_X</span> as shown in the table. The plain-text sample, distribution, density etc. refer to the general concepts.</p></li>
+<li><p><code>draw</code>, <code>model</code> and <code>density</code> specifically refer to quantities related to <span class="math inline">q_X</span> as shown in the table. The plain-text model, density etc. refer to the general concepts.</p></li>
 <li><p>We’ll drop the subscript <span class="math inline">X</span> from the distributions and use <span class="math inline">p = p_X</span> and <span class="math inline">q = q_X</span> to simplify notation.</p></li>
 </ol>
+<section id="set-up" class="level3">
+<h3 class="anchored" data-anchor-id="set-up">Set up</h3>
+<ul>
+<li>We are given observations <span class="math inline">x</span> from a distribution <span class="math inline">p</span>.</li>
+<li>We cannot directly access <span class="math inline">p</span>, only observations from it.</li>
+<li>We want to find a <code>model</code> <span class="math inline">q</span> that approximates <span class="math inline">p</span> well.</li>
+<li>Assume that <code>model</code> <span class="math inline">q</span> can be tuned via parameters <span class="math inline">\theta</span> <span class="math inline">^\dagger</span>.</li>
+</ul>
+</section>
 <section id="likelihood-and-information" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="likelihood-and-information">Likelihood and information</h3>
 <p>
 </p>
+<p>Given an observation <span class="math inline">x</span>:</p>
 <ul>
-<li>We are given <code>observations</code>, <span class="math inline">x \sim p(x)</span>.</li>
-<li>We assume an underlying <code>distribution</code> <span class="math inline">q</span> that can be tuned via parameters <span class="math inline">\theta</span> <span class="math inline">^\dagger</span>.</li>
-<li>We interpret <code>density</code> <span class="math inline">q(x)</span> as how <em>likely</em> an <code>observation</code> is under the <code>distribution</code>.</li>
+<li>We can interpret <span class="math inline">q(x)</span> as how <em>likely</em> an <code>observation</code> is under the <code>model</code>.</li>
 <li>So we refer to <span class="math inline">q(x)</span> as the likelihood.</li>
 <li>Following this, the quantity <span class="math inline">-\log{q(x)}</span> is called negative log-likelihood.</li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p><span class="math inline">{^\dagger}</span> The <span class="math inline">\theta</span> dependence can be explicitly denoted in the <code>distribution</code> as <span class="math inline">q_{X|\theta}</span>, or the <code>density</code> (and therefore likelihood) as <span class="math inline">q(x|\theta)</span>. Likelihood can thus be viewed as a function of <span class="math inline">\theta</span>.</p>
+<p><span class="math inline">{^\dagger}</span> The <span class="math inline">\theta</span> dependence can be explicitly denoted in the <code>model</code> as <span class="math inline">q_{\theta}</span>, or the <code>density</code> (and therefore likelihood) as <span class="math inline">q(x;\theta)</span>. Likelihood can thus be viewed as a function of <span class="math inline">\theta</span>. The semi-colon indicates that <span class="math inline">\theta</span> refers to parameters, and not a random variable that comes with its own distribution.</p>
 <p><br></p>
 <p>In the Bayesian view, <span class="math inline">\theta</span> itself may be considered as a particular value of a random variable <span class="math inline">\Theta</span>, and this may be indicated in the distribution as <span class="math inline">q_{X|\Theta}</span>.</p>
 </div></div><p>
 </p>
 <ul>
-<li>Further, if <code>density</code> <span class="math inline">q(x)</span> is small, we say the <code>observation</code> is <em>unlikely</em>.</li>
-<li>The more unlikely the <code>observation</code>, the more <em>surprising</em> it is.</li>
+<li>Further, if density <span class="math inline">q(x)</span> is small, we can interpret the observation <span class="math inline">x</span> as <em>surprising</em>.</li>
 <li>The smaller the value of <span class="math inline">q(x)</span>, the larger is the value of <span class="math inline">-\log{q(x)}</span>.</li>
 <li>Large values of negative log-likelihood thus convey surprise.</li>
 <li>If we had access to <span class="math inline">p</span>, we could similarly calculate surprise in <code>observations</code> under <span class="math inline">p</span>.</li>
@@ -306,7 +355,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>
 </p>
 <ul>
-<li>As a summary statistic, we calculate the expected surprise over <code>samples</code>.</li>
+<li>As a description of the model, we can calculate the expected surprise over <code>samples</code> <span class="math inline">x \sim q</span>.</li>
 <li>Expected surprise is simply the avg. negative log-likelihood, as above.</li>
 <li>Expected surprise with <code>samples</code>: <span class="math inline">E_{x \sim q}({-\log q(x)})</span>.</li>
 <li>Expected surprise with <code>observations</code>: <span class="math inline">E_{x \sim p}({-\log q(x)})</span>.</li>
@@ -319,7 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div></div><ul>
 <li>Expected surprise with <code>samples</code> is called <code>entropy</code> of <span class="math inline">q</span>.</li>
 <li>Expected surprise with <code>observation</code> is called <code>cross-entropy</code> of <span class="math inline">q</span> w.r.t. <span class="math inline">p</span>.</li>
-<li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to tune <span class="math inline">q</span>.</li>
+<li>Minimizing <code>cross-entropy</code> is simply minimizing the expected surprise in <code>observations</code>, and is one way to tune <span class="math inline">q</span> through <span class="math inline">\theta</span>.</li>
 <li>This is equivalent to maximizing the likelihood of <code>observations</code> under <span class="math inline">q</span>!</li>
 </ul>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
@@ -457,7 +506,7 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <h3 class="anchored" data-anchor-id="a-recap-and-some-intuitions">A recap and some intuitions</h3>
 <ul>
 <li>We can’t access <span class="math inline">p</span> directly, only <code>observations</code> from it.</li>
-<li>We’re proposing the <code>distribution</code> <span class="math inline">q</span> as an approximation to <span class="math inline">p</span>.</li>
+<li>We’re proposing the <code>model</code> <span class="math inline">q</span> as an approximation to <span class="math inline">p</span>.</li>
 <li>Maximizing likelihood, minimizing cross-entropy, and minimizing KL divergence are closely related concepts to find a <span class="math inline">q</span> that approximates <span class="math inline">p</span>.</li>
 </ul>
 <p>
@@ -500,8 +549,8 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <li>The minimum occurs at <span class="math inline">\sigma = 1</span>, i.e.&nbsp;where <span class="math inline">q</span> matches <span class="math inline">p</span>.</li>
 <li><span class="math inline">H(p,q) - D_\textrm{KL}(p | q) = H(p)</span> at the minimum.</li>
 </ul>
-<div class="cell" data-execution_count="1">
-<details>
+<div id="8ea80b22" class="cell" data-execution_count="1">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -566,7 +615,11 @@ E_{x \sim p}(-\log \frac{q(x)}{p(x)})~&amp;\geq -\log E_{x \sim p}(\frac{q(x)}{p
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<p><img src="information_files/figure-html/cell-2-output-1.png" width="566" height="277"></p>
+<div>
+<figure class="figure">
+<p><img src="information_files/figure-html/cell-2-output-1.png" width="566" height="277" class="figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -657,10 +710,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -670,8 +722,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -684,6 +745,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -727,6 +907,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -752,6 +933,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -812,6 +1019,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

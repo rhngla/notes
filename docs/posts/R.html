@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Rohan Gala">
-<meta name="dcterms.date" content="2023-04-27">
+<meta name="dcterms.date" content="2024-03-13">
 
-<title>notes - Notation for random variables, distributions etc.</title>
+<title>notes - R notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,27 +22,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
 }
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -89,49 +103,6 @@ div.csl-indent {
   }
 }</script>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
- var mathElements = document.getElementsByClassName("math");
- var macros = [];
- for (var i = 0; i < mathElements.length; i++) {
-  var texText = mathElements[i].firstChild;
-  if (mathElements[i].tagName == "SPAN") {
-   katex.render(texText.data, mathElements[i], {
-    displayMode: mathElements[i].classList.contains('display'),
-    throwOnError: false,
-    macros: macros,
-    fleqn: false
-   });
-}}});
-  </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -173,9 +144,9 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Notation for random variables, distributions etc.</h1>
+      <h1 class="title">R notes</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">math</div>
+                <div class="quarto-category">R</div>
               </div>
                   </div>
   </div>
@@ -193,7 +164,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 27, 2023</p>
+        <p class="date">March 13, 2024</p>
       </div>
     </div>
     
@@ -211,13 +182,7 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#references" id="toc-references" class="nav-link active" data-scroll-target="#references">References</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -226,46 +191,58 @@ window.Quarto = {
 
 
 
-<table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">Notation</th>
-<th style="text-align: center;">What we mean</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><span class="math inline">p(x)</span></td>
-<td style="text-align: center;"><span class="math inline">p_{X}(X=x)</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math inline">q(x)</span></td>
-<td style="text-align: center;"><span class="math inline">q_{X}(X=x)</span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><span class="math inline">p(x|z)</span></td>
-<td style="text-align: center;"><span class="math inline">p_{X|Z}(X=x|Z=z)</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math inline">p(x,z)</span></td>
-<td style="text-align: center;"><span class="math inline">p_{X,Z}(X=x,Z=z)</span></td>
-</tr>
-</tbody>
-</table>
-<p>Continuous probability distributions are commonly specified through the probability density function <span class="math inline">p(x)</span>. A distribution with parameters <span class="math inline">\theta</span> can be viewed as a conditional distribution <span class="math inline">p(x|\theta)</span>. In particular, the following notation is interchangeably used in the literature: <span class="math display">p_\theta(x) \equiv p(x;\theta) \equiv p(x|\theta)</span></p>
-<p>Any subtlety in terms of whether the notation choice depends on whether <span class="math inline">\theta</span> is a parameter (i.e.&nbsp;a constant without a prior distribution associated with it), or is a random variable is up to the author to clarify and use consistently. See community discussions <span class="citation" data-cites="faisse2014notation">Fraïssé (<a href="#ref-faisse2014notation" role="doc-biblioref">2017</a>)</span>, <span class="citation" data-cites="learner2011notation">Learner (<a href="#ref-learner2011notation" role="doc-biblioref">2011</a>)</span>, and <span class="citation" data-cites="bartlett2015paramrv">Bartlett (<a href="#ref-bartlett2015paramrv" role="doc-biblioref">2015</a>)</span>.</p>
-<p>At times, authors also drop the dependence on <span class="math inline">\theta</span> and simply write <span class="math inline">p_{\theta}(x)</span> as <span class="math inline">p(x)</span>. This can be a source of a lot of confusion, and both authors and readers should be careful to prevent misundertanding.</p>
-<section id="references" class="level3">
-<h3 class="anchored" data-anchor-id="references">References</h3>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-bartlett2015paramrv" class="csl-entry" role="listitem">
-Bartlett, Jonathan. 2015. <span>“Bayesian Inference: Are Parameters Fixed or Random?”</span> 2015. <a href="https://thestatsgeek.com/2015/04/22/bayesian-inference-are-parameters-fixed-or-random/">https://thestatsgeek.com/2015/04/22/bayesian-inference-are-parameters-fixed-or-random/</a>.
+<section id="installing-r-macs" class="level4">
+<h4 class="anchored" data-anchor-id="installing-r-macs">Installing R (Macs)</h4>
+<p>I’ve had a good experience with <a href="https://github.com/r-lib/rig">rig</a> on my M3 Mac through <code>homebrew</code>. Multiple R versions can be installed, and Rstudio can be directed to use a particular version.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rig</span> rstudio 4.3-arm64</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Use <code>renv</code> through Rstudio to manage environments. <a href="https://rstudio.github.io/renv/articles/renv.html">This page</a> has a good overview of the main commands and functionality.</p>
+</section>
+<section id="writing-functions" class="level4">
+<h4 class="anchored" data-anchor-id="writing-functions">Writing functions</h4>
+<p>Contents of <code>funcfile.R</code>. This should be in the working directory (use <code>getwd()</code> to check and <code>setwd()</code> to change the working directory).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dummyfunc_a<span class="ot">&lt;-</span><span class="cf">function</span>(x){</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>x<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>dummyfunc_b<span class="ot">&lt;-</span><span class="cf">function</span>(x){</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>x<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can make <code>dummyfunc_a</code> and <code>dummyfunc_b</code> available in the environment by sourcing the file:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'funcfile.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="using-debug-tools" class="level4">
+<h4 class="anchored" data-anchor-id="using-debug-tools">Using debug tools</h4>
+<ol type="1">
+<li><p><code>browser()</code>: This is a way to put a <em>breakpoint</em> manually anywhere in the code. The console will show <code>Browse[1]&gt;</code> and you can inspect the variables at that point in the code.</p></li>
+<li><p><code>debug()</code> and <code>undebug()</code></p></li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># source the file to make the function available</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'funcfile.R'</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tell the debug the function of interest</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">debug</span>(dummyfunc)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># run the function - this will open a browser() at the first line of that function</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">dummyfunc</span>(<span class="dv">1</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># turn off the debugger when done</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">undebug</span>(dummyfunc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
 </div>
-<div id="ref-faisse2014notation" class="csl-entry" role="listitem">
-Fraïssé. 2017. <span>“What Does a Semicolon Denote in the Context of Probability and Statistics?”</span> 2017. <a href="https://math.stackexchange.com/questions/2559085/what-does-a-semicolon-denote-in-the-context-of-probability-and-statistics">https://math.stackexchange.com/questions/2559085/what-does-a-semicolon-denote-in-the-context-of-probability-and-statistics</a>.
+<div class="callout-title-container flex-fill">
+Important
 </div>
-<div id="ref-learner2011notation" class="csl-entry" role="listitem">
-Learner. 2011. <span>“What Is the Difference Between the Vertical Bar and Semi-Colon Notations?”</span> 2011. <a href="https://stats.stackexchange.com/questions/10234/what-is-the-difference-between-the-vertical-bar-and-semi-colon-notations">https://stats.stackexchange.com/questions/10234/what-is-the-difference-between-the-vertical-bar-and-semi-colon-notations</a>.
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Remember to invoke <code>source('funcfile.R')</code> each time you make changes to the function file for <code>debug()</code> to work correctly.</p>
+</div>
 </div>
 </div>
 

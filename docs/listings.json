@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/R.html",
       "/posts/information.html",
       "/posts/stochastic-nodes.html",
       "/posts/transformers.html",
