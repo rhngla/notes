@@ -1,0 +1,73 @@
+
+---
+title: "R notes"
+author: "Rohan Gala"
+date: "2024-03-13"
+date-modified: "last-modified"
+categories: ["R"]
+toc: true
+number-sections: true
+number-depth: 2
+highlight-style: github
+html-math-method: katex
+bibliography: "../refs.bib"
+code-fold: true
+---
+
+Miscellenous notes on R. 
+
+### Installing R (Macs)
+
+I've had a good experience with [rig](https://github.com/r-lib/rig) on my M3 Mac through `homebrew`. Multiple R versions can be installed, and Rstudio can be directed to use a particular version. 
+
+```bash
+rig rstudio 4.3-arm64
+```
+
+Use `renv` through Rstudio to manage environments. [This page](https://rstudio.github.io/renv/articles/renv.html) has a good overview of the main commands and functionality.
+
+### Writing functions
+
+Contents of `funcfile.R`. This should be in the working directory (use `getwd()` to check and `setwd()` to change the working directory).
+
+```R
+dummyfunc_a<-function(x){
+  y<-x^2
+  return(y)
+}
+
+dummyfunc_b<-function(x){
+  y<-x^3
+  return(y)
+}
+```
+
+You can make `dummyfunc_a` and `dummyfunc_b` available in the environment by sourcing the file:
+
+```R
+source('funcfile.R')
+```
+
+### Using debug tools
+
+1. `browser()`: This is a way to put a _breakpoint_ manually anywhere in the code. The console will show `Browse[1]>` and you can inspect the variables at that point in the code.
+
+2. `debug()` and `undebug()`
+
+```R
+# source the file to make the function available
+source('funcfile.R')
+
+# tell the debug the function of interest
+debug(dummyfunc)
+
+# run the function - this will open a browser() at the first line of that function
+dummyfunc(1)
+
+# turn off the debugger when done
+undebug(dummyfunc)
+```
+
+::: {.callout-important appearance="warning" collapse=false icon=false}
+Remember to invoke `source('funcfile.R')` each time you make changes to the function file for `debug()` to work correctly. 
+:::

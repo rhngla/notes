@@ -182,7 +182,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#installing-r-macs" id="toc-installing-r-macs" class="nav-link active" data-scroll-target="#installing-r-macs">Installing R (Macs)</a></li>
+  <li><a href="#writing-functions" id="toc-writing-functions" class="nav-link" data-scroll-target="#writing-functions">Writing functions</a></li>
+  <li><a href="#using-debug-tools" id="toc-using-debug-tools" class="nav-link" data-scroll-target="#using-debug-tools">Using debug tools</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -191,14 +199,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="installing-r-macs" class="level4">
-<h4 class="anchored" data-anchor-id="installing-r-macs">Installing R (Macs)</h4>
+<p>Miscellenous notes on R.</p>
+<section id="installing-r-macs" class="level3">
+<h3 class="anchored" data-anchor-id="installing-r-macs">Installing R (Macs)</h3>
 <p>I’ve had a good experience with <a href="https://github.com/r-lib/rig">rig</a> on my M3 Mac through <code>homebrew</code>. Multiple R versions can be installed, and Rstudio can be directed to use a particular version.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rig</span> rstudio 4.3-arm64</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Use <code>renv</code> through Rstudio to manage environments. <a href="https://rstudio.github.io/renv/articles/renv.html">This page</a> has a good overview of the main commands and functionality.</p>
 </section>
-<section id="writing-functions" class="level4">
-<h4 class="anchored" data-anchor-id="writing-functions">Writing functions</h4>
+<section id="writing-functions" class="level3">
+<h3 class="anchored" data-anchor-id="writing-functions">Writing functions</h3>
 <p>Contents of <code>funcfile.R</code>. This should be in the working directory (use <code>getwd()</code> to check and <code>setwd()</code> to change the working directory).</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dummyfunc_a<span class="ot">&lt;-</span><span class="cf">function</span>(x){</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>x<span class="sc">^</span><span class="dv">2</span></span>
@@ -212,8 +221,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>You can make <code>dummyfunc_a</code> and <code>dummyfunc_b</code> available in the environment by sourcing the file:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'funcfile.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="using-debug-tools" class="level4">
-<h4 class="anchored" data-anchor-id="using-debug-tools">Using debug tools</h4>
+<section id="using-debug-tools" class="level3">
+<h3 class="anchored" data-anchor-id="using-debug-tools">Using debug tools</h3>
 <ol type="1">
 <li><p><code>browser()</code>: This is a way to put a <em>breakpoint</em> manually anywhere in the code. The console will show <code>Browse[1]&gt;</code> and you can inspect the variables at that point in the code.</p></li>
 <li><p><code>debug()</code> and <code>undebug()</code></p></li>

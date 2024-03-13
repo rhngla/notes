@@ -20,35 +20,42 @@ Information and entropy are important concepts in modern statistical learning. T
 
 While these physical systems can help build intuition, leaning hard on analogies can make it confusing for the problem at hand. Here I present a self-contained introduction to these concepts without reference to physical systems.
 
-I'll assume continuous values for our random variables throughout. For the discrete case, the only change is to think of $p_X$ as a probability mass function (rather than a density function), and the rest of the description on this page holds.
+I'll assume continuous values for our random variables throughout. For the discrete case, the only change is to think of $p_X$ and $q_X$ as a probability mass functions (rather than a density functions), and the rest of the description on this page holds.
 
-| Quantity | Refers to | Description |
-| :---- | :-----    | :----- |
-|`random variable` | $X$  |Function that maps events to values |
-|`distribution` | $q_X$| A particular probability density function |
-|`density`| $q_X(x)$| Probability density at a particular value $x$, as specified by $q_X$ |
-|`sample` | $x\sim q_X$ | A value for a random variable, drawn from the underlying `distribution` $q_X$|
-|`observation`| $x\sim p_X$ | An observed value for a random variable. We typically don't know and cannot directly access $p_X$, but want to approximate it with $q_X$|
+| Quantity         | Symbol      | Description    |
+| :----            | :---        | :------------- |
+|`random variable` | $X$         | Function that maps events to values                         |
+|`model`           | $q_X$       | A (controllable) probability density function               |
+|`density`         | $q_X(x)$    | Probability density at a particular value $x$               |
+|`draw`            | $x\sim q_X$ | A value for a random variable, drawn from the `model` $q_X$ |
+|`observation`     | $x\sim p_X$ | An observed value for a random variable from $p_X$          |
 : Notation and definitions {#tbl-terminology tbl-colwidths="[25,15,55]"}{.striped .hover}
 
 **Note:** 
 
-1. `sample`, `distribution` and `density` specifically refer to quantities related to $q_X$ as shown in the table. The plain-text sample, distribution, density etc. refer to the general concepts.
+1. `draw`, `model` and `density` specifically refer to quantities related to $q_X$ as shown in the table. The plain-text model, density etc. refer to the general concepts.
 
 2. We'll drop the subscript $X$ from the distributions and use $p = p_X$ and $q = q_X$ to simplify notation. 
+
+### Set up
+
+ - We are given observations $x$ from a distribution $p$.
+ - We cannot directly access $p$, only observations from it.
+ - We want to find a `model` $q$ that approximates $p$ well.
+ - Assume that `model` $q$ can be tuned via parameters $\theta$ $^\dagger$.
 
 ### Likelihood and information
 
 <p></p>
 
- - We are given `observations`, $x \sim p(x)$.
- - We assume an underlying `distribution` $q$ that can be tuned via parameters $\theta$ $^\dagger$. 
- - We interpret `density` $q(x)$ as how _likely_ an `observation` is under the `distribution`.
+Given an observation $x$:
+
+ - We can interpret $q(x)$ as how _likely_ an `observation` is under the `model`.
  - So we refer to $q(x)$ as the likelihood.
  - Following this, the quantity $-\log{q(x)}$ is called negative log-likelihood.
 
 :::{.column-margin}
-${^\dagger}$ The $\theta$ dependence can be explicitly denoted in the `distribution` as $q_{X|\theta}$, or the `density` (and therefore likelihood) as $q(x|\theta)$. Likelihood can thus be viewed as a function of $\theta$.
+${^\dagger}$ The $\theta$ dependence can be explicitly denoted in the `model` as $q_{\theta}$, or the `density` (and therefore likelihood) as $q(x;\theta)$. Likelihood can thus be viewed as a function of $\theta$. The semi-colon indicates that $\theta$ refers to parameters, and not a random variable that comes with its own distribution.
 
 <br>
 
@@ -58,8 +65,7 @@ In the Bayesian view, $\theta$ itself may be considered as a particular value of
 
 <p></p>
 
- - Further, if `density` $q(x)$ is small, we say the `observation` is _unlikely_.
- - The more unlikely the `observation`, the more _surprising_ it is.
+ - Further, if density $q(x)$ is small, we can interpret the observation $x$ as _surprising_.
  - The smaller the value of $q(x)$, the larger is the value of $-\log{q(x)}$.
  - Large values of negative log-likelihood thus convey surprise.
  - If we had access to $p$, we could similarly calculate surprise in `observations` under $p$.
@@ -82,7 +88,7 @@ A cryptic, partial answer: independence of distributions $\implies$ addition of 
 
 <p></p>
 
- - As a summary statistic, we calculate the expected surprise over `samples`.
+ - As a description of the model, we can calculate the expected surprise over `samples` $x \sim q$.
  - Expected surprise is simply the avg. negative log-likelihood, as above.
  - Expected surprise with `samples`: $E_{x \sim q}({-\log q(x)})$.
  - Expected surprise with `observations`: $E_{x \sim p}({-\log q(x)})$.
@@ -95,11 +101,9 @@ Expectation is usually an operator applied to a function of a random variable, i
 Here we treat expectation as a function of values specified in the argument, drawn from a distribution specified in the subscript, $E_{x \sim p}(f(x))$. This is a commonly adopted convention that I'll follow here.
 :::
 
-
-
  - Expected surprise with `samples` is called `entropy` of $q$.
  - Expected surprise with `observation` is called `cross-entropy` of $q$ w.r.t. $p$.
- - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to tune $q$.
+ - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to tune $q$ through $\theta$.
  - This is equivalent to maximizing the likelihood of `observations` under $q$!
 
 ::: {.callout-note appearance="simple" collapse=false icon=false}
@@ -186,7 +190,7 @@ For the discrete case, the integral is replaced by a sum.
 ### A recap and some intuitions
 
  - We can't access $p$ directly, only `observations` from it.
- - We're proposing the `distribution` $q$ as an approximation to $p$.
+ - We're proposing the `model` $q$ as an approximation to $p$.
  - Maximizing likelihood, minimizing cross-entropy, and minimizing KL divergence are closely related concepts to find a $q$ that approximates $p$.
 
 <p></p>

@@ -7,11 +7,11 @@ categories: ["machine learning"]
 toc: true
 number-sections: true
 number-depth: 2
-highlight-style: pygments
+highlight-style: github
 html-math-method: katex
 bibliography: "../refs.bib"
 code-fold: true
-theme: lux
+
 ---
 
 Calculating gradients through nodes in a computational graph that involve sampling from a distribution (for which we want to learn parameters) is not straightforward. Intuitively, this is because samples of the distribution don't maintain a dependency with the distribution parameters. This prevents application of the chain rule used for backpropagation to obtain gradients w.r.t the distribution parameters.
@@ -84,10 +84,13 @@ $$ {#eq-score}
 
 [Eq. @eq-score] shows that the gradient is now over samples from the distribution $p_{X|\phi}$. As before, in the extreme case this may be estimated with a single sample.
 
+#### Score function estimator and surrogate loss
+
 If we view $p_{\phi}(x)$ as a likelihood function, then $\nabla_{\phi}{\log{p_{\phi}(x)}}$ is referred to as the _score function_. The estimate of the gradient includes the score function, and so it is referred to as a _score function estimator_.
 
 [Eq. @eq-score] also suggests $\mathcal{L}_{\textrm{surrogate}}=~\mathbb{E}_{x \sim p_{X|\phi}}{[f_{\theta}(x)\log{p_{\phi}(x)}]}$ as a surrogate loss function for the stochastic node to obtain the correct update for $\phi$ when relying on auto-differentiation libraries. 
 
+::: {.callout-note appearance="simple" collapse=false icon=false title="A simple check"}
 As a side note, let's think of the case where $f_{\theta}(x)$ maps to a constant value $c$. Then it means parameter $\phi$ does not influence the loss. No matter the sample drawn, the loss does not change. We can check that the gradient w.r.t. $\phi$ is zero in expectation @eq-score-expectation for a score function estimator: 
 
 $$
@@ -96,13 +99,15 @@ $$
 &= c \int{\nabla_{\phi} p_{\phi}(x) dx} = c \nabla_{\phi} \int{p_{\phi}(x) dx} = 0\\
 \end{aligned}
 $$ {#eq-score-expectation}
-
+:::
 
 :::{.column-margin}
 The bias and variance over different samples of the data are an important characterization of estimators. The score function is of relevance here, e.g. see these [Lecture notes](https://cseweb.ucsd.edu/~elkan/291winter2005/lect09.pdf) and discussion about the Cramér-Rao bound.
 :::
 
-Another way to estimate the gradient through stochastic nodes is to use the _reparametrization trick_. This is possible when the distribution $p_{X|\phi}$ can be composed with a deterministic function $g_\psi$ applied to samples $z$ drawn from a fixed distribution $p_{Z}$. 
+#### Reparametrization trick
+
+Another way to estimate the gradient through stochastic nodes is to use the _reparametrization trick_. This is possible when the distribution $p_{X|\phi}$ can be composed with a deterministic function $g_\psi$ applied to samples $z$ drawn from a fixed distribution $p_{Z}$.
 
 $$
 \begin{aligned}
@@ -112,7 +117,7 @@ $$ {#eq-reparam}
 
 Here the parameters to learn are $\theta$ and $\psi$, which both correspond to deterministic functions. The gradients can now be calculated through the chain rule, similar to [Eq. @eq-gradtheta]. 
 
-We thus have a way to learn parameters of probability distributions using auto-differentiation frameworks, making it possible to learn non-deterministic models.
+We thus have a couple of different ways to learn parameters of probability distributions using auto-differentiation frameworks, making it possible to learn non-deterministic models.
 
 ### References
 

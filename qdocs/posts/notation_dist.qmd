@@ -7,12 +7,10 @@ categories: ["math"]
 toc: true
 number-sections: true
 number-depth: 2
-highlight-style: pygments
+highlight-style: github
 bibliography: ../refs.bib
-
 format:
   html:
-    theme: journal
     code-fold: true
     html-math-method: katex
 
