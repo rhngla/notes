@@ -28,9 +28,10 @@ Use `renv` through Rstudio to manage environments. [This page](https://rstudio.g
 
 ### Writing functions
 
-Contents of `funcfile.R`. This should be in the working directory (use `getwd()` to check and `setwd()` to change the working directory).
+Place the file containing function definitions in the working directory. Wse `getwd()` to check and `setwd()` to change the working directory as needed.
 
 ```R
+# Contents of `funcfile.R`
 dummyfunc_a<-function(x){
   y<-x^2
   return(y)
@@ -42,17 +43,24 @@ dummyfunc_b<-function(x){
 }
 ```
 
-You can make `dummyfunc_a` and `dummyfunc_b` available in the environment by sourcing the file:
+Make `dummyfunc_a` and `dummyfunc_b` available in the environment by sourcing the file:
 
 ```R
+# works in a script or console
 source('funcfile.R')
 ```
 
 ### Using debug tools
 
-1. `browser()`: This is a way to put a _breakpoint_ manually anywhere in the code. The console will show `Browse[1]>` and you can inspect the variables at that point in the code.
+#### 1. `browser()`
 
-2. `debug()` and `undebug()`
+This is a way to put a _breakpoint_ manually anywhere in the code. The console will show `Browse[1]>` and you can inspect the variables at that point in the code. While in the browser mode:
+
+ - `n` steps to next line
+ - `c` to continue till next breakpoint
+ - `Q` to quits the `browser` mode
+
+#### 2. `debug()` and `undebug()`:
 
 ```R
 # source the file to make the function available
@@ -67,6 +75,8 @@ dummyfunc(1)
 # turn off the debugger when done
 undebug(dummyfunc)
 ```
+
+The same shortcut keys as for `browser()` work in the `debug()` mode as well.
 
 ::: {.callout-important appearance="warning" collapse=false icon=false}
 Remember to invoke `source('funcfile.R')` each time you make changes to the function file for `debug()` to work correctly. 

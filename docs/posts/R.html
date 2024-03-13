@@ -208,25 +208,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="writing-functions" class="level3">
 <h3 class="anchored" data-anchor-id="writing-functions">Writing functions</h3>
-<p>Contents of <code>funcfile.R</code>. This should be in the working directory (use <code>getwd()</code> to check and <code>setwd()</code> to change the working directory).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dummyfunc_a<span class="ot">&lt;-</span><span class="cf">function</span>(x){</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>x<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>dummyfunc_b<span class="ot">&lt;-</span><span class="cf">function</span>(x){</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>x<span class="sc">^</span><span class="dv">3</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You can make <code>dummyfunc_a</code> and <code>dummyfunc_b</code> available in the environment by sourcing the file:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'funcfile.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Place the file containing function definitions in the working directory. Wse <code>getwd()</code> to check and <code>setwd()</code> to change the working directory as needed.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contents of `funcfile.R`</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dummyfunc_a<span class="ot">&lt;-</span><span class="cf">function</span>(x){</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>x<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>dummyfunc_b<span class="ot">&lt;-</span><span class="cf">function</span>(x){</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>x<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Make <code>dummyfunc_a</code> and <code>dummyfunc_b</code> available in the environment by sourcing the file:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># works in a script or console</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'funcfile.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="using-debug-tools" class="level3">
 <h3 class="anchored" data-anchor-id="using-debug-tools">Using debug tools</h3>
-<ol type="1">
-<li><p><code>browser()</code>: This is a way to put a <em>breakpoint</em> manually anywhere in the code. The console will show <code>Browse[1]&gt;</code> and you can inspect the variables at that point in the code.</p></li>
-<li><p><code>debug()</code> and <code>undebug()</code></p></li>
-</ol>
+<section id="browser" class="level4">
+<h4 class="anchored" data-anchor-id="browser">1. <code>browser()</code></h4>
+<p>This is a way to put a <em>breakpoint</em> manually anywhere in the code. The console will show <code>Browse[1]&gt;</code> and you can inspect the variables at that point in the code. While in the browser mode:</p>
+<ul>
+<li><code>n</code> steps to next line</li>
+<li><code>c</code> to continue till next breakpoint</li>
+<li><code>Q</code> to quits the <code>browser</code> mode</li>
+</ul>
+</section>
+<section id="debug-and-undebug" class="level4">
+<h4 class="anchored" data-anchor-id="debug-and-undebug">2. <code>debug()</code> and <code>undebug()</code>:</h4>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># source the file to make the function available</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'funcfile.R'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -238,6 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># turn off the debugger when done</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">undebug</span>(dummyfunc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The same shortcut keys as for <code>browser()</code> work in the <code>debug()</code> mode as well.</p>
 <div class="callout callout-style-default callout-important no-icon callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -256,6 +266,7 @@ Important
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
