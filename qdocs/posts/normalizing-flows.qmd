@@ -93,6 +93,7 @@ See @petersen2008matrix for identities on determinants, traces etc.
 The goal is to learn an invertible transformation to map one probability distribution to another. We would like to construct a family of transformations that are guaranteed to be invertible, yet expressive enough to permit complex mappings. Here I'll discuss a clever idea in @dinh2016density that achieves this successfully.
 
 There are two parts to their approach
+
 1. Specify a family of invertible transformations
 2. Ensure that determinant of the Jacobian for these transformations is computationally inexpensive to compute.
 
@@ -100,9 +101,9 @@ Their transformation enables the inverse transformation to be analytically speci
 
 The authors construct the transformation such that
 
-1. The Jacobian is lower triangular
-2. Therefore the determinant can be calculated as the product of all diagonal entries
-3. The inverse transformation can be calculated analytically
+1. Jacobian is lower triangular
+2. Thus, determinant is easy to compute (product of diagonal entries)
+3. Finally, the inverse transformation can be calculated analytically
 
 
 ### References

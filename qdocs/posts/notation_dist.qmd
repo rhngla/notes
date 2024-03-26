@@ -18,14 +18,19 @@ editor:
     render-on-save: true
 ---
 
- | Notation |       What we mean |
+### Distribution
+
+For a continuous random variable $X$, _distribution_ typically refers to the probability density function (pdf) $p_X$. The pdf value at a particular value ox for random variable $X$ is denoted as $p_X(x)$. However it is also common to see $p_X(x)$ being referred to as the distribution.
+
+ | Notation |     Same as        |
  |:--------:|:------------------:|
  | $p(x)$   | $p_{X}(X=x)$       |
- | $q(x)$   | $q_{X}(X=x)$       |
  | $p(x|z)$ | $p_{X|Z}(X=x|Z=z)$ |
  | $p(x,z)$ | $p_{X,Z}(X=x,Z=z)$ |
 
-Continuous probability distributions are commonly specified through the probability density function $p(x)$. A distribution with parameters $\theta$ can be viewed as a conditional distribution $p(x|\theta)$. In particular, the following notation is interchangeably used in the literature:
+### Parameters or random variables
+
+A distribution with parameters $\theta$ can be denoted as $p_\theta(x)$. In particular, the following notation is interchangeably used in literature:
 $$p_\theta(x) \equiv p(x;\theta) \equiv p(x|\theta)$$
 
 Any subtlety in terms of whether the notation choice depends on whether $\theta$ is a parameter (i.e. a constant without a prior distribution associated with it), or is a random variable is up to the author to clarify and use consistently. See community discussions @faisse2014notation, @learner2011notation, and @bartlett2015paramrv.

@@ -9,6 +9,7 @@ project:
     - posts/transformers.qmd
     - posts/stochastic-nodes.qmd
     - posts/information.qmd
+    - posts/R.qmd
 
 website:
   title: "notes"

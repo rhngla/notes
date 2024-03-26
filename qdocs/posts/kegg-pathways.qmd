@@ -16,7 +16,7 @@ page-navigation: false
 
 There are 20,000+ genes in the mouse genome. scRNA-seq can measure genome-wide RNA transcription patterns on a per-cell basis. Computational methods for these high-dimensional datasets may showcase utility through vignettes inspecting gene sets implicated in some biological function. Here I'll explore how one might go about selecting such gene sets.
 
-I'd first like to point out and acknowledge that annotations in any database are incomplete. Genes can exhibit pleiotropy, can participate in multiple processes, their role may be specific to a particular tissue or cell type, and cellular functions are often not well-defined or well-demarcated. The discussion around _polycomputing_ in [@bongard2023there] illustrates this broader point at different levels for living systems. Nevertheless, domain experts studying biological systems continue to compile valuable insights into genes relevant to those systems from their particular perspective. Tapping into such knowledge can be useful for exploratory analyses.
+I'd first like to point out / acknowledge that annotations in any database are incomplete @eddy2013encode. Genes can exhibit pleiotropy, can participate in multiple processes, their role may be specific to a particular tissue or cell type, and cellular functions are often not well-defined or well-demarcated. The discussion around _polycomputing_ in [@bongard2023there] illustrates this broader point at different levels for living systems. Nevertheless, domain experts studying biological systems continue to compile valuable insights into genes relevant to those systems from their particular perspective. Tapping into such knowledge can be useful for exploratory analyses.
 
 There are large-scale systematic databases curated by the community to aggregate and share information about genes uncovered through academic literature. Such databases now have software services, e.g. [g:profiler](https://biit.cs.ut.ee/gprofiler/gost) to facilitate lookups and perform routine calculations.
 
@@ -24,7 +24,7 @@ There are large-scale systematic databases curated by the community to aggregate
 
 2. [KEGG](https://www.kegg.jp/kegg/) is a database that contains a large number of curated and inferred metabolic, regulatory, and signal transduction pathways across multiple species.
 
-Both of these are well-maintained as of 2023, and are widely used in the community.
+Both of these are well-maintained as of 2024, and are widely used in the community.
 
 ::: {.column-margin}
 [@reimand2019pathway] provide an accessible overview of routine pathway and gene set enrichment analyses and tools.
@@ -36,13 +36,13 @@ In @marghi2023joint, we were interested in gene sets that might play a role in d
 
 #### Housekeeping genes
 
-A similar notion of _state_ may be captured by what the community broadly refers to as _housekeeping genes_. The precise criteria are heuristically defined, and validated (in part) through post-hoc [GO enrichment analyses](http://geneontology.org/docs/go-enrichment-analysis/). @joshi2022housekeeping obtain such housekeeping gene sets of housekeeping genes and provide a list of GO terms enriched among gene sets that the authors think are housekeeping genes. However there are 1,000's of genes in such sets, which is too large for our purposes.
+A notion of _state_ may be captured by what the community broadly refers to as _housekeeping genes_. The precise criteria for what counts as a housekeeping gene are heuristically defined, and validated (in part) through post-hoc [GO enrichment analyses](http://geneontology.org/docs/go-enrichment-analysis/). @joshi2022housekeeping obtain such housekeeping gene sets of housekeeping genes and provide a list of GO terms enriched among gene sets that the authors think are housekeeping genes. However there are 1,000's of genes in such sets, which is too large for our purposes.
 
-We then chose to zoom in on certain processes and pathways that one can reasonably think of as important for all cells, regardless of their functional type.
+We then thought to zoom in on certain processes and pathways that one can reasonably think of as important for all cells, regardless of their functional type.
 
 The Wnt signaling pathway [-@liu2022wnt] is one such pathway that is relevant for all neurons. Annotations on [GO](https://www.ebi.ac.uk/QuickGO/term/GO:0016055) and [KEGG](https://www.kegg.jp/entry/mmu04310) for this pathway relate it to various genes, other classes of molecules as well as other pathways.
 
-Genes involved in processes of energy production, protein synthesis/degradation, circadian rhythms etc. might be also be interesting in this regard. 
+Genes involved in processes of energy production (e.g. oxidative phosphorylation), protein synthesis/degradation, circadian rhythms etc. might be also be interesting in this regard. 
 
 We'll restrict ourselves to only the KEGG database. We have a short set of genes provided by experts this task. KEGG lists ~[350 pathways](https://www.genome.jp/kegg-bin/show_organism?menu_type=pathway_maps&org=mmu) under _Mus musculus_ as of July 2023. 
 

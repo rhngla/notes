@@ -20,6 +20,10 @@ format:
  - [Matrix reference manual](http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/intro.html#Intro)
  - [Probability distributions explorer](https://distribution-explorer.github.io/)
 
+Blogs I like and draw inspiration from:
+ - [Gregory Gundersen](https://gregorygundersen.com/)
+ - [Tuan Anh Le](https://www.tuananhle.co.uk/notes/)
+ - 
 I think real world systems are only partially changeable. Even a randomly connected Hopfield net stores information in the form of stable points. 
 
 The questions I have are:
@@ -42,8 +46,6 @@ Here is the setup of a Hopfield network that can store arbitrary patterns:
 (How are these update rules derived?)
 
 A basic implementation:
-
-
 
 Let a physical system described by coordinates $X_1, X_2, \ldots, X_N$, the components of a state vector $\mathbf{X}$. Let the system have locally stable limit points $\mathbf{X_a}, \mathbf{X_b}, \ldots)$. Then, if the system is started sufficiently near any $\mathbf{X_a}$, as at $\mathbf{X} = \mathbf{X_a}+\Delta$, it will proceed in time until $\mathbf{X} \approx \mathbf{X_a}$.
 

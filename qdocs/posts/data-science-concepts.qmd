@@ -36,11 +36,11 @@ Bayes optimal classifier: $h^*(x) = \underset{y \in \mathcal{Y}}{\textrm{argmax}
 If $X, Y$ are the label and feature vector random variables, then Baye's rule says:
 $$P(X,Y) = P(Y|X)P(X) = P(X|Y)P(Y)$$
  
-Estimating P(Y|X) from data is considered as discriminative modeling, while estimating P(X|Y) and P(Y) is considered as generative modeling (conditional on the label). A nice explanation is provided in this [blogpost](https://theaisummer.com/latent-variable-models/).
+Estimating $P(Y|X)$ from data is considered as discriminative modeling, while estimating $P(X|Y)$ and $P(Y)$ is considered as generative modeling (conditional on the label). A nice explanation is provided in this [blogpost](https://theaisummer.com/latent-variable-models/).
 
 -----
 
-If we had P(X,Y) in closed form the best we can do is Bayes optimal classifer $P(Y|X) = P(X,Y)/P(X)$. 
+If we had $P(X,Y)$ in closed form the best we can do is Bayes optimal classifer $P(Y|X) = P(X,Y)/P(X)$. 
 
 -----
 

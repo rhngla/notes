@@ -200,7 +200,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">March 13, 2024</p>
+        <p class="date-modified">March 20, 2024</p>
       </div>
     </div>
       
@@ -215,7 +215,9 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#references" id="toc-references" class="nav-link active" data-scroll-target="#references">References</a></li>
+  <li><a href="#distribution" id="toc-distribution" class="nav-link active" data-scroll-target="#distribution">Distribution</a></li>
+  <li><a href="#parameters-or-random-variables" id="toc-parameters-or-random-variables" class="nav-link" data-scroll-target="#parameters-or-random-variables">Parameters or random variables</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
     </div>
@@ -226,11 +228,14 @@ window.Quarto = {
 
 
 
+<section id="distribution" class="level3">
+<h3 class="anchored" data-anchor-id="distribution">Distribution</h3>
+<p>For a continuous random variable <span class="math inline">X</span>, <em>distribution</em> typically refers to the probability density function (pdf) <span class="math inline">p_X</span>. The pdf value at a particular value ox for random variable <span class="math inline">X</span> is denoted as <span class="math inline">p_X(x)</span>. However it is also common to see <span class="math inline">p_X(x)</span> being referred to as the distribution.</p>
 <table class="table">
 <thead>
 <tr class="header">
 <th style="text-align: center;">Notation</th>
-<th style="text-align: center;">What we mean</th>
+<th style="text-align: center;">Same as</th>
 </tr>
 </thead>
 <tbody>
@@ -239,22 +244,22 @@ window.Quarto = {
 <td style="text-align: center;"><span class="math inline">p_{X}(X=x)</span></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><span class="math inline">q(x)</span></td>
-<td style="text-align: center;"><span class="math inline">q_{X}(X=x)</span></td>
-</tr>
-<tr class="odd">
 <td style="text-align: center;"><span class="math inline">p(x|z)</span></td>
 <td style="text-align: center;"><span class="math inline">p_{X|Z}(X=x|Z=z)</span></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: center;"><span class="math inline">p(x,z)</span></td>
 <td style="text-align: center;"><span class="math inline">p_{X,Z}(X=x,Z=z)</span></td>
 </tr>
 </tbody>
 </table>
-<p>Continuous probability distributions are commonly specified through the probability density function <span class="math inline">p(x)</span>. A distribution with parameters <span class="math inline">\theta</span> can be viewed as a conditional distribution <span class="math inline">p(x|\theta)</span>. In particular, the following notation is interchangeably used in the literature: <span class="math display">p_\theta(x) \equiv p(x;\theta) \equiv p(x|\theta)</span></p>
+</section>
+<section id="parameters-or-random-variables" class="level3">
+<h3 class="anchored" data-anchor-id="parameters-or-random-variables">Parameters or random variables</h3>
+<p>A distribution with parameters <span class="math inline">\theta</span> can be denoted as <span class="math inline">p_\theta(x)</span>. In particular, the following notation is interchangeably used in literature: <span class="math display">p_\theta(x) \equiv p(x;\theta) \equiv p(x|\theta)</span></p>
 <p>Any subtlety in terms of whether the notation choice depends on whether <span class="math inline">\theta</span> is a parameter (i.e.&nbsp;a constant without a prior distribution associated with it), or is a random variable is up to the author to clarify and use consistently. See community discussions <span class="citation" data-cites="faisse2014notation">Fraïssé (<a href="#ref-faisse2014notation" role="doc-biblioref">2017</a>)</span>, <span class="citation" data-cites="learner2011notation">Learner (<a href="#ref-learner2011notation" role="doc-biblioref">2011</a>)</span>, and <span class="citation" data-cites="bartlett2015paramrv">Bartlett (<a href="#ref-bartlett2015paramrv" role="doc-biblioref">2015</a>)</span>.</p>
 <p>At times, authors also drop the dependence on <span class="math inline">\theta</span> and simply write <span class="math inline">p_{\theta}(x)</span> as <span class="math inline">p(x)</span>. This can be a source of a lot of confusion, and both authors and readers should be careful to prevent misundertanding.</p>
+</section>
 <section id="references" class="level3">
 <h3 class="anchored" data-anchor-id="references">References</h3>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">

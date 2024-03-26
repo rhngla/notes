@@ -26,6 +26,18 @@ rig rstudio 4.3-arm64
 
 Use `renv` through Rstudio to manage environments. [This page](https://rstudio.github.io/renv/articles/renv.html) has a good overview of the main commands and functionality.
 
+```R
+# Use this to show the paths where package files are installed
+paths <- .libPaths()
+
+# One of these paths can be provided directly to install.packages() 
+install.packages("NMF", lib = paths[1])
+```
+
+### Compiling R packages on Mac
+
+Installing the `GNU Fortran compiler` following [these instructions](https://mac.r-project.org/tools/) offered a straightforward fix for compilation errors for various packages on my M3 Mac. Attempts to use `homebrew` installations of `gcc` and `gfortran` failed for me. 
+
 ### Writing functions
 
 Place the file containing function definitions in the working directory. Wse `getwd()` to check and `setwd()` to change the working directory as needed.
@@ -81,3 +93,9 @@ The same shortcut keys as for `browser()` work in the `debug()` mode as well.
 ::: {.callout-important appearance="warning" collapse=false icon=false}
 Remember to invoke `source('funcfile.R')` each time you make changes to the function file for `debug()` to work correctly. 
 :::
+
+#### 3. `traceback()`:
+
+This is helpful to get a full trace of function calls to that led to an error especially while debugging complex / unfamiliar packages. 
+
+
