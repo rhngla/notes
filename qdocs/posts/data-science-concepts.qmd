@@ -19,7 +19,48 @@ format:
 ---
 
 
-These are my unstructured notes from Kilian Weinberger's CS4780 course lectures. 
+Linear equation:
+
+ - $Ax = b$ specifies a system of linear equations. 
+ - Let $x \in \mathbb{R}^n$, $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$
+ - More equations than unknowns $\equiv$ A is a tall matrix, $m > n$ $\equiv$ system is `overdetermined`. 
+ - When no single solution exists the system of equations is `inconsistent`.
+ - Geometrically, each equation specifies a hyperplane of dimension $n-1$ in $\mathbb{R}^n$. 
+ - Set of equations is `consistent` $\equiv$ the hyperplanes intersect at a single point.
+ - The solution is the intersection of these hyperplanes.
+ - Less equations than unknowns $\equiv$ A is a fat matrix, $m < n$ $\equiv$ system is `underdetermined`. 
+ - Geometrically, the intersection of hyperplanes is also a hyperplane of dimension $n-m$ (assuming each equation is `independent`).
+
+-----
+
+Equivalent definitions for a positive semi-definite matrix $M$:
+
+1. $x^T M x \geq 0$ for all $x \in \mathbb{R}^n$
+2. All eigenvalues of $M$ are non-negative
+
+Proof for 2 $\rightarrow$ 1: 
+
+ - Any symmetric $M$ can be written as  $U \Lambda U^T$, where $U$ is orthogonal and $\Lambda$ is diagonal. 
+ - Then $x^T M x = x^T U \Lambda U^T x = (U^T x)^T \Lambda (U^T x) = \sum_{i=1}^n \lambda_i (U^T x)_i^2 \geq 0$
+
+Proof for 1 $\rightarrow$ 2: 
+
+ - Let $x$ be an eigenvector of $M$ with eigenvalue $\lambda$. 
+ - Then $x^T M x = \lambda x^T x = \lambda ||x||^2 \geq 0$. 
+ - Since $||x||^2 > 0$, we have $\lambda \geq 0$.
+
+If $M$ is symmetric and semi-positive definite, then $M = A^T A$ for some $A$. This is a subset of positive semi-definite matrices.
+
+Proof: 
+
+  - Let $M$ be a symmetric positive semi-definite matrix. 
+  - Then $M = U \Lambda U^T$ for some orthogonal $U$ and diagonal $\Lambda$. 
+  - Let $A = U \Lambda^{1/2}$, then $A^T A = \Lambda^{1/2} U^T U \Lambda^{1/2} = \Lambda$
+
+-----
+
+
+Unstructured notes from Kilian Weinberger's CS4780 course lectures, mostly used as a reference for myself.
 
 Minkowski distance is $d(x,y) = \left(\sum_{i=1}^n |x_i - y_i|^p\right)^{1/p}$, where $i$ is over dimensions. 
 
@@ -77,9 +118,36 @@ P(Y|X) &= \int P(Y, \theta| X, \mathcal{D})d\theta \\
 \end{align*}
 $$
 
-We used the fact that $P(\theta|X, \mathcal{D}) = P(\theta|\mathcal{D})$ because \theta only depends on the training data through $\mathcal{D}$, and not on test data $X$. This is intractable in general, but possible in some special cases (Gaussian Processes). 
+We used the fact that $P(\theta|X, \mathcal{D}) = P(\theta|\mathcal{D})$ because $\theta$ only depends on the training data $\mathcal{D}$, and not on test data $X$. This is intractable in general, but possible in some special cases (Gaussian Processes). 
 
 -----
+
+#### Classification
+
+Let's say we have data $\mathcal{D} = \{(x_1, y_2), (x_2, y_2), ..., (x_N, y_N)\}$ where $x_i \in \mathbb{R}^d$ and $y_i \in \{0, 1\}$. Let's assume each sample is drawn i.i.d. from some distribution $P(\mathcal{D})$.
+
+**View 1**
+
+ - The goal of classification is to provide $p(y|x)$.
+ - We introduce the model with parameters $\theta$, $p(y|x;\theta)$
+ - Then, we are trying to learn $\theta$ that maximizes the (conditional) likelihood
+ - $\theta = \underset{\theta}{\textrm{argmax}} \quad \prod_{i=1}^n p(y_i|x_i;\theta)$ (product because i.i.d)
+ - Here $(x_i, y_i) \in \mathcal{D}$ i.e. the training data.
+
+**View 2**
+
+![](pgm_classifier.png){width=150}
+
+ - The posterior is $p(\theta|\mathcal{D}) = p(\mathcal{D}|\theta)p(\theta)/p(\mathcal{D})$
+ 
+$$ 
+ \begin{align*}
+ \theta_{\textrm{MLE}} &= \underset{\theta}{\textrm{argmax}} \quad p(\mathcal{D}|\theta) \\
+                       &= \underset{\theta}{\textrm{argmax}} \quad \prod_{i=1}^N p(x_i, y_i;\theta) \\
+                       &= \underset{\theta}{\textrm{argmax}} \quad \prod_{i=1}^N p(y_i|x_i;\theta)p(x_i) \\
+                       &= \underset{\theta}{\textrm{argmax}} \quad \sum_{i=1}^N \log p(y_i|x_i;\theta) + \textrm{constant} 
+\end{align*}
+$$
 
 
 ::: {.callout-important collapse="false"}
@@ -207,3 +275,53 @@ Identifying appropriate metric for to measure similarity between cells is a fund
 - Equivalence of metrics?
 - Bregman divergence?
 - @suarez2021tutorial survey techniques for distance metric learning towards improving classifier performance. 
+
+
+
+
+### Calculating Bray-Curtis dissimilarities:
+
+<p>
+ - Let region $r_1$ have celltype wise distribution $[a,b,c]$, corresponding to celltypes $c_1, c_2, c_3$.
+ - Let this be a normalized distribution, i.e. $a+b+c = 1$
+</p>
+
+<p>
+ - The reference distribution
+   - for $c_1$ is $[1,0,0]$
+   - for $c_2$ is $[0,1,0]$
+   - for $c_3$ is $[0,0,1]$
+</p> 
+
+In Fig. 2A, the Bray-curtis dissimilarity for $(r_1, c_1)$ is:
+$$\frac{(1-a)+b+c}{1+a+b+c} = \frac{(1-a)+b+c}{2}$$
+
+Then the sum for entries in the row $r_1$ is:
+
+\begin{aligned}
+&\frac{(1-a)+b+c}{2} + \frac{a+(1-b)+c}{2} + \frac{a+b+(1-c)}{2} \\
+&= \frac{3 + (a+b+c)}{2} \\
+&= 2 \\
+\end{aligned}
+
+In general if there are $n$ celltypes, the sum of Bray-Curtis dissimilarities for each region across the different celltypes (i.e rowsums in heatmap of Fig. 2A) should be $n-1$; this is verified by:
+
+```python
+import numpy as np
+from scipy.spatial.distance import braycurtis as bc
+
+for n in range(2,10):
+    p = np.random.random(n)
+    p = p/p.sum()
+    sum_bc = 0
+    for i in range(n):
+        q = np.zeros((n,))
+        q[i] = 1
+        sum_bc += bc(p, q)
+    print(n, np.round(sum_bc,2))
+```
+
+
+
+ 
+

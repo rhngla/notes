@@ -2,7 +2,7 @@
 title: "Notation for random variables, distributions etc."
 author: Rohan Gala
 date: "2023-04-27"
-date-modified: last-modified
+date-modified: "2024-03-20"
 categories: ["math"]
 toc: true
 number-sections: true
@@ -20,7 +20,7 @@ editor:
 
 ### Distribution
 
-For a continuous random variable $X$, _distribution_ typically refers to the probability density function (pdf) $p_X$. The pdf value at a particular value ox for random variable $X$ is denoted as $p_X(x)$. However it is also common to see $p_X(x)$ being referred to as the distribution.
+For a continuous random variable $X$, _distribution_ typically refers to the probability density function (pdf) $p_X$. The pdf value at a particular value $x$ for random variable $X$ is denoted as $p_X(x)$. However it is also common to see $p_X(x)$ being referred to as the distribution.
 
  | Notation |     Same as        |
  |:--------:|:------------------:|

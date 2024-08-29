@@ -111,7 +111,7 @@ Another way to estimate the gradient through stochastic nodes is to use the _rep
 
 $$
 \begin{aligned}
-\mathcal{L} &= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \mathbb{E}_{z \sim p_{Z}}[f_{\theta}{(g_{\psi}(z)}]
+\mathcal{L} &= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \mathbb{E}_{z \sim p_{Z}}[f_{\theta}({g_{\psi}(z)})]
 \end{aligned}
 $$ {#eq-reparam}
 

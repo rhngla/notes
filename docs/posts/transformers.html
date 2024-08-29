@@ -218,7 +218,7 @@ window.Quarto = {
   <li><a href="#generative-sequence-modeling" id="toc-generative-sequence-modeling" class="nav-link active" data-scroll-target="#generative-sequence-modeling">Generative sequence modeling</a></li>
   <li><a href="#attention-mechanism-and-transformer-architecture" id="toc-attention-mechanism-and-transformer-architecture" class="nav-link" data-scroll-target="#attention-mechanism-and-transformer-architecture">Attention mechanism and transformer architecture</a></li>
   <li><a href="#multi-task-learning" id="toc-multi-task-learning" class="nav-link" data-scroll-target="#multi-task-learning">Multi-task learning</a></li>
-  <li><a href="#foundational-models" id="toc-foundational-models" class="nav-link" data-scroll-target="#foundational-models">Foundational models</a></li>
+  <li><a href="#foundation-models" id="toc-foundation-models" class="nav-link" data-scroll-target="#foundation-models">Foundation models</a></li>
   <li><a href="#parting-notes" id="toc-parting-notes" class="nav-link" data-scroll-target="#parting-notes">Parting notes</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -283,7 +283,7 @@ y_i &amp;= \sum_j{B_{ij}v_j}
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="citation" data-cites="zaheer2017deep">Zaheer et al. (<a href="#ref-zaheer2017deep" role="doc-biblioref">2017</a>)</span> have shown that for universal function approximators (e.g.&nbsp;neural networks) <span class="math inline">h</span> and <span class="math inline">g</span>, a function <span class="math inline">f</span> of the form <span class="math display">f(x_1, ... x_n) = h(\sum_i{g(x_i)})</span> is a universal approximator for any permutation invariant function.</p>
-</div></div><p>Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization, weight sharing across embedding laters etc. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing (see e.g. <span class="citation" data-cites="zhang2022set">Zhang et al. (<a href="#ref-zhang2022set" role="doc-biblioref">2022</a>)</span>), and to reduce memory footprint of large models.</p>
+</div></div><p>Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization, weight sharing across embedding laters etc. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing (see e.g. <span class="citation" data-cites="zhang2022set">Zhang et al. (<a href="#ref-zhang2022set" role="doc-biblioref">2022</a>)</span>), and to reduce memory footprint of large models. Moreover, <span class="citation" data-cites="dong2021attention">Dong, Cordonnier, and Loukas (<a href="#ref-dong2021attention" role="doc-biblioref">2021</a>)</span> have shown these operations are crucial to prevent rank collapse in the attention matrix in deeper network layers - which would then output the same token at all positions (a.k.a. token uniformity).</p>
 <p>The transformer in <span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#ref-vaswani2017attention" role="doc-biblioref">2017</a>)</span> also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to utilize context from a different source.</p>
 <p>See <span class="citation" data-cites="weng2023transformer">Weng (<a href="#ref-weng2023transformer" role="doc-biblioref">2023</a>)</span> for a more comprehensive review of innovations in transformer-like models.</p>
 
@@ -296,18 +296,18 @@ y_i &amp;= \sum_j{B_{ij}v_j}
 <p>So far, a clear reason for why large language models seem magical is missing. Why bother increasing size of models, why invest so much in collecting the data and compute resources?</p>
 <p>I think <span class="citation" data-cites="radford2019language">Radford et al. (<a href="#ref-radford2019language" role="doc-biblioref">2019</a>)</span>, and later <span class="citation" data-cites="brown2020language">Brown et al. (<a href="#ref-brown2020language" role="doc-biblioref">2020</a>)</span> provide the motivation. The main realization is that for language, the task itself is a sequence of tokens. Tasks can take the form of “translate to german” or “write python code for” etc. Here the sequence of words that specify the task are themselves part of the input sequence. Moreover, the underlying input can be more parcellated and abstract, e.g.&nbsp;<a href="https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt">byte pair encodings</a>.</p>
 <p>The implication is that while we learn <span class="math inline">p(\textrm{output}|\textrm{input})</span>, we are also learning <span class="math inline">{p(\textrm{output} | \textrm{input}, \textrm{task})}</span>, without requiring task-specific architecture or training.</p>
-<p>In my view, this is a central requirement for a meaningful notion of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance may be possible on a variety of tasks, even though the task is not explicitly specified while training.</p>
+<p>In my view, this is a central requirement for a meaningful notion of foundation models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance may be possible on a variety of tasks, even though the task is not explicitly specified while training.</p>
 </section>
-<section id="foundational-models" class="level3">
-<h3 class="anchored" data-anchor-id="foundational-models">Foundational models</h3>
-<p>The term “foundational models” was popularized by <span class="citation" data-cites="bommasani2021opportunities">Bommasani et al. (<a href="#ref-bommasani2021opportunities" role="doc-biblioref">2021</a>)</span>, and an accompanying <a href="https://crfm.stanford.edu/workshop.html">workshop at Stanford University</a>.</p>
+<section id="foundation-models" class="level3">
+<h3 class="anchored" data-anchor-id="foundation-models">Foundation models</h3>
+<p>The term “foundation models” was popularized by <span class="citation" data-cites="bommasani2021opportunities">Bommasani et al. (<a href="#ref-bommasani2021opportunities" role="doc-biblioref">2021</a>)</span>, and an accompanying <a href="https://crfm.stanford.edu/workshop.html">workshop at Stanford University</a>.</p>
 <p><span class="citation" data-cites="bommasani2021opportunities">Bommasani et al. (<a href="#ref-bommasani2021opportunities" role="doc-biblioref">2021</a>)</span> describe the notion of emergence (generalization over tasks, and therefore related to zero-shot performance) and homogenization (learning something useful for a variety of downstream tasks, and therefore the pre-training is amenable to fine-tuning). These essentially echo the central observations of <span class="citation" data-cites="radford2019language">Radford et al. (<a href="#ref-radford2019language" role="doc-biblioref">2019</a>)</span> and <span class="citation" data-cites="brown2020language">Brown et al. (<a href="#ref-brown2020language" role="doc-biblioref">2020</a>)</span>.</p>
 <p>The idea of fine-tuning and using pre-trained model components on related datasets or tasks (e.g.&nbsp;transfer learning) has been a motivation behind efforts to curate such models in various domains, even before large language models became common e.g.&nbsp;<a href="https://pytorch.org/hub/">https://pytorch.org/hub/</a>. Unlike the multi-task learning in large language models, the scope of tasks for which pre-trained models might be useful is much more constrained.</p>
 </section>
 <section id="parting-notes" class="level3">
 <h3 class="anchored" data-anchor-id="parting-notes">Parting notes</h3>
 <p>The output of language models can be directly parsed and evaluated for quality by humans. This fact is exploited for public facing language models such as chatGPT. In this talk titled the <em>State of GPT</em> <span class="citation" data-cites="karpathy2023stategpt">(<a href="#ref-karpathy2023stategpt" role="doc-biblioref">2023b</a>)</span>, Karpathy describes finetuning, reward modeling, and reinforcement learning using the reward model; all of these hinge on the fact that humans can understand and evaluate outputs of such language models.</p>
-<p>Scientific applications will certainly find use for the attention mechanism and the transformer architecture. However, claims in papers from scientific domains that draw analogies with language modeling and co-opt jargon around foundational models deserve a more critical look.</p>
+<p>Scientific applications will certainly find use for the attention mechanism and the transformer architecture. However, claims in papers from scientific domains that draw analogies with language modeling and co-opt jargon around foundation models deserve a more critical look.</p>
 </section>
 <section id="references" class="level3">
 <h3 class="anchored" data-anchor-id="references">References</h3>
@@ -326,6 +326,9 @@ Brown, Tom, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla
 </div>
 <div id="ref-cover1965geometrical" class="csl-entry" role="listitem">
 Cover, Thomas M. 1965. <span>“Geometrical and Statistical Properties of Systems of Linear Inequalities with Applications in Pattern Recognition.”</span> <em>IEEE Transactions on Electronic Computers</em>, no. 3: 326–34.
+</div>
+<div id="ref-dong2021attention" class="csl-entry" role="listitem">
+Dong, Yihe, Jean-Baptiste Cordonnier, and Andreas Loukas. 2021. <span>“Attention Is Not All You Need: Pure Attention Loses Rank Doubly Exponentially with Depth.”</span> In <em>International Conference on Machine Learning</em>, 2793–803. PMLR.
 </div>
 <div id="ref-karpathy2023llm" class="csl-entry" role="listitem">
 Karpathy, Andrej. 2023a. <span>“Neural Networks: Zero to Hero.”</span> 2023. <a href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ">https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ</a>.

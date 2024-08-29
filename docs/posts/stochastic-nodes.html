@@ -317,7 +317,7 @@ A simple check
 <p>Another way to estimate the gradient through stochastic nodes is to use the <em>reparametrization trick</em>. This is possible when the distribution <span class="math inline">p_{X|\phi}</span> can be composed with a deterministic function <span class="math inline">g_\psi</span> applied to samples <span class="math inline">z</span> drawn from a fixed distribution <span class="math inline">p_{Z}</span>.</p>
 <p><span id="eq-reparam"><span class="math display">
 \begin{aligned}
-\mathcal{L} &amp;= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \mathbb{E}_{z \sim p_{Z}}[f_{\theta}{(g_{\psi}(z)}]
+\mathcal{L} &amp;= \mathbb{E}_{x \sim p_{X|\phi}}[f_{\theta}(x)] = \mathbb{E}_{z \sim p_{Z}}[f_{\theta}({g_{\psi}(z)})]
 \end{aligned}
 \tag{6}</span></span></p>
 <p>Here the parameters to learn are <span class="math inline">\theta</span> and <span class="math inline">\psi</span>, which both correspond to deterministic functions. The gradients can now be calculated through the chain rule, similar to <a href="#eq-gradtheta" class="quarto-xref">Eq.&nbsp;2</a>.</p>

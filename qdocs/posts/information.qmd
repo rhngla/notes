@@ -33,7 +33,7 @@ I'll assume continuous values for our random variables throughout. For the discr
 
 **Note:** 
 
-1. `draw`, `model` and `density` specifically refer to quantities related to $q_X$ as shown in the table. The plain-text model, density etc. refer to the general concepts.
+1. On this page, I use `draw`, `model` and `density` to refer to quantities related to $q_X$ as shown in the table. The plain-text model, density etc. refer to the general concepts.
 
 2. We'll drop the subscript $X$ from the distributions and use $p = p_X$ and $q = q_X$ to simplify notation. 
 
@@ -44,6 +44,14 @@ I'll assume continuous values for our random variables throughout. For the discr
  - We want to find a `model` $q$ that approximates $p$ well.
  - Assume that `model` $q$ can be tuned via parameters $\theta$ $^\dagger$.
 
+:::{.column-margin}
+${^\dagger}$ The $\theta$ dependence can be explicitly denoted in the `model` as $q_{\theta}$, or the `density` (and therefore likelihood) as $q(x;\theta)$. Likelihood can thus be viewed as a function of $\theta$. The semi-colon indicates that $\theta$ refers to parameters, and not a random variable that comes with its own distribution.
+
+<br>
+
+In the Bayesian view, $\theta$ itself may be considered as a particular value of a random variable $\Theta$, and this may be indicated in the distribution as $q_{X|\Theta}$.
+:::
+
 ### Likelihood and information
 
 <p></p>
@@ -53,15 +61,6 @@ Given an observation $x$:
  - We can interpret $q(x)$ as how _likely_ an `observation` is under the `model`.
  - So we refer to $q(x)$ as the likelihood.
  - Following this, the quantity $-\log{q(x)}$ is called negative log-likelihood.
-
-:::{.column-margin}
-${^\dagger}$ The $\theta$ dependence can be explicitly denoted in the `model` as $q_{\theta}$, or the `density` (and therefore likelihood) as $q(x;\theta)$. Likelihood can thus be viewed as a function of $\theta$. The semi-colon indicates that $\theta$ refers to parameters, and not a random variable that comes with its own distribution.
-
-<br>
-
-In the Bayesian view, $\theta$ itself may be considered as a particular value of a random variable $\Theta$, and this may be indicated in the distribution as $q_{X|\Theta}$.
-:::
-
 
 <p></p>
 
@@ -78,7 +77,6 @@ In the Bayesian view, $\theta$ itself may be considered as a particular value of
  - $-\log{q(x)}$ conveys something about our approximation $q$ (and therefore $\theta$).
  - This is why it's helpful to retain the terminology, and interpret it as such.
 
-
 :::{.column-margin}
 Why use the $\log$ operation to define information?
 A cryptic, partial answer: independence of distributions $\implies$ addition of information (and of log-likelihoods).
@@ -88,9 +86,9 @@ A cryptic, partial answer: independence of distributions $\implies$ addition of 
 
 <p></p>
 
- - As a description of the model, we can calculate the expected surprise over `samples` $x \sim q$.
+ - As a description of the model, we can calculate the expected surprise over `draws` $x \sim q$.
  - Expected surprise is simply the avg. negative log-likelihood, as above.
- - Expected surprise with `samples`: $E_{x \sim q}({-\log q(x)})$.
+ - Expected surprise with `draws`: $E_{x \sim q}({-\log q(x)})$.
  - Expected surprise with `observations`: $E_{x \sim p}({-\log q(x)})$.
 
 :::{.column-margin}
@@ -101,7 +99,7 @@ Expectation is usually an operator applied to a function of a random variable, i
 Here we treat expectation as a function of values specified in the argument, drawn from a distribution specified in the subscript, $E_{x \sim p}(f(x))$. This is a commonly adopted convention that I'll follow here.
 :::
 
- - Expected surprise with `samples` is called `entropy` of $q$.
+ - Expected surprise with `draws` is called `entropy` of $q$.
  - Expected surprise with `observation` is called `cross-entropy` of $q$ w.r.t. $p$.
  - Minimizing `cross-entropy` is simply minimizing the expected surprise in `observations`, and is one way to tune $q$ through $\theta$.
  - This is equivalent to maximizing the likelihood of `observations` under $q$!
@@ -121,7 +119,7 @@ Here we treat expectation as a function of values specified in the argument, dra
  - This requires that samples are drawn i.i.d.$^{\dagger\dagger}$ according to the distribution $p$.
  - The larger $N$ is, the better the approximation is.
  - We often formulate problems so that $p$ is some simple, low-dimensional distribution so that a relatively small number of samples can approximate such integrals well.
- - The subject efficient sampling from $p$ of various classes (e.g. no explicit functional form, high dimensional etc.) is a subject of active research.
+ - How to efficiently sample from various kinds of $p$ (e.g. has no explicit functional form, is high dimensional etc.) is an active research area.
 
  <p></p>
 Example:
@@ -134,7 +132,7 @@ Example:
 
 \begin{aligned}
 E_{x \sim p}({-\log q(x)}) &= \int p(x) (-\log q(x)) dx \\
-&\approx \frac{1}{N} \sum_{i=1}^N f(x_i)
+&\approx \frac{1}{N} \sum_{i=1}^N -\log q(x_i)
 \end{aligned}
 
 $^{\dagger\dagger}$ i.i.d: independent and identically distributed.

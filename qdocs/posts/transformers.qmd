@@ -85,7 +85,7 @@ In the absence of masking, each output takes on the form $y_j  = \sum_i{g_j(x_i)
 @zaheer2017deep have shown that for universal function approximators (e.g. neural networks) $h$ and $g$, a function $f$ of the form $$f(x_1, ... x_n) = h(\sum_i{g(x_i)})$$ is a universal approximator for any permutation invariant function.
 :::
 
-Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization, weight sharing across embedding laters etc. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing (see e.g. @zhang2022set), and to reduce memory footprint of large models.
+Other than self-attention, the decoder-only transformer architecture includes residual connections, layer normalization, weight sharing across embedding laters etc. These conceptually straightforward operations turn out to be crucial in practice to prevent gradients from exploding or vanishing (see e.g. @zhang2022set), and to reduce memory footprint of large models. Moreover, @dong2021attention have shown these operations are crucial to prevent rank collapse in the attention matrix in deeper network layers - which would then output the same token at all positions (a.k.a. token uniformity).
 
 The transformer in @vaswani2017attention also has an encoding arm that is used for cross-attention, without masking. This makes intuitive sense for tasks like translation where the sequence of words in english may not be relevant for sequence of words in a german translation. In general, cross-attention is used to utilize context from a different source.
 
@@ -105,11 +105,11 @@ I think @radford2019language, and later @brown2020language provide the motivatio
 
 The implication is that while we learn $p(\textrm{output}|\textrm{input})$, we are also learning ${p(\textrm{output} | \textrm{input}, \textrm{task})}$, without requiring task-specific architecture or training.
 
-In my view, this is a central requirement for a meaningful notion of foundational models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance may be possible on a variety of tasks, even though the task is not explicitly specified while training.
+In my view, this is a central requirement for a meaningful notion of foundation models. The implicit multi-task learning that takes place is the reason why non-trivial zero shot performance may be possible on a variety of tasks, even though the task is not explicitly specified while training.
 
-### Foundational models
+### Foundation models
 
-The term "foundational models" was popularized by @bommasani2021opportunities, and an accompanying [workshop at Stanford University](https://crfm.stanford.edu/workshop.html). 
+The term "foundation models" was popularized by @bommasani2021opportunities, and an accompanying [workshop at Stanford University](https://crfm.stanford.edu/workshop.html). 
 
 @bommasani2021opportunities describe the notion of emergence (generalization over tasks, and therefore related to zero-shot performance) and homogenization (learning something useful for a variety of downstream tasks, and therefore the pre-training is amenable to fine-tuning). These essentially echo the central observations of @radford2019language and @brown2020language.
 
@@ -119,7 +119,7 @@ The idea of fine-tuning and using pre-trained model components on related datase
 
 The output of language models can be directly parsed and evaluated for quality by humans. This fact is exploited for public facing language models such as chatGPT. In this talk titled the _State of GPT_ [-@karpathy2023stategpt], Karpathy describes finetuning, reward modeling, and reinforcement learning using the reward model; all of these hinge on the fact that humans can understand and evaluate outputs of such language models.
 
-Scientific applications will certainly find use for the attention mechanism and the transformer architecture. However, claims in papers from scientific domains that draw analogies with language modeling and co-opt jargon around foundational models deserve a more critical look.
+Scientific applications will certainly find use for the attention mechanism and the transformer architecture. However, claims in papers from scientific domains that draw analogies with language modeling and co-opt jargon around foundation models deserve a more critical look.
 
 ### References
 

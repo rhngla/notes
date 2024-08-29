@@ -19,11 +19,24 @@ format:
 
  - [Matrix reference manual](http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/intro.html#Intro)
  - [Probability distributions explorer](https://distribution-explorer.github.io/)
+ - [Spectral graph theory lecture notes](https://people.orie.cornell.edu/dpw/orie6334/Fall2016/)
+ - [Information theory notes](https://www.cs.princeton.edu/courses/archive/fall11/cos597D/)
+  
 
 Blogs I like and draw inspiration from:
+
  - [Gregory Gundersen](https://gregorygundersen.com/)
  - [Tuan Anh Le](https://www.tuananhle.co.uk/notes/)
- - 
+ - [Tom Murphy](https://dothemath.ucsd.edu/2023/10/context-is-king/)
+ - [Julia Silge](https://juliasilge.com/)
+ - [Fabian Schaipp](https://fabian-sp.github.io/)
+ - [A collection of visual illusions](https://michaelbach.de/ot/)
+
+Some interesting libraries:
+[scikit-lego](https://koaning.github.io/scikit-lego/): scikit-learn compatible tools.
+
+
+
 I think real world systems are only partially changeable. Even a randomly connected Hopfield net stores information in the form of stable points. 
 
 The questions I have are:
@@ -52,6 +65,11 @@ Let a physical system described by coordinates $X_1, X_2, \ldots, X_N$, the comp
 Then we can regard the information stored in the system as the vectors $\mathbf{X_a}, \mathbf{X_b}, \ldots$. The starting point $\mathbf{X} = \mathbf{X_a} + \Delta$ represents a partial knowledge of the item $\mathbf{X_a}$, and the system then generates the total information $\mathbf{X_a}$.
 
 Any physical system whose dynamics in phase space is dominated by a substantial number of locally stable states to which it is attracted can therefore be regarded as a general content-addressable memory.
+
+Cool websites
+
+ 
+
 
 
 ### References

@@ -21,9 +21,211 @@ format:
 \gdef\colb#1{\textcolor{63a7ff}{#1}}
 \gdef\colr#1{\textcolor{ff6e63}{#1}}
 \gdef\colg#1{\textcolor{40bf9a}{#1}}
+\gdef\argmax{\textrm{argmax}\,}
+\gdef\Eqz{\mathbb{E}_{\mathbf{z}\sim q(\mathbf{z})}}
+\gdef\Eqzi{\mathbb{E}_{{z_i}\sim q(z_i)}}
 
 
-An earlier post on [entropy and KL divergence](https://rhngla.github.io/notes/posts/information.html), would be helpful context for this post about the variational autoencoder formulation. Notation conventions used in probabilistic machine learning papers vary quite a bit, and this [note](https://rhngla.github.io/notes/posts/notation_dist.html) documents resolution to my confusion around this.
+### Background
+ 
+ - An earlier post on [entropy and KL divergence](https://rhngla.github.io/notes/posts/information.html), would be helpful context for this post. Notation conventions vary across communities, and can cause confusion. 
+ - This [post on notation](https://rhngla.github.io/notes/posts/notation_dist.html) may be helpful.
+ - The Expectation maximization (EM) algorithm is closely related predecessor, see [`CS229` lecture notes](https://cs229.stanford.edu/notes2020spring/cs229-notes8.pdf) and related discussion in @minka1998expectation.
+ - Variational inference (VI) is a generalization of the EM algorithm, see @blei2017variational. See this [toy implementation](https://towardsdatascience.com/variational-inference-the-basics-f70ac511bcea) of a VI algorithm
+ - Variational autoencoders are a special case of stochastic variational inference
+
+
+### EM algorithm
+
+**Formulation**
+
+::: {.customtable style="font-size: 90%; width: 80%; margin: auto auto;"}
+
+
+| Notation         |       What we mean                               |
+|:--------:        |:------------------:                              |
+| $X_i$            | r.v. for $i$<sup>th</sup> observation            |
+| $\mathbf{X}$     | vector of r.v.'s $(X_1, X_2, \ldots, X_n)$       |
+| $x_i$            | value for $i$<sup>th</sup> observation           |
+| $\mathbf{x}$     | vector of values $(x_1, x_2, \ldots, x_n)$       |
+| $Z_i$            | r.v. for unobserved component of $i$<sup>th</sup> observation |
+| $\mathbf{z}$     | set given by $\{z_1, z_2, \ldots, z_n \}$        |
+| $q(\mathbf{z})$  | distribution for $\mathbf{z}$                    |
+| $q(z_i)$         | distribution for $z_i$                           |
+:::
+
+**Set up**
+
+ - We have observations of high-dimensional data $(x_1, \cdots, x_n)$
+ - Assuming i.i.d observations the following consequences:
+      1. independence: $p(X_1, \cdots , X_n)$ factorizes as $\prod_i{p(X_i)}$. 
+      2. identically distributed: each $p(X_i)$ has the same underlying parameters $\theta$
+ 
+ - Then according to the maximum likelihood principle learning this distribution amounts to obtaining $\theta_{\tt{MLE}} = \underset{\theta}{\argmax} \sum_i{\log p(X_i=x_i ; \theta)}$
+
+**The challenge**
+
+ - We think that the data has underlying explanatory factors $Z$.
+ - $p(X_i=x_i ; \theta)$ is not easy to evaluate
+
+
+\begin{aligned}
+\log {p(x;\theta)} &= \log \int {p(x,z) dz}  \\
+\log {p(x;\theta)} &= \log \int {p(x|z) p(z) dz} \quad &&\text{Bayes rule} \\
+
+\end{aligned}
+
+
+We don't have access to $p(z)$. So we insert a different $z$ distribution, $q(z|x)$. This is motivated by viewing $p(x|z)$ as the decoder, and $q(z|x)$ as the encoder.
+
+::: {.column-margin}
+Introducing a distribution for the integration variable allows us to view the integral as an expectation over that distribution. 
+:::
+
+$$
+\begin{aligned}
+\log {p(x;\theta)} &= \log \int {p(x|z) p(z) \frac{q(z|x)}{q(z|x)} dz}  \\
+                   &=  \log E_{z \sim q(.|x)} \bigg[ \frac{p(x|z) p(z)}{q(z|x)} \bigg] \\
+                   &\geq E_{z \sim q(.|x)} \log  \bigg[ \frac{p(x|z) p(z)}{q(z|x)} \bigg] \quad &&\text{Jensen's inequality} \\
+                   &\geq E_{z \sim q(.|x)} [ \log  p(x|z)] - D_{KL}(q(z|x)\|p(z)) \quad &&\text{ELBO}
+\end{aligned}
+$$
+
+::: {.column-margin}
+Expection within $\log$ is a recurring clue in different contexts to use Jensen's inequality.
+:::
+
+
+
+
+[comment]: Link to Manifold hypothesis.
+
+  - We think that the high dimensional data $X$ depend on low dimensional factors $Z$
+  - These low dimensional factors can be viewed as a representation of the data
+
+
+
+
+
+
+We can approach deriving the variational infrence objective from two perspectives:
+ - Representation learning $p(z|x)$
+ - Missing data $p(x,z)$
+
+:::{}
+ - We are interested in $\theta$ and unobserved $z_i$.
+ - Maximum likelihood estimate for the parameters $\theta_{\tt{MLE}} = \underset{\theta}{\argmax} \log p(\mathbf{x} ; \theta)$
+ - Given: computing $p(x_i ; \theta)$ is difficult but computing $p(x_i, z_i ; \theta)$ is easy.
+ - But $z_i$ is unobserved, so we must get around that somehow.
+:::
+
+:::{.callout-note title="Assuming observations are i.i.d." collapse=false icon=false}
+
+We can view $\mathbf{x}$ as the _training set_. Then likelihood $p(\mathbf{x} ; \theta)$ is the joint density $p(x_1, x_2, \ldots, x_n ; \theta)$. 
+
+ - Independence $\implies$ joint distribution is a product of the individual distributions.
+ - Identically distributed $\implies$ the distribution for all $X_i$'s is the same.
+ - In other words, each value $x_i$ can be treated as a draw from a distribution of a single random variable $X$, that is parameterized by the same $\theta$.
+
+$$
+\begin{aligned}
+p(\mathbf{x} ; \theta) &= \prod_{i=1}^n p(x_i ; \theta) \\
+\log p(\mathbf{x} ; \theta) &= \sum_{i=1}^n \log p(x_i ; \theta)
+\end{aligned}
+$$
+
+The maximum likelihood estimate for $\theta$ can then be simplified to a sum of log-densities at individual observations $x_i$:
+
+$$
+\theta_{\tt{MLE}} = \underset{\theta}{\argmax} (\sum_{i=1}^n \log p(x_i ; \theta))
+$$
+
+This can be viewed as the Monte Carlo estimate of an expectation over the data distribution $p(X; \theta)$.
+$$
+\theta_{\tt{MLE}} = \underset{\theta}{\argmax} E_{x \sim p(X;\theta)}( \log p(x ; \theta) )
+$$
+:::
+
+For any value $x$ we would want to know the corresponding $z$. So we assume some distribution for $z$ and work with expectations. 
+
+\begin{aligned}
+\log p(x ; \theta) &= \log \int_{z} p(x, z ; \theta) dz &\\
+                   &= \log \int_{z} \frac{p(x, z ; \theta) q(z)}{q(z) } dz &\\
+                   &= \log E_{z \sim q(z)} \bigg[ \frac{p(x, z ; \theta)}{q( z)} \bigg] & \\
+\end{aligned}
+
+We pause here and make some observations. 
+
+1. Writing a lower bound for the log likelihood, aka ELBO. 
+\begin{aligned}
+\log E_{z \sim q(z)} \bigg[ \frac{p(x, z ; \theta)}{q( z)} \bigg] &\geq E_{z \sim q(z)} \log \bigg[ \frac{p(x, z ; \theta)}{q(z)} \bigg] &\quad \textrm{Jensen's inequality} \\
+\end{aligned}
+
+We can use Baye's rule to write $p(x, z ; \theta)$ as a product of $p(z|x; \theta)$ and $p(x ; \theta)$. Then equality holds if $q(z) = p(z|x; \theta)$, where $p(z|x; \theta)$ is the 'true' posterior distribution of $z$ given $x$.
+
+2. Introducing the KL divergence between $q(z)$ and $p(z|x; \theta)$
+
+\begin{aligned}
+\log E_{z \sim q(z)} \bigg[ \frac{p(x, z ; \theta)}{q( z)} \bigg] &= E_{z \sim q(z)} \log \bigg[ \frac{p(x, z ; \theta)}{q(z)} \bigg] \\
+&= E_{z \sim q(z)} \log p(x, z ; \theta) - E_{z \sim q(z)} \log q(z) \\
+&= \mathcal{L}(q, \theta) + D_{\textrm{KL}}(q(z) | p(z|x; \theta)) \\
+\end{aligned}
+
+
+
+
+
+
+
+$$
+\begin{aligned}
+\underbrace{p(x ; \theta)}_{\text{does not depend on } z} &= 
+\quad \underbrace{p(x, z ; \theta)}_{\text{easy to compute}} \quad / 
+\underbrace{p(z|x; \theta)}_{q(z)\text{ approximates this}} \quad &&\text{Bayes rule} \\
+\\
+\log{p(x; \theta)} &= \log p(x, z ; \theta)  - \log p(\mathbf{z}|\mathbf{x}; \theta) \quad &&\text{log transform} \\
+\Eqz \log{p(\mathbf{x}|\theta)} &= \Eqz \log p(\mathbf{x}, \mathbf{z} | \theta)  - \Eqz \log  p(\mathbf{z}|\mathbf{x},\theta)  \quad &&\text{expectation over}~q(\mathbf{z})  \\
+\implies \log{p(\mathbf{x}|\theta)} &= \underbrace{\Eqz \log p(\mathbf{x}, \mathbf{z} | \theta)}_{\mathcal{L}(q,\theta)} + \underbrace{D_{\textrm{KL}}(q(\mathbf{z}) | p(\mathbf{z}|\mathbf{x},\theta)}_{\geq 0}
+\end{aligned}
+$$
+
+ - Thus, maximizing $\mathcal{L}(q,\theta)$ offers a lower bound for $\log{p(\mathbf{x}|\theta)}$.
+ - The $\theta$ learnt in this way is a local maximum of the likelihood function.
+
+
+
+**Algorithm**
+
+:::{}
+ - guess an initial $\theta$.
+ - iteratively perform the E and M steps until convergence into a local maximum.
+ - In the E step, update $q$ to maximizes $\mathcal{L}(q,\theta)$ at current $\theta$.
+ - In the M step, update $\theta$ to maximize $\mathcal{L}(q,\theta)$ at current $q$.
+ - This iterative scheme is guaranteed to converge to a local maximum.
+:::
+
+**Common simplifications and approximations**
+
+ - i.i.d samples $x_i$ $\implies p(\mathbf{x} | \theta) = \prod_{i=1}^n p(x_i| \theta)$
+ - mean field approximation $\implies q(\mathbf{z}) = \prod_{i=1}^n q(z_i)$
+ - These approximations decoupled the objective for EM steps across data points. 
+
+$$
+\begin{aligned}
+\log{p(\mathbf{x}|\theta)} = \sum_i \log{p(x_i|\theta)} &= \sum_{i=1}^n [ \Eqzi \log p(x_i, z_i | \theta)  + D_{\textrm{KL}}(q(z_i) | p(z_i|x_i,\theta) ] \\
+&= \sum_{i=1}^n \mathcal{L}(q(z_i),\theta)
+\end{aligned}
+$$
+
+:::{.callout-note title="Choice of $q$" collapse=false icon=false}
+
+The notation $q(z_i)$ is can be confusing here. Here we explicitly mean the density of $z_i$ in the distribution $q$.
+
+However, once can model q as a conditional distribution, and indicate it as $q(z_i|x_i)$. This is a common choice in variational inference, and is used in the VAE as well.
+
+Answer: In the gaussian mixtures case, it is indeed shared across all $z_i$. In a VAE, it is different for each $z_i$, parametrized by a neural network and $x_i$.
+:::
+
 
 ### Set up
  
@@ -58,7 +260,7 @@ E.g. If we choose $\mathcal{Q}$ to be the family of Gaussian distributions, then
  - Let $q_{Z;\omega}$ be our approximation of $p_{Z|X}$.
  - Here $\omega$ are parameters (i.e. we don't bother with a prior distribution for $\omega$).
  - The family of distributions parametrized by $\omega$ is denoted by $\mathcal{Q}$.
- - We call this _variational_ inference because the parameters to approximate the posterior are learnt through optimization.
+ - We call this _variational_ inference because the parameters to approximate the posterior (within $\mathcal{Q}$) are learnt through optimization.
 
 <p></p>
 
@@ -86,28 +288,20 @@ E.g. If we choose $\mathcal{Q}$ to be the family of Gaussian distributions, then
 <p></p>
 
  - In doing so, we will see that we need access to $p(x|z)$
- - This is the likelihood of the generative model parameters.
- - We don't know p(x|z) either, but we can learn this simultaneously.
-
-The term $p(x|z)$ is nuanced, and it goes against intuition if we've mainly worked with _mean squared error_ as a _reconstruction loss_. I'll first explain the idea in words, which might be a bit hard to follow but I'd encourage reading it first even if it does not make complete sense at first pass. Take a look at the example, and revisiting the second time around will hopefully help understand it better. 
-
-We first present a likelihood perspective.
-
- - The distribution $p(x|z)$ (here the notation actually refers to $p_{X|Z}$) is unknown. 
+ - We don't know $p(x|z)$ either, but we can learn this simultaneously.
  - We assume a form $p_{\psi}(x|z)$, where $\psi$ are parameters of the assumed distribution.
- - Our basic modeling assumption is that $X$ is generated by $Z$.
- - Therefore the density $p_{\psi}(x|z)$ should be large for observed data points $x$.
- - In other words, the likelihood (of $\psi$ and $z$) should be high for observed $x$.
+ - The standard VAE takes $\psi$ to be a deterministic function $g$ of $Z$.
+ - $g$ is a neural network with weights $\theta$, and shared across all $z$. 
+ - We therefore write $p_{\psi}(x|z)$ as $p_{\theta}(x|z)$.
 
 <p></p>
 
-Now we present a perspective that accounts for noise in the data.
-
+ - Our basic modeling assumption is that $X$ is generated by $Z$.
+ - Therefore the density $p_{\theta}(x|z)$ should be large for observed data points $x$.
+ - In other words, the likelihood (of $\theta$ and $z$) should be high for all observed $x$.
  - Observed data $x$ is itself noisy (e.g. camera noise in image data, _dropout_ in scRNA-seq measurements).
- - The form of $p_{\psi}(x|z)$ can be chosen to model noise in the data.
- - $p_{\psi}(x|z)$ can thus be thought of as an observation model.
-
-
+ - The form of $p_{\theta}(x|z)$ can be chosen to model noise in the data.
+ - $p_{\theta}(x|z)$ can thus be thought of as an observation model.
 
 :::{.callout-note title="Fully factorized Gaussian observation model" collapse=false icon=false}
 
@@ -133,17 +327,14 @@ E_{q_{\phi}(z|x)} (\log p(x|z)) &= E_{q_{\phi}(z|x)} \bigg[ \sum_{i=1}^n \log p(
 \end{aligned}
 $$
 
-This is the familiar looking mean squared error calculated across features of the data. 
+This is the familiar looking mean squared error calculated across features of the data.
 
 With stochastic learning algorithms, we maximize the expected ELBO over the data distribution (i.e. training samples).
+
 :::
 
-KL divergence is not symmetric; 
-
- - $D_\textrm{KL}(q(z|x) | p(z|x))$ is known as the reverse KL divergence
- - $D_\textrm{KL}(p(z|x) | q(z|x))$ is known as the forward KL divergence. 
-
-Why use one over the other? A practical reason here is that the reverse KL divergence leads to averaging over samples from $q(z|x)$, which we can access easily; in the forward KL divergence case, we'd have to work with samples from $p(z|x)$ which is unknown and inaccessible.
+ - The reverse KL divergence $D_\textrm{KL}(q(z|x) | p(z|x))$ is not the same as the forward KL divergence $D_\textrm{KL}(p(z|x) | q(z|x))$. 
+ - A practical reason to use the reverse version us that we can sample from $q(z|x)$, but not $p(z|x)$.
 
 :::
 
@@ -245,15 +436,19 @@ There is a class of inference problems for which we use approximate methods. App
 
 Some resources I used to compile this post:
 
- - [Jaan Altosaar's blog](https://jaan.io/what-is-variational-autoencoder-vae-tutorial/)
- - [Eric Jang's blog](https://blog.evjang.com/2016/08/variational-bayes.html)
- - [Yuge Shi's blog](https://yugeten.github.io/posts/2020/06/elbo/)
+ - [Jaan Altosaar's blog](https://jaan.io/what-is-variational-autoencoder-vae-tutorial/): This is one of the clearest blogposts for those with less of a background in probabilistic methodology.
+ - [Dustin Tran](https://dustintran.com/blog/variational-auto-encoders-do-not-train-complex-generative-models): I found this to be an insightful comment about expressivity in generative models trained through the VAE framework.
+ - [Yuge Shi's blog](https://yugeten.github.io/posts/2020/06/elbo/) She shares newer developments, and has also published a multi-modal version of VAEs.
+ 
+ - [Eric Jang's blog](https://blog.evjang.com/2016/08/variational-bayes.html). 
+ 
  - [Adam Kosiorek's blog](http://akosiorek.github.io/what_is_wrong_with_vaes/)
  - [Matthew Bernstein's blog](https://mbernste.github.io/posts/vae/)
  - @hoffman2016elbo
  - [Black box variational inference](http://proceedings.mlr.press/v33/ranganath14)
  - [Schemes other than ELBO](https://bochang.me/blog/posts/iwae/)
  - [Andriy Mnih lecture](https://www.youtube.com/watch?v=7Pcvdo4EJeo&t=544s): This is a good lecture with an overview of where Latent variable models are placed within the broader context of machine learning. Highly recommend this as an advanced revision of the topic. 
+- https://jaketae.github.io/study/gan-math/
 
 I'll use the following notational convention: 
 
@@ -303,9 +498,8 @@ p(x) &= \int p_{\theta}(x|z) p(z) \frac{q(z)}{q(z)} dz \\
 \end{aligned}
 $$
 
-
-This paper explores the use of AI to augment and enhance music education by enabling personalized learning experiences tailored to a human learner's unique interests, skills, and goals. Here we focus on generating curricula and related exercises that adapt to the learner's intent and progress in real time. We present a new ear training application that can analyze and reduce piano scores to generate piano method books for the modern age. Weaving the learner's current tastes and interests into the fabric of their education in this way lowers barriers, supports effort, and has the potential to fuel the new wave of creative expression.
-
+### Further reading
+- [A unified view of different objectives in latent variable generative models](https://arxiv.org/pdf/1806.06514)
 
 ### References
 
